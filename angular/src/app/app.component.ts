@@ -6,8 +6,7 @@ import { filter, map, mergeMap } from 'rxjs';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
-  templateUrl: './app.component.html',
-  styleUrl: './app.component.css'
+  templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit{
   title = 'angular';
@@ -27,7 +26,7 @@ export class AppComponent implements OnInit{
       }),
       mergeMap(route => route.data)
     ).subscribe(data => {
-      const title = data['title'] || 'Angular App';  // título por defecto
+      const title = data['title'] || 'Toolify';  // título por defecto
       this.titleService.setTitle(title);
     });
   }

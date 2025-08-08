@@ -1,6 +1,7 @@
 package com.ProyectoDAW.Ecommerce.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -34,7 +35,7 @@ public class Venta {
 	@JoinColumn(name="ID_USUARIO")
 	private Usuario usuario;
 	
-	@Column(name="FECHA_REGISTRO")
+	@Column(name="FECHA")
 	private LocalDateTime fechaRegistro;
 	
 	@Column(name="TOTAL")
@@ -46,7 +47,8 @@ public class Venta {
 	@Column(name="TIPO_VENTA")
 	private String tipoVenta;
 	
-	@OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
-	private List<DetalleVenta> detalles;
+	@OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<DetalleVenta> detalles = new ArrayList<>();
+
 
 }
