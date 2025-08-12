@@ -9,4 +9,8 @@ import com.ProyectoDAW.Ecommerce.repository.IUsuarioRepository;
 public class UsuarioService {
 	@Autowired
 	private IUsuarioRepository usuarioRepository;
+	
+	public long countClientes() {
+		return usuarioRepository.count();
+	}
 }
