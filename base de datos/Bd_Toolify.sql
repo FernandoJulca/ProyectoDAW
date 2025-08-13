@@ -108,7 +108,7 @@ INSERT INTO TB_CATEGORIA (DESCRIPCION) VALUES
 INSERT INTO TB_ROL (DESCRIPCION) VALUES
 ('A'), -- Administrador
 ('C'), -- Cliente
-('E'), -- Empleado
+('V'), -- Vendedor
 ('R'); -- Repartidor
 
 
