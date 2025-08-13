@@ -37,7 +37,7 @@ public class VentaController {
 	
 	@PostMapping("/grilla")
 	public ResponseEntity<ResultadoResponse> finalizarVentaVendedor(@RequestBody Venta venta) {
-	    ResultadoResponse resultado = ventaService.guardarVentaCompleta(venta);
+	    ResultadoResponse resultado = ventaService.guardarVenta(venta);
 	    if (resultado.isValor()) {
 	        return ResponseEntity.ok(resultado);
 	    } else {
