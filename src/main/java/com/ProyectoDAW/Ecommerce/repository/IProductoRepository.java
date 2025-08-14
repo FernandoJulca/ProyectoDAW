@@ -12,6 +12,10 @@ import org.springframework.data.repository.query.Param;
 import com.ProyectoDAW.Ecommerce.model.Producto;
 
 public interface IProductoRepository extends JpaRepository<Producto, Integer> {
+	
+	@Query("SELECT P FROM Producto P WHERE P.estado = TRUE")
+	List<Producto> findProductosActivos();
+	
 	@Query("SELECT P FROM Producto P WHERE P.estado = TRUE")
 	Page<Producto> findProductsActive(Pageable pageable);
 	

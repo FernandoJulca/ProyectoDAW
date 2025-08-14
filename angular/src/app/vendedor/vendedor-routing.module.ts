@@ -7,25 +7,24 @@ import { HistorialComponent } from "./historial/historial.component";
 
 const routes: Routes = [
   {
-    path: 'vendedor',
+    path: '',
     component: VendedorLayoutComponent,
     children: [
       {
-        path: '',
-        redirectTo: 'inicio',
-        pathMatch: 'full'
-      },
-      {
         path: 'inicio',
-        component: InicioComponent
+        component: InicioComponent, 
+        data: { title: 'Inicio' }
+        
       },
       {
         path: 'ventas',
-        component: VentasComponent
+        component: VentasComponent, 
+        data: { title: 'Ventas' }
       },
       {
         path: 'historial',
-        component: HistorialComponent
+        component: HistorialComponent, 
+        data: { title: 'Historial' }
       }
     ],
   },

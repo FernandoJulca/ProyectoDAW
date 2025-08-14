@@ -16,4 +16,7 @@ import { RouterLink, RouterLinkActive, RouterLinkWithHref, RouterOutlet } from '
 })
 export class VendedorLayoutComponent {
 
+  logout() {
+  
+  }
 }
