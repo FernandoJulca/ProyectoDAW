@@ -1,6 +1,8 @@
 package com.ProyectoDAW.Ecommerce.service;
 
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,4 +27,9 @@ public class ProductoService {
 	public long countProductos() {
 		return productoRepository.count();
 	}
+	
+	public List<Producto> obtenerProductosActivos(){
+		return productoRepository.findProductosActivos();
+	}
+	
 }

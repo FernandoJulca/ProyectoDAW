@@ -25,7 +25,7 @@ public class VentaService {
 	@Autowired
 	private IProductoRepository productoRepository;
 
-	public List<Venta> getOrdenForIdUser(Integer idUsuario) {
+	public List<Venta> getVentaForIdUser(Integer idUsuario) {
 		return ventaRepository.findByUsuarioId(idUsuario);
 	}
 
