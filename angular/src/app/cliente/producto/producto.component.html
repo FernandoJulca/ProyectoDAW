@@ -82,8 +82,8 @@
                   {{producto.categoria.descripcion}}
                 </span>
                 <span *ngIf="producto.stock === 0" class="badge bg-danger text-white ms-2" style="font-size: 0.75rem;">
-    Agotado
-  </span>
+                  Agotado
+                </span>
               </div>
 
               <!-- Título -->
@@ -108,11 +108,10 @@
                 <button class="btn btn-outline-secondary flex-fill btn-sm" (click)="verDetalles(producto)">
                   <i class="fas fa-eye me-1"></i> Detalles
                 </button>
-                <button class="btn btn-primary-custom flex-fill btn-sm"
-        (click)="agregarAlCarrito(producto)"
-        [disabled]="producto.stock === 0">
-  <i class="fas fa-shopping-cart me-1"></i> Al Carrito
-</button>
+                <button class="btn btn-primary-custom flex-fill btn-sm" (click)="agregarAlCarrito(producto)"
+                  [disabled]="producto.stock === 0">
+                  <i class="fas fa-shopping-cart me-1"></i> Al Carrito
+                </button>
 
 
               </div>
@@ -138,7 +137,7 @@
                   <img [src]="'assets/productos/P' + productoSeleccionado?.idProducto + '.jpg'" alt="Imagen producto"
                     (error)="onImageError($event)" style="max-width: 300px;" class="img-fluid rounded shadow-sm" />
                 </ng-template>
-                
+
               </div>
 
               <!-- Detalles del producto -->
@@ -159,16 +158,15 @@
                       (click)="cambiarCantidad(1)">+</button>
                   </div>
                 </div>
-<div *ngIf="productoSeleccionado?.stock === 0" class="alert alert-warning p-2 text-center">
-  Este producto está agotado.
-</div>
+                <div *ngIf="productoSeleccionado?.stock === 0" class="alert alert-warning p-2 text-center">
+                  Este producto está agotado.
+                </div>
 
                 <!-- Botones -->
-                <button class="btn btn-primary-custom w-100"
-        (click)="agregarAlCarrito(productoSeleccionado)"
-        [disabled]="productoSeleccionado?.stock === 0">
-  <i class="fas fa-cart-plus me-2"></i>Agregar al carrito
-</button>
+                <button class="btn btn-primary-custom w-100" (click)="agregarAlCarrito(productoSeleccionado)"
+                  [disabled]="productoSeleccionado?.stock === 0">
+                  <i class="fas fa-cart-plus me-2"></i>Agregar al carrito
+                </button>
 
               </div>
             </div>

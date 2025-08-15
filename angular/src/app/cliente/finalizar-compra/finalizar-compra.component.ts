@@ -19,7 +19,7 @@ declare var bootstrap: any;
 export class FinalizarCompraComponent implements OnInit {
   carrito: DetalleVenta[] = [];
   total: number = 0;
-  metodoPago: 'efectivo' | 'tarjeta' = 'efectivo';
+  metodoPago: 'P' | 'R' = 'P';
 
   meses = Array.from({ length: 12 }, (_, i) => i + 1);
   anios = Array.from({ length: 46 }, (_, i) => 2025 + i);
@@ -80,48 +80,51 @@ export class FinalizarCompraComponent implements OnInit {
     target.src = 'assets/no-imagen.jpg';
   }
   realizarPago() {
-    if (this.carrito.length === 0) {
-      AlertService.info('El carrito está vacío.');
-      return;
-    }
-
-    const venta: Venta = {
-      idVenta: 0,
-      usuario: this.usuario,
-      detalles: this.carrito,
-      total: this.total,
-    };
-
-    this.compraService.finalizarVenta(venta).subscribe({
-      next: (response) => {
-        if (response.valor) {
-          AlertService.success(response.mensaje);
-          this.carritoService.limpiarCarrito();
-
-          const modalElement = document.getElementById('modalPago');
-          if (modalElement) {
-            const modal = bootstrap.Modal.getInstance(modalElement);
-            if (modal) {
-              modal.hide();
-            }
-          }
-
-          this.total = 0;
-          this.carrito = [];
-        } else {
-          AlertService.error(response.mensaje);
-        }
-        console.log('Respuesta:', response);
-      },
-      error: (error) => {
-        console.log('error:', error);
-        AlertService.error(
-          'Error al procesar la compra: ' +
-            (error.error || error.message || 'Intente más tarde')
-        );
-      },
-    });
+    console.log('Método de pago actual:', this.metodoPago); 
+  if (this.carrito.length === 0) {
+    AlertService.info('El carrito está vacío.');
+    return;
   }
+
+  const venta: Venta = {
+    idVenta: 0,
+    usuario: this.usuario,
+    detalles: this.carrito,
+    total: this.total,
+    tipoVenta: this.metodoPago
+  };
+console.log('Venta a enviar:', venta);
+  this.compraService.finalizarVenta(venta).subscribe({
+    next: (response) => {
+      if (response.valor) {
+        AlertService.success(response.mensaje);
+        this.carritoService.limpiarCarrito();
+
+        const modalElement = document.getElementById('modalPago');
+        if (modalElement) {
+          const modal = bootstrap.Modal.getInstance(modalElement);
+          if (modal) {
+            modal.hide();
+          }
+        }
+
+        this.total = 0;
+        this.carrito = [];
+      } else {
+        AlertService.error(response.mensaje);
+      }
+      console.log('Respuesta:', response);
+    },
+    error: (error) => {
+      console.log('error:', error);
+      AlertService.error(
+        'Error al procesar la compra: ' +
+          (error.error || error.message || 'Intente más tarde')
+      );
+    },
+  });
+}
+
 
   abrirModalPago() {
     const modal = new bootstrap.Modal(document.getElementById('modalPago')!);

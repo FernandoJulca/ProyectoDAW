@@ -92,3 +92,6 @@
 .top-20 {
   margin-top: 5rem !important;
 }
+.color-gray-500{
+    color:var(--color-gray-400) !important;
+}

@@ -6,6 +6,7 @@ import { IndexComponent } from './index/index.component';
 import { NosotrosComponent } from './nosotros/nosotros.component';
 import { ContactoComponent } from './contacto/contacto.component';
 import { FinalizarCompraComponent } from './finalizar-compra/finalizar-compra.component';
+import { PerfilComponent } from './perfil/perfil.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
       {
         path: 'finalizarCompra',
         component: FinalizarCompraComponent,data: { title: 'Finalizar-Compra' }
+      },
+      {
+        path:'perfil',
+        component: PerfilComponent, data:{title:'Perfil'}
       }
     ],
 }];

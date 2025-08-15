@@ -18,11 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ProyectoDAW.Ecommerce.dto.CategoriaVentasDTO;
 import com.ProyectoDAW.Ecommerce.dto.ProductoFilter;
+import com.ProyectoDAW.Ecommerce.dto.VentaDTO;
 import com.ProyectoDAW.Ecommerce.model.Categoria;
 import com.ProyectoDAW.Ecommerce.model.Producto;
+import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.service.CategoriaService;
 import com.ProyectoDAW.Ecommerce.service.ProductoService;
 import com.ProyectoDAW.Ecommerce.service.UsuarioService;
+import com.ProyectoDAW.Ecommerce.service.VentaService;
 
 @RestController
 @RequestMapping("/cliente")
@@ -35,6 +38,9 @@ public class ClienteController {
 	
 	@Autowired
 	private UsuarioService usuarioService;
+	
+	@Autowired
+	private VentaService ventaService;
 
 	@GetMapping("/index")
 	public ResponseEntity<?> index() {
@@ -76,6 +82,12 @@ public class ClienteController {
 	    response.put("categorias", categorias);
 
 	    return ResponseEntity.ok(response);
+	}
+	
+	@GetMapping("/perfil")
+	public ResponseEntity<?> perfilCliente(@RequestParam Integer idUsuario) {
+		List<VentaDTO> ventasDto = ventaService.getVentasPorUsuario(idUsuario);
+        return ResponseEntity.ok(ventasDto);
 	}
 
 }

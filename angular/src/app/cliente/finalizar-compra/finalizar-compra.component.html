@@ -3,75 +3,70 @@
   <p class="text-center text-muted fs-5 mb-4">Verifica los productos y elige cómo finalizar tu compra</p>
   <div *ngIf="carrito.length > 0; else sinProductos">
     <div class="row">
-  <!-- 🛒 Productos a la izquierda -->
-  <div class="col-md-8">
-    <div class="card mb-4 shadow-sm" *ngFor="let item of carrito">
-      <div
-        class="card-body d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
-        
-        <!-- Imagen + Detalles del producto -->
-        <div class="d-flex align-items-start">
-          <ng-container *ngIf="item.producto.base64Img; else imagenLocal">
-            <img [src]="'data:image/png;base64,' + item.producto.base64Img"
-                 alt="Producto" width="80" height="80"
-                 class="rounded me-3 object-fit-cover border" />
-          </ng-container>
-          <ng-template #imagenLocal>
-            <img [src]="'assets/productos/P' + item.producto.idProducto + '.jpg'"
-                 (error)="onImageError($event)"
-                 alt="Producto" width="80" height="80"
-                 class="rounded me-3 object-fit-cover border" />
-          </ng-template>
+      <!-- 🛒 Productos a la izquierda -->
+      <div class="col-md-8">
+        <div class="card mb-4 shadow-sm" *ngFor="let item of carrito">
+          <div
+            class="card-body d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
 
-          <div>
-            <h5 class="fw-semibold mb-1">{{ item.producto.nombre }}</h5>
-            <p class="mb-1">Precio Unitario: <strong>S/. {{ item.producto.precio | number:'1.2-2' }}</strong></p>
-            <p class="mb-1">Subtotal: <strong>S/. {{ item.subTotal | number:'1.2-2' }}</strong></p>
+            <!-- Imagen + Detalles del producto -->
+            <div class="d-flex align-items-start">
+              <ng-container *ngIf="item.producto.base64Img; else imagenLocal">
+                <img [src]="'data:image/png;base64,' + item.producto.base64Img" alt="Producto" width="80" height="80"
+                  class="rounded me-3 object-fit-cover border" />
+              </ng-container>
+              <ng-template #imagenLocal>
+                <img [src]="'assets/productos/P' + item.producto.idProducto + '.jpg'" (error)="onImageError($event)"
+                  alt="Producto" width="80" height="80" class="rounded me-3 object-fit-cover border" />
+              </ng-template>
+
+              <div>
+                <h5 class="fw-semibold mb-1">{{ item.producto.nombre }}</h5>
+                <p class="mb-1">Precio Unitario: <strong>S/. {{ item.producto.precio | number:'1.2-2' }}</strong></p>
+                <p class="mb-1">Subtotal: <strong>S/. {{ item.subTotal | number:'1.2-2' }}</strong></p>
+              </div>
+            </div>
+
+            <!-- Controles de cantidad -->
+            <div class="d-flex align-items-center justify-content-center gap-3 mt-3 mt-md-0">
+              <button class="btn btn-outline-secondary btn-sm" (click)="disminuirCantidad(item.producto.idProducto)">
+                <i class="fas fa-minus"></i>
+              </button>
+              <span class="fs-5 fw-bold">{{ item.cantidad }}</span>
+              <button class="btn btn-outline-secondary btn-sm" (click)="aumentarCantidad(item.producto.idProducto)">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
           </div>
         </div>
+      </div>
 
-        <!-- Controles de cantidad -->
-        <div class="d-flex align-items-center justify-content-center gap-3 mt-3 mt-md-0">
-          <button class="btn btn-outline-secondary btn-sm"
-                  (click)="disminuirCantidad(item.producto.idProducto)">
-            <i class="fas fa-minus"></i>
-          </button>
-          <span class="fs-5 fw-bold">{{ item.cantidad }}</span>
-          <button class="btn btn-outline-secondary btn-sm"
-                  (click)="aumentarCantidad(item.producto.idProducto)">
-            <i class="fas fa-plus"></i>
-          </button>
+      <!-- 💰 Total y botón de pago a la derecha -->
+      <div class="col-md-4">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <h4 class="fw-bold text-black text-end">Total:</h4>
+            <h2 class="titulos-Primary fw-bold text-end">S/. {{ total | number:'1.2-2' }}</h2>
+            <button class="btn btn-primary-custom w-100 mt-4 " (click)="abrirModalPago()">
+              <i class="fas fa-credit-card me-2"></i> Confirmar y pagar
+            </button>
+          </div>
         </div>
       </div>
     </div>
+
   </div>
 
-  <!-- 💰 Total y botón de pago a la derecha -->
-  <div class="col-md-4">
-    <div class="card shadow-sm">
-      <div class="card-body">
-        <h4 class="fw-bold text-black text-end">Total:</h4>
-        <h2 class="titulos-Primary fw-bold text-end">S/. {{ total | number:'1.2-2' }}</h2>
-        <button class="btn btn-primary-custom w-100 mt-4 " (click)="abrirModalPago()">
-          <i class="fas fa-credit-card me-2"></i> Confirmar y pagar
-        </button>
-      </div>
+  <ng-template #sinProductos>
+    <div class="text-center py-5 rounded ">
+      <i class="fas fa-box-open fa-3x text-secondary mb-3"></i>
+      <h5 class="text-dark mb-2">Tu carrito está vacío</h5>
+      <p class="text-muted mb-4">Aún no has agregado productos al carrito.</p>
+      <button (click)="irProducto()" class="btn btn-primary-custom">
+        <i class="fas fa-store me-2"></i> Explorar Productos
+      </button>
     </div>
-  </div>
-</div>
-
-  </div>
-
-<ng-template #sinProductos>
-  <div class="text-center py-5 rounded ">
-    <i class="fas fa-box-open fa-3x text-secondary mb-3"></i>
-    <h5 class="text-dark mb-2">Tu carrito está vacío</h5>
-    <p class="text-muted mb-4">Aún no has agregado productos al carrito.</p>
-    <button (click)="irProducto()" class="btn btn-primary-custom">
-      <i class="fas fa-store me-2"></i> Explorar Productos
-    </button>
-  </div>
-</ng-template>
+  </ng-template>
 
 </div>
 
@@ -117,41 +112,27 @@
           <h5 class="mb-3 titulos-Primary"><i class="bi bi-wallet2 me-2"></i>Opción de pago</h5>
 
           <div class="form-check mb-2">
-            <input class="form-check-input" type="radio" name="payment" id="pagoEfectivo" value="efectivo" [(ngModel)]="metodoPago" required />
+            <input class="form-check-input" type="radio" name="payment" id="pagoEfectivo" value="P"
+              [(ngModel)]="metodoPago" required />
             <label class="form-check-label" for="pagoEfectivo">
-              Pagar en efectivo al momento de la entrega
+              Retirar en tienda y pagar de forma presencial
             </label>
           </div>
 
           <div class="form-check mb-4">
-            <input class="form-check-input" type="radio" name="payment" id="pagoTarjeta" value="tarjeta" [(ngModel)]="metodoPago" required />
+            <input class="form-check-input" type="radio" name="payment" id="pagoTarjeta" value="R"
+              [(ngModel)]="metodoPago" required />
             <label class="form-check-label" for="pagoTarjeta">
-              Pagar con tarjeta débito/crédito
-            </label>
+              Envío a domicilio y pagar con tarjeta débito/crédito </label>
           </div>
 
           <!-- Datos tarjeta (condicional) -->
-<div
-  *ngIf="metodoPago === 'tarjeta'"
-  class="mt-3 border rounded p-2 bg-light"
-  style="font-size: 0.92rem;"
->
+          <div *ngIf="metodoPago === 'R'"  class="mt-3 border rounded p-2 bg-light" style="font-size: 0.92rem;">
             <div class="mb-3">
               <label for="tarjetaNumber" class="form-label fw-semibold">Número de tarjeta</label>
-              <input
-  type="text"
-  id="tarjetaNumber"
-  name="tarjetaNumber"
-  class="form-control"
-  maxlength="19"
-  placeholder="#### #### #### ####"
-  [(ngModel)]="tarjeta.numero"
-  (input)="formatearNumeroTarjeta()"
-  inputmode="numeric"
-  pattern="[0-9 ]*"
-  (keypress)="soloNumeros($event)"
-  required
-/>
+              <input type="text" id="tarjetaNumber" name="tarjetaNumber" class="form-control" maxlength="19"
+                placeholder="#### #### #### ####" [(ngModel)]="tarjeta.numero" (input)="formatearNumeroTarjeta()"
+                inputmode="numeric" pattern="[0-9 ]*" (keypress)="soloNumeros($event)" required />
 
             </div>
 
@@ -172,19 +153,9 @@
               </div>
               <div class="col-md-4">
                 <label for="cvv" class="form-label fw-semibold">CVV</label>
-                <input
-  type="tel"
-  id="cvv"
-  name="cvv"
-  maxlength="3"
-  class="form-control"
-  placeholder="***"
-  pattern="[0-9]{3}"
-  inputmode="numeric"
-  (keypress)="soloNumeros($event)"
-  [(ngModel)]="tarjeta.cvv"
-  required
-/>
+                <input type="tel" id="cvv" name="cvv" maxlength="3" class="form-control" placeholder="***"
+                  pattern="[0-9]{3}" inputmode="numeric" (keypress)="soloNumeros($event)" [(ngModel)]="tarjeta.cvv"
+                  required />
 
               </div>
             </div>

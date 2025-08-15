@@ -3,11 +3,16 @@ package com.ProyectoDAW.Ecommerce.service;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.ProyectoDAW.Ecommerce.dto.DetalleVentaDTO;
 import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
+import com.ProyectoDAW.Ecommerce.dto.UsuarioDTO;
+import com.ProyectoDAW.Ecommerce.dto.VentaDTO;
 import com.ProyectoDAW.Ecommerce.model.DetalleVenta;
 import com.ProyectoDAW.Ecommerce.model.Producto;
 import com.ProyectoDAW.Ecommerce.model.Venta;
@@ -25,11 +30,15 @@ public class VentaService {
 	@Autowired
 	private IProductoRepository productoRepository;
 
-	public List<Venta> getOrdenForIdUser(Integer idUsuario) {
-		return ventaRepository.findByUsuarioId(idUsuario);
-	}
+	public List<VentaDTO> getVentasPorUsuario(Integer idUsuario) {
+        List<Venta> ventas = ventaRepository.findByUsuarioId(idUsuario);
 
-	@Transactional
+        return ventas.stream()
+                .map(this::mapVentaToDTO)
+                .collect(Collectors.toList());
+    }
+
+   	@Transactional
 	public ResultadoResponse guardarVentaCompleta(Venta venta) {
 		try {
 			if (venta.getIdVenta() != null && venta.getIdVenta() == 0) {
@@ -37,7 +46,6 @@ public class VentaService {
 			}
 
 			venta.setFechaRegistro(LocalDateTime.now());
-			venta.setTipoVenta("R");
 			venta.setEstado("P");
 
 			for (DetalleVenta detalle : venta.getDetalles()) {
@@ -61,5 +69,39 @@ public class VentaService {
 			return new ResultadoResponse(false, "Error al registrar la venta: " + ex.getMessage());
 		}
 	}
+   	public Venta obtenerVentaPorCliente(Integer idVenta, Integer idCliente) {
+        Optional<Venta> ventaOpt = ventaRepository.findById(idVenta);
+        return ventaOpt.filter(v -> v.getUsuario().getIdUsuario().equals(idCliente)).orElse(null);
+    }
+   	/*Mapper conviertiendo la entidad venta al dto*/
+   	private VentaDTO mapVentaToDTO(Venta venta) {
+        VentaDTO dto = new VentaDTO();
+        dto.setIdVenta(venta.getIdVenta());
+
+        UsuarioDTO usuarioDto = new UsuarioDTO();
+        usuarioDto.setIdUsuario(venta.getUsuario().getIdUsuario());
+        usuarioDto.setNombres(venta.getUsuario().getNombres());
+        usuarioDto.setCorreo(venta.getUsuario().getCorreo());
+        dto.setUsuario(usuarioDto);
+
+        dto.setFechaRegistro(venta.getFechaRegistro());
+        dto.setTotal(venta.getTotal());
+        dto.setEstado(venta.getEstado());
+        dto.setTipoVenta(venta.getTipoVenta());
+
+        List<DetalleVentaDTO> detallesDto = venta.getDetalles().stream().map(det -> {
+            DetalleVentaDTO detalleDto = new DetalleVentaDTO();
+            detalleDto.setIdDetalleVenta(det.getIdDetalleVenta());
+            detalleDto.setNombreProducto(det.getProducto().getNombre());
+            detalleDto.setCantidad(det.getCantidad());
+            detalleDto.setSubTotal(det.getSubTotal());
+            return detalleDto;
+        }).collect(Collectors.toList());
+
+        dto.setDetalles(detallesDto);
+
+        return dto;
+    }
+
 
 }

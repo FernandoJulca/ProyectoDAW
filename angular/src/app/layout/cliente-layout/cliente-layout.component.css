@@ -29,9 +29,7 @@ header.navbar {
     border:none !important;
 }
 
-.color-gray-500{
-    color:var(--color-gray-400) !important;
-}
+
 
 .btn-ancho{
     min-width: 12rem;
