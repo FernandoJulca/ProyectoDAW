@@ -34,11 +34,15 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 
+
+
 @RestController
 @RequestMapping("/venta")
 public class VentaController {
+	
 	@Autowired
 	private VentaService ventaService;
+	
 	
 	@PostMapping("/finalizar")
 	public ResponseEntity<ResultadoResponse> finalizarVenta(@RequestBody Venta venta) {
@@ -49,6 +53,7 @@ public class VentaController {
 	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultado);
 	    }
 	}
+	
 	@GetMapping("/{idCliente}/pdf/{idVenta}")
 	public ResponseEntity<byte[]> descargarVentaPdf(@PathVariable Integer idCliente, @PathVariable Integer idVenta) {
 	    Venta venta = ventaService.obtenerVentaPorCliente(idVenta, idCliente);
@@ -152,4 +157,5 @@ public class VentaController {
 	    }
 	}
 
+	
 }
