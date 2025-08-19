@@ -123,9 +123,9 @@
                                                 <td class="fw-bold">S/. {{ venta.total | number:'1.2-2' }}</td>
                                                 <td>
                                                     <span class="badge" [ngClass]="{
-                                                            'bg-warning text-white': venta.estado === 'G',
-                                                            'bg-info text-dark': venta.estado === 'E'
-                                                        }">
+          'badge-generado': venta.estado === 'G',
+          'badge-entregado': venta.estado === 'E'
+        }">
                                                         {{ venta.estado === 'G' ? 'Generado' : 'Entregado' }}
                                                     </span>
                                                 </td>
@@ -135,7 +135,8 @@
                                                         (click)="abrirDetalle(venta)">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
-                                                    <button class="btn btn-outline-secondary btn-sm">
+                                                    <button class="btn btn-outline-secondary btn-sm"
+                                                        (click)="descargarPDF(venta)">
                                                         <i class="bi bi-download"></i>
                                                     </button>
                                                 </td>
@@ -143,6 +144,57 @@
                                         </tbody>
                                     </table>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Modal Detalles de Venta -->
+                    <div class="modal fade" id="detalleVentaModal" tabindex="-1" aria-labelledby="detalleVentaLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="detalleVentaLabel">Detalle de Venta #{{
+                                        ventaSeleccionada?.idVenta }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Cerrar"></button>
+                                </div>
+
+                                <div class="modal-body" *ngIf="ventaSeleccionada">
+                                    <p><strong>Cliente:</strong> {{ ventaSeleccionada.usuario.nombres }}</p>
+                                    <p><strong>Correo:</strong> {{ ventaSeleccionada.usuario.correo }}</p>
+                                    <p><strong>Fecha:</strong> {{ ventaSeleccionada.fechaRegistro | date:'medium' }}</p>
+                                    <p><strong>Total:</strong> S/ {{ ventaSeleccionada.total | number:'1.2-2' }}</p>
+                                    <p><strong>Estado:</strong>
+                                        <span class="badge" [ngClass]="{
+            'badge-generado': ventaSeleccionada.estado === 'G',
+            'badge-entregado': ventaSeleccionada.estado === 'E'
+          }">
+                                            {{ ventaSeleccionada.estado === 'G' ? 'Generado' : 'Entregado' }}
+                                        </span>
+                                    </p>
+
+                                    <hr>
+                                    <h6>Productos</h6>
+                                    <table class="table table-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Producto</th>
+                                                <th>Cantidad</th>
+                                                <th>Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let det of ventaSeleccionada.detalles">
+                                                <td>{{ det.nombreProducto }}</td>
+                                                <td>{{ det.cantidad }}</td>
+                                                <td>S/. {{ det.subTotal | number:'1.2-2' }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
                             </div>
                         </div>
                     </div>
