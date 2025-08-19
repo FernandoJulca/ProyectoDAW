@@ -118,7 +118,11 @@ public class VentaService {
 			venta.setEstado("G");
 
 			for (DetalleVenta detalle : venta.getDetalles()) {
-				Producto producto = detalle.getProducto();
+				
+				Producto producto = productoRepository.findById(detalle.getProducto().getIdProducto())
+						.orElseThrow(() -> new RuntimeException(
+								"Producto no encontrado con ID: " + detalle.getProducto().getIdProducto()));
+
 				int cantidadComprada = detalle.getCantidad();
 
 				if (producto.getStock() < cantidadComprada) {
@@ -127,6 +131,7 @@ public class VentaService {
 
 				productoRepository.actualizarStock(producto.getIdProducto(), producto.getStock() - cantidadComprada);
 
+				detalle.setProducto(producto);
 				detalle.setVenta(venta);
 			}
 
