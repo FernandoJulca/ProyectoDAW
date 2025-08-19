@@ -13,7 +13,7 @@ import com.ProyectoDAW.Ecommerce.model.Producto;
 
 public interface IProductoRepository extends JpaRepository<Producto, Integer> {
 	
-	@Query("SELECT P FROM Producto P WHERE P.estado = TRUE")
+	@Query("SELECT P FROM Producto P WHERE P.estado = TRUE ORDER BY 1 ASC")
 	List<Producto> findProductosActivos();
 	
 	@Query("SELECT P FROM Producto P WHERE P.estado = TRUE")
