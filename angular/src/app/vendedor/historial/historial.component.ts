@@ -2,7 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { forkJoin } from 'rxjs';
 import { ReporteService } from '../service/reporte.service';
 import { CommonModule } from '@angular/common';
-
+import { VentaDTO } from '../../shared/dto/ventaDTO.model';
+import { CarroService } from '../service/carro.service';
+declare var bootstrap: any;
 
 @Component({
   selector: 'app-historial',
@@ -16,10 +18,16 @@ export class HistorialComponent implements OnInit {
   totalProductosVendidos: number = 0;
   ingresosTotales: number = 0;
 
-  constructor(private reporteService: ReporteService) { }
+  ventas: VentaDTO[] = [];
+  ventaSeleccionada: VentaDTO | null = null;
+
+  constructor(
+    private reporteService: ReporteService,
+    private carroService: CarroService) { }
 
   ngOnInit(): void {
     this.cargarDatosTotales();
+    this.cargarVentasUsuario(3); //MOMENTANEO
   }
 
   cargarDatosTotales(): void {
@@ -37,4 +45,20 @@ export class HistorialComponent implements OnInit {
     });
   }
 
+  cargarVentasUsuario(idUsuario: number): void {
+    this.carroService.listarVentasVendedor(idUsuario).subscribe({
+      next: (ventas: VentaDTO[]) => {
+        this.ventas = ventas;
+        console.log('Ventas cargadas:', this.ventas);
+      },
+      error: err => console.error('Error al cargar ventas del usuario', err)
+    });
+  }
+
+  abrirDetalle(venta: VentaDTO): void {
+    this.ventaSeleccionada = venta;
+
+    const modal = new bootstrap.Modal(document.getElementById('detalleVentaModal')!);
+    modal.show();
+  }
 }

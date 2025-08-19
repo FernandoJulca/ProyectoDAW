@@ -5,6 +5,7 @@ import { DetalleVenta } from '../../shared/model/detalleVenta.model';
 import { Producto } from '../../shared/model/producto.model';
 import { Venta } from '../../shared/model/venta.model';
 import { ResultadoResponse } from '../../shared/dto/resultadoResponse.model';
+import { VentaDTO } from '../../shared/dto/ventaDTO.model';
 
 @Injectable({
   providedIn: 'root'
@@ -101,12 +102,10 @@ export class CarroService {
     venta.total = this.getTotal();
     venta.detalles = this.getItems();
 
-    // POST /vendedor/grilla
     return this.http.post<ResultadoResponse>(`${this.baseUrl}/grilla`, venta);
   }
 
-  obtenerVentasPorUsuario(idUsuario: number): Observable<Venta[]> {
-    const params = new HttpParams().set('idUsuario', idUsuario.toString());
-    return this.http.get<Venta[]>(`${this.baseUrl}/ventas`, { params });
+  listarVentasVendedor(idUsuario: number): Observable<VentaDTO[]> {
+    return this.http.get<VentaDTO[]>(`${this.baseUrl}/perfil?idUsuario=${idUsuario}`);
   }
 }

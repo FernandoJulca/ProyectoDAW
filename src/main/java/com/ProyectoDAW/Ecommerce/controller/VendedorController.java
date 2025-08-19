@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
+import com.ProyectoDAW.Ecommerce.dto.VentaDTO;
 import com.ProyectoDAW.Ecommerce.model.Producto;
 import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.service.ProductoService;
@@ -50,14 +51,9 @@ public class VendedorController {
 	    }
 	}
 	
-	@GetMapping("/ventas")
-	public ResponseEntity<List<Venta>> obtenerVentasPorIdUsuario(@RequestParam Integer idUsuario) {
-	    List<Venta> ventas = ventaService.getVentaForIdUser(idUsuario);
-	    
-	    if (ventas.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-	    }
-	    
-	    return ResponseEntity.ok(ventas);
+	@GetMapping("/perfil")
+	public ResponseEntity<?> listarVentasVendedor(@RequestParam Integer idUsuario) {
+		List<VentaDTO> ventasDto = ventaService.getVentasPorUsuario(idUsuario);
+        return ResponseEntity.ok(ventasDto);
 	}
 }
