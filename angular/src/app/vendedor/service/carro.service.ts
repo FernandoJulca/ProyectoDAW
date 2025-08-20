@@ -1,0 +1,112 @@
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { DetalleVenta } from '../../shared/model/detalleVenta.model';
+import { Producto } from '../../shared/model/producto.model';
+import { Venta } from '../../shared/model/venta.model';
+import { ResultadoResponse } from '../../shared/dto/resultadoResponse.model';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class CarroService {
+
+  private baseUrl = 'http://localhost:8080/vendedor';
+
+  private items: DetalleVenta[] = [];
+  private carrito$ = new BehaviorSubject<DetalleVenta[]>([]);
+
+  constructor(private http: HttpClient) { }
+
+  getCarritoObservable() {
+    return this.carrito$.asObservable();
+  }
+
+  agregarProducto(producto: Producto, cantidad: number): boolean {
+    const detalle = this.items.find(d => d.producto.idProducto === producto.idProducto);
+
+    if (detalle) {
+      const nuevaCantidad = detalle.cantidad + cantidad;
+      if (nuevaCantidad > producto.stock) {
+        return false;
+      }
+      detalle.cantidad = nuevaCantidad;
+      detalle.subTotal = detalle.cantidad * producto.precio;
+    } else {
+      if (cantidad > producto.stock) {
+        return false;
+      }
+      this.items.push({
+        producto,
+        cantidad,
+        subTotal: cantidad * producto.precio
+      });
+    }
+
+    this.carrito$.next([...this.items]);
+    return true;
+  }
+
+  eliminarProducto(idProducto: number) {
+    this.items = this.items.filter(d => d.producto.idProducto !== idProducto);
+    this.carrito$.next([...this.items]);
+  }
+
+  aumentarCantidad(idProducto: number) {
+    const detalle = this.items.find(d => d.producto.idProducto === idProducto);
+    if (detalle) {
+      if (detalle.cantidad + 1 > detalle.producto.stock) {
+        throw new Error(`Stock insuficiente. Máx: ${detalle.producto.stock}`);
+      }
+      detalle.cantidad++;
+      detalle.subTotal = detalle.cantidad * detalle.producto.precio;
+      this.carrito$.next([...this.items]);
+    }
+  }
+
+  disminuirCantidad(idProducto: number) {
+    const detalle = this.items.find(d => d.producto.idProducto === idProducto);
+    if (detalle) {
+      detalle.cantidad--;
+      if (detalle.cantidad <= 0) {
+        this.eliminarProducto(idProducto);
+      } else {
+        detalle.subTotal = detalle.cantidad * detalle.producto.precio;
+        this.carrito$.next([...this.items]);
+      }
+    }
+  }
+
+  limpiarCarrito() {
+    this.items = [];
+    this.carrito$.next([...this.items]);
+  }
+
+  getTotal() {
+    return this.items.reduce((acc, item) => acc + item.subTotal, 0);
+  }
+
+  getItems() {
+    return [...this.items];
+  }
+
+
+  //API
+
+  listarProductosActivos(): Observable<Producto[]> {
+    return this.http.get<Producto[]>(`${this.baseUrl}/productos`);
+  }
+
+  finalizarVenta(venta: Venta): Observable<ResultadoResponse> {
+    venta.total = this.getTotal();
+    venta.detalles = this.getItems();
+
+    // POST /vendedor/grilla
+    return this.http.post<ResultadoResponse>(`${this.baseUrl}/grilla`, venta);
+  }
+
+  obtenerVentasPorUsuario(idUsuario: number): Observable<Venta[]> {
+    const params = new HttpParams().set('idUsuario', idUsuario.toString());
+    return this.http.get<Venta[]>(`${this.baseUrl}/ventas`, { params });
+  }
+}
