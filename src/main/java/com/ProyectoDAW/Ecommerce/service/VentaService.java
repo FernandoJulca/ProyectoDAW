@@ -3,6 +3,7 @@ package com.ProyectoDAW.Ecommerce.service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -14,6 +15,9 @@ import com.ProyectoDAW.Ecommerce.dto.DetalleVentaDTO;
 import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
 import com.ProyectoDAW.Ecommerce.dto.UsuarioDTO;
 import com.ProyectoDAW.Ecommerce.dto.VentaDTO;
+import com.ProyectoDAW.Ecommerce.dto.VentaMensualDTO;
+import com.ProyectoDAW.Ecommerce.dto.VentasChartDTO;
+import com.ProyectoDAW.Ecommerce.dto.VentasChartResponseDTO;
 import com.ProyectoDAW.Ecommerce.model.DetalleVenta;
 import com.ProyectoDAW.Ecommerce.model.Producto;
 import com.ProyectoDAW.Ecommerce.model.Venta;
@@ -118,7 +122,7 @@ public class VentaService {
 			venta.setEstado("G");
 
 			for (DetalleVenta detalle : venta.getDetalles()) {
-				
+
 				Producto producto = productoRepository.findById(detalle.getProducto().getIdProducto())
 						.orElseThrow(() -> new RuntimeException(
 								"Producto no encontrado con ID: " + detalle.getProducto().getIdProducto()));
@@ -178,5 +182,52 @@ public class VentaService {
 	public Double obtenerIngresosTotales() {
 		return ventaRepository.obtenerIngresosTotales();
 	}
+
+	public VentasChartResponseDTO getVentasMensualesChart() {
+        try {
+            List<Object[]> resultados = ventaRepository.findVentasPorMes();
+            
+            // Usa el método factory estático
+            List<VentaMensualDTO> ventasMensuales = resultados.stream()
+                .map(VentaMensualDTO::fromObjectArray)  // Método factory
+                .collect(Collectors.toList());
+            
+            // Crear las etiquetas (labels) para el gráfico
+            List<String> labels = ventasMensuales.stream()
+                .map(VentaMensualDTO::getEtiquetaCorta)
+                .collect(Collectors.toList());
+            
+            // Crear datasets usando Builder pattern
+            List<VentasChartDTO.DatasetDTO> datasets = Arrays.asList(
+                VentasChartDTO.DatasetDTO.builder()
+                    .label("Cantidad de Ventas")
+                    .data(ventasMensuales.stream()
+                        .map(VentaMensualDTO::getCantidadVentas)
+                        .collect(Collectors.toList()))
+                    .borderColor("rgb(54, 162, 235)")
+                    .backgroundColor("rgba(54, 162, 235, 0.2)")
+                    .build(),
+                    
+                VentasChartDTO.DatasetDTO.builder()
+                    .label("Total Ventas (S/)")
+                    .data(ventasMensuales.stream()
+                        .map(VentaMensualDTO::getTotalVentas)
+                        .collect(Collectors.toList()))
+                    .borderColor("rgb(255, 99, 132)")
+                    .backgroundColor("rgba(255, 99, 132, 0.2)")
+                    .build()
+            );
+            
+            VentasChartDTO chartData = VentasChartDTO.builder()
+                .labels(labels)
+                .datasets(datasets)
+                .build();
+                
+            return VentasChartResponseDTO.success(chartData);
+            
+        } catch (Exception e) {
+            return VentasChartResponseDTO.error("Error al obtener datos de ventas mensuales: " + e.getMessage());
+        }
+    }
 
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ProyectoDAW.Ecommerce.dto.VentasChartResponseDTO;
 import com.ProyectoDAW.Ecommerce.service.VentaService;
 
 @RestController
@@ -46,5 +47,16 @@ public class ReporteController {
     @GetMapping("/total/ingresos")
     public ResponseEntity<Double> obtenerIngresosTotales() {
         return ResponseEntity.ok(ventaService.obtenerIngresosTotales());
+    }
+    
+    @GetMapping("/ventas-mensuales")
+    public ResponseEntity<VentasChartResponseDTO> getVentasMensuales() {
+        VentasChartResponseDTO response = ventaService.getVentasMensualesChart();
+        
+        if (response.isValor()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.badRequest().body(response);
+        }
     }
 }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { VentasChartResponse } from '../../shared/dto/ventasChartResponse.model';
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,7 @@ import { Observable } from 'rxjs';
 export class ReporteService {
   private baseUrl = 'http://localhost:8080/reporte';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   /** ------------------- MENSUAL ------------------- **/
 
@@ -43,4 +44,10 @@ export class ReporteService {
     // GET /reporte/total/ingresos
     return this.http.get<number>(`${this.baseUrl}/total/ingresos`);
   }
+
+
+  getVentasMensuales(): Observable<VentasChartResponse> {
+    return this.http.get<VentasChartResponse>(`${this.baseUrl}/ventas-mensuales`);
+  }
+
 }

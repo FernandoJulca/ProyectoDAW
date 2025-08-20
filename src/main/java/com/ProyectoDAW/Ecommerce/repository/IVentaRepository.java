@@ -70,4 +70,16 @@ public interface IVentaRepository extends JpaRepository<Venta, Integer>{
     """)
     Double obtenerIngresosTotales();
     
+    
+    
+    @Query("SELECT EXTRACT(YEAR FROM v.fechaRegistro) as anio, " +
+    	       "EXTRACT(MONTH FROM v.fechaRegistro) as mes, " +
+    	       "COUNT(v) as cantidadVentas, " +
+    	       "COALESCE(SUM(v.total), 0) as totalVentas " +
+    	       "FROM Venta v " +
+    	       "WHERE v.estado IN ('E') " +
+    	       "GROUP BY EXTRACT(YEAR FROM v.fechaRegistro), EXTRACT(MONTH FROM v.fechaRegistro) " +
+    	       "ORDER BY anio DESC, mes DESC " +
+    	       "LIMIT 12")
+    List<Object[]> findVentasPorMes();
 }

@@ -19,3 +19,29 @@
 .accion-minimalista small {
   color: inherit;
 }
+
+.chart-container {
+  min-height: 300px;
+}
+
+.hover-darken:hover {
+  background-color: #f8f9fa;
+  transition: background-color 0.2s ease;
+}
+
+/* Optimización para gráficos en contenedores pequeños */
+.chart-container canvas {
+  border-radius: 6px;
+}
+
+/* Responsive para pantallas pequeñas */
+@media (max-width: 768px) {
+  .chart-container {
+    min-height: 250px;
+  }
+}
+
+/* Animación suave para elementos de carga */
+.spinner-border {
+  animation-duration: 0.8s;
+}
