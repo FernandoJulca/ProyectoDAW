@@ -112,7 +112,7 @@
                                         <tbody>
                                             <tr *ngFor="let venta of ventas">
                                                 <td class="font-monospace">#{{ venta.idVenta }}</td>
-                                                <td>{{ venta.fechaRegistro | date:'dd MMMM yyyy' }}</td>
+                                                <td>{{ venta.fechaRegistro | date:'mediumDate' }}</td>
                                                 <td>{{ venta.usuario.nombres }}</td> <!-- ajusta según tu DTO -->
                                                 <td>
                                                     <span class="badge bg-light text-dark">
@@ -162,11 +162,11 @@
                                 </div>
 
                                 <div class="modal-body" *ngIf="ventaSeleccionada">
-                                    <p><strong>Cliente:</strong> {{ ventaSeleccionada.usuario.nombres }}</p>
+                                    <p><strong>Vendedor:</strong> {{ ventaSeleccionada.usuario.nombres }}</p>
                                     <p><strong>Correo:</strong> {{ ventaSeleccionada.usuario.correo }}</p>
-                                    <p><strong>Fecha:</strong> {{ ventaSeleccionada.fechaRegistro | date:'medium' }}</p>
-                                    <p><strong>Total:</strong> S/ {{ ventaSeleccionada.total | number:'1.2-2' }}</p>
-                                    <p><strong>Estado:</strong>
+                                    <p><strong>Fecha:</strong> {{ ventaSeleccionada.fechaRegistro | date:'short' }}</p>
+                                    <p><strong>Total:</strong> S/. {{ ventaSeleccionada.total | number:'1.2-2' }}</p>
+                                    <p><strong>Estado: </strong>
                                         <span class="badge" [ngClass]="{
             'badge-generado': ventaSeleccionada.estado === 'G',
             'badge-entregado': ventaSeleccionada.estado === 'E'

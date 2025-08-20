@@ -17,3 +17,32 @@
   opacity: 0.9;
   color: white;
 }
+
+
+.parrafo-pequeño {
+  margin: 2px 0; /* margen superior e inferior reducido */
+}
+
+
+.btn-mi-color {
+  background-color: rgba(96, 108, 172, 0.9) !important;
+  color: white;
+  border: none;
+}
+
+.btn-mi-color:hover {
+  background-color: rgba(118, 131, 204, 0.9) !important;
+  color: white;
+}
+
+
+.btn-negro {
+  background-color: #000;
+  color: #fff; 
+  border: none; 
+}
+
+.btn-negro:hover {
+  background-color: #333; 
+  color: #fff;
+}

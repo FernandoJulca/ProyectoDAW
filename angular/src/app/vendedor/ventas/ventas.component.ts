@@ -71,6 +71,16 @@ export class VentasComponent implements OnInit {
     }
   }
 
+  eliminarSeleccionado(codigo: number) {
+    this.productosSeleccionados = this.productosSeleccionados.filter(
+      d => d.producto.idProducto !== codigo
+    );
+  }
+
+  eliminarItemDeVenta(codigo: number) {
+    this.carrito = this.carrito.filter(d => d.producto.idProducto !== codigo);
+    this.carroService.setItems(this.carrito);
+  }
 
 
   aumentarCantidad(item: DetalleVenta) {

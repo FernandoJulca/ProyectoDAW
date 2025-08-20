@@ -91,7 +91,10 @@ export class CarroService {
     return [...this.items];
   }
 
-
+  setItems(nuevosItems: DetalleVenta[]) {
+    this.items = [...nuevosItems];
+  }
+  
   //API
 
   listarProductosActivos(): Observable<Producto[]> {
