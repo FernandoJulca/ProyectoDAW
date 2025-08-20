@@ -1,9 +1,85 @@
 package com.ProyectoDAW.Ecommerce.repository;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.ProyectoDAW.Ecommerce.model.Venta;
 
 public interface IVentaRepository extends JpaRepository<Venta, Integer>{
+	@Query("SELECT v FROM Venta v WHERE v.usuario.idUsuario = :idUsuario ORDER BY v.idVenta DESC")
+	List<Venta> findByUsuarioId(@Param("idUsuario") Integer idUsuario);
 
+	@Query("""
+			
+			SELECT v FROM Venta v WHERE v.usuario.idUsuario = :idUsuario
+			AND
+			v.fechaRegistro BETWEEN :fechaIni AND :fechaFin
+			ORDER BY v.idVenta DESC			
+			""")
+	List<Venta> findByUsuarioAndFecha(@Param("idUsuario") Integer idUsuario,
+			@Param("fechaIni") LocalDate fechaIni, @Param("fechaFin") LocalDate fechaFin);
+	
+
+    @Query("""
+        SELECT COUNT(v.idVenta)
+        FROM Venta v
+        WHERE FUNCTION('TO_CHAR', v.fechaRegistro, 'YYYY-MM') = :fechaMes
+    """)
+    Long contarVentasPorMes(@Param("fechaMes") String fechaMes);
+
+
+    @Query("""
+    	    SELECT COALESCE(SUM(d.cantidad), 0)
+    	    FROM Venta v
+    	    JOIN v.detalles d
+    	    WHERE FUNCTION('TO_CHAR', v.fechaRegistro, 'YYYY-MM') = :fechaMes
+    	""")
+    Long contarProductosVendidosPorMes(@Param("fechaMes") String fechaMes);
+
+    @Query("""
+        SELECT COUNT(DISTINCT v.idVenta)
+        FROM Venta v
+        JOIN v.usuario u
+        JOIN u.rol r
+        WHERE FUNCTION('TO_CHAR', v.fechaRegistro, 'YYYY-MM') = :fechaMes
+          AND r.idRol = 3
+    """)
+    Long contarClientesAtendidosPorMes(@Param("fechaMes") String fechaMes);
+	
+
+    @Query("""
+        SELECT COUNT(v)
+        FROM Venta v
+    """)
+    Long obtenerTotalVentas();
+
+    @Query("""
+        SELECT COALESCE(SUM(d.cantidad), 0)
+        FROM Venta v
+        JOIN v.detalles d
+    """)
+    Long obtenerTotalProductosVendidos();
+
+    @Query("""
+        SELECT COALESCE(SUM(v.total), 0)
+        FROM Venta v
+    """)
+    Double obtenerIngresosTotales();
+    
+    
+    
+    @Query("SELECT EXTRACT(YEAR FROM v.fechaRegistro) as anio, " +
+    	       "EXTRACT(MONTH FROM v.fechaRegistro) as mes, " +
+    	       "COUNT(v) as cantidadVentas, " +
+    	       "COALESCE(SUM(v.total), 0) as totalVentas " +
+    	       "FROM Venta v " +
+    	       "WHERE v.estado IN ('E') " +
+    	       "GROUP BY EXTRACT(YEAR FROM v.fechaRegistro), EXTRACT(MONTH FROM v.fechaRegistro) " +
+    	       "ORDER BY anio DESC, mes DESC " +
+    	       "LIMIT 12")
+    List<Object[]> findVentasPorMes();
 }
