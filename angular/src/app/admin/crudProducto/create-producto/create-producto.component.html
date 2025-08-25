@@ -1,0 +1,38 @@
+<mat-card>
+  <h2>Nuevo Producto</h2>
+
+  <form (ngSubmit)="guardarProveedor()">
+    <mat-form-field class="w-full">
+      <mat-label>Nombre</mat-label>
+      <input matInput [(ngModel)]="producto.nombre" name="nombre" required />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>descripcion</mat-label>
+      <input matInput [(ngModel)]="producto.descripcion" name="descripcion" required />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Proveedor</mat-label>
+      <input matInput [(ngModel)]="producto.proveedor.idProveedor" name="proveedor" />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Categoria</mat-label>
+      <input matInput [(ngModel)]="producto.categoria.idCategoria" name="categoria" />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Precio</mat-label>
+      <input matInput [(ngModel)]="producto.precio" name="precio" required/>
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Stock</mat-label>
+      <input matInput [(ngModel)]="producto.stock" name="stock" required/>
+    </mat-form-field>
+
+
+    <button mat-raised-button color="primary" type="submit">Guardar</button>
+  </form>
+</mat-card>

@@ -1,0 +1,38 @@
+<mat-card>
+  <h2>Actualizar Proveedor </h2>
+
+  <form (ngSubmit)="actualizarProveedor()">
+
+     <mat-form-field class="w-full">
+      <mat-label>Codigo Proveedor</mat-label>
+      <input matInput [(ngModel)]="proveedor.idProveedor" name="idProveedor" readonly/>
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>RUC</mat-label>
+      <input matInput [(ngModel)]="proveedor.ruc" name="ruc" required />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Razón Social</mat-label>
+      <input matInput [(ngModel)]="proveedor.razonSocial" name="razonSocial" required />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Teléfono</mat-label>
+      <input matInput [(ngModel)]="proveedor.telefono" name="telefono" />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>Dirección</mat-label>
+      <input matInput [(ngModel)]="proveedor.direccion" name="direccion" />
+    </mat-form-field>
+
+    <mat-form-field class="w-full">
+      <mat-label>ID Distrito</mat-label>
+      <input matInput [(ngModel)]="proveedor.distrito.idDistrito" name="idDistrito" required/>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="submit">Guardar</button>
+  </form>
+</mat-card>
