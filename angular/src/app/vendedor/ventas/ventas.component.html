@@ -114,8 +114,7 @@
                 <td>{{ item.cantidad }}</td>
                 <td>{{ item.subTotal }}</td>
                 <td>
-                  <button class="btn btn-danger"
-                    (click)="eliminarItemDeVenta(item.producto.idProducto)">Quitar</button>
+                  <button class="btn btn-danger" (click)="eliminarItemDeVenta(item.producto.idProducto)">Quitar</button>
                 </td>
               </tr>
             </tbody>
@@ -138,17 +137,38 @@
         </ng-template>
       </div>
     </div>
+
+    <!-- ALERTAS -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+      <div *ngFor="let alerta of alertas" class="alert alert-{{alerta.tipo}} alert-dismissible fade show shadow-sm"
+        role="alert">
+        {{ alerta.mensaje }}
+        <button type="button" class="btn-close" (click)="cerrarAlerta(alerta)"></button>
+      </div>
+    </div>
+
   </div>
 
   <!-- Modal Productos -->
   <div class="modal fade" id="modalProductos" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
+
         <div class="modal-header">
           <h5 class="modal-title">Catálogo de Productos</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
+
         <div class="modal-body">
+
+          <!-- FILTROS -->
+          <div class="d-flex flex-column flex-md-row gap-2 mb-3">
+            <!-- Barra de búsqueda -->
+            <input type="text" class="form-control" placeholder="Buscar producto..." [(ngModel)]="textoBusqueda"
+              (input)="filtrarProductos()">
+          </div>
+
+          <!-- Tabla Productos -->
           <table class="table table-hover">
             <thead>
               <tr>
@@ -161,25 +181,28 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let p of productos">
+              <tr *ngFor="let p of productosFiltrados.length > 0 || textoBusqueda || categoriaSeleccionada
+                          ? productosFiltrados : productos">
                 <td>PROD{{ p.idProducto }}</td>
                 <td>{{ p.nombre }}</td>
                 <td>{{ p.categoria.descripcion }}</td>
-                <td>{{ p.precio}}</td>
+                <td>{{ p.precio }}</td>
                 <td>{{ p.stock }}</td>
                 <td>
                   <button class="btn btn-negro btn-sm" (click)="agregarSeleccionado(p)">
-                    <i class="bi bi-plus me-2"></i>
-                    Agregar
+                    <i class="bi bi-plus me-2"></i>Agregar
                   </button>
                 </td>
               </tr>
             </tbody>
           </table>
+
         </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         </div>
+
       </div>
     </div>
   </div>

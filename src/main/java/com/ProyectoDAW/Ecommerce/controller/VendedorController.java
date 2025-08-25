@@ -30,6 +30,8 @@ public class VendedorController {
 	@Autowired
 	private ProductoService productoService;
 	
+	
+	/*
 	@GetMapping("/productos")
 	public ResponseEntity<List<Producto>> obtenerProductosActivos() {
 	    List<Producto> productos = productoService.obtenerProductosActivos();
@@ -40,6 +42,21 @@ public class VendedorController {
 	    
 	    return ResponseEntity.ok(productos);
 	}
+	*/
+	
+	@GetMapping("/productos")
+	public ResponseEntity<List<Producto>> obtenerProductosActivosPorCategorias(
+	        @RequestParam(value = "idCategoria", required = false) Integer idCategoria) {
+	    
+	    List<Producto> productos = productoService.obtenerProductosActivosPorCategorias(idCategoria);
+
+	    if (productos.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+	    }
+
+	    return ResponseEntity.ok(productos);
+	}
+	
 	
 	@PostMapping("/grilla")
 	public ResponseEntity<ResultadoResponse> finalizarVentaVendedor(@RequestBody Venta venta) {

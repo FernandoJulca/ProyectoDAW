@@ -6,6 +6,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DetalleVenta } from '../../shared/model/detalleVenta.model';
 import { Usuario } from '../../shared/model/usuario.model';
+import { Categoria } from '../../shared/model/categoria.model';
 
 
 @Component({
@@ -18,7 +19,13 @@ export class VentasComponent implements OnInit {
 
   productos: Producto[] = [];
   productosSeleccionados: DetalleVenta[] = [];
+  categorias: Categoria[] = [];
+  categoriaSeleccionada?: number;
   carrito: DetalleVenta[] = [];
+  textoBusqueda: string = '';
+  productosFiltrados: Producto[] = [];
+  alertas: { mensaje: string, tipo: string }[] = [];
+
 
   usuarioPrecargado: Usuario = {
     idUsuario: 3,
@@ -46,15 +53,31 @@ export class VentasComponent implements OnInit {
   constructor(private carroService: CarroService) { }
 
   ngOnInit(): void {
-    this.cargarProductos();
+    this.cargarProductosPorCategoria();
   }
 
-  cargarProductos() {
-    this.carroService.listarProductosActivos().subscribe({
+
+  cargarProductosPorCategoria(idCategoria?: number) {
+    this.carroService.listarProductosActivos(idCategoria).subscribe({
       next: data => this.productos = data,
-      error: err => console.error('Error cargando productos', err)
+      error: err => {
+        console.error('Error cargando productos', err);
+        this.mostrarAlerta('No se encontraron productos en esta categoría', 'warning');
+      }
     });
   }
+
+  filtrarProductos() {
+  const texto = this.textoBusqueda.toLowerCase();
+  this.productosFiltrados = this.productos.filter(p =>
+    (!this.categoriaSeleccionada || p.categoria.idCategoria === this.categoriaSeleccionada) &&
+    (p.nombre.toLowerCase().includes(texto) ||
+     p.categoria.descripcion.toLowerCase().includes(texto) ||
+     p.precio.toString().includes(texto) ||
+     p.stock.toString().includes(texto) ||
+     `PROD${p.idProducto}`.includes(texto))
+  );
+}
 
   agregarSeleccionado(producto: Producto) {
     const existente = this.productosSeleccionados.find(d => d.producto.idProducto === producto.idProducto);
@@ -88,7 +111,7 @@ export class VentasComponent implements OnInit {
       item.cantidad++;
       item.subTotal = item.cantidad * item.producto.precio;
     } else {
-      alert('Stock insuficiente');
+      this.mostrarAlerta('Stock insuficiente', 'warning');
     }
   }
 
@@ -116,7 +139,7 @@ export class VentasComponent implements OnInit {
 
   finalizarVenta() {
     if (this.carroService.getItems().length === 0) {
-      alert('El carrito está vacío');
+      this.mostrarAlerta('El carrito está vacío', 'warning');
       return;
     }
 
@@ -132,14 +155,26 @@ export class VentasComponent implements OnInit {
     this.carroService.finalizarVenta(venta).subscribe({
       next: resp => {
         console.log('Venta finalizada', resp);
-        alert('Venta realizada con éxito');
+        this.mostrarAlerta('Venta realizada con éxito', 'success');
         this.carroService.limpiarCarrito();
         this.carrito = [];
       },
       error: err => {
         console.error('Error en la venta', err);
-        alert('Error al finalizar venta');
+        this.mostrarAlerta('Error al finalizar venta', 'danger');
       }
     });
+  }
+
+  mostrarAlerta(mensaje: string, tipo: string = 'success') {
+    const alerta = { mensaje, tipo };
+    this.alertas.push(alerta);
+    setTimeout(() => {
+      this.cerrarAlerta(alerta);
+    }, 3000);
+  }
+
+  cerrarAlerta(alerta: { mensaje: string, tipo: string }) {
+    this.alertas = this.alertas.filter(a => a !== alerta);
   }
 }
