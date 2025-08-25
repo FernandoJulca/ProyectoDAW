@@ -23,7 +23,7 @@
         <div class="card-body d-flex flex-column gap-2">
           <div class="d-flex justify-content-between align-items-center fw-semibold">
             <span>Productos Seleccionados</span>
-            <div class="badge bg-secondary text-white px-3 py-1 small rounded-pill">
+            <div class="badge bg-light text-dark px-3 py-1 small rounded-pill">
               {{ productosSeleccionados.length }} productos
             </div>
           </div>
@@ -32,14 +32,17 @@
           <table class="table table-striped">
             <thead>
               <tr>
+                <th>Código</th>
                 <th>Nombre</th>
-                <th>Precio</th>
+                <th>Precio Unit.</th>
                 <th>Cantidad</th>
                 <th>Subtotal</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let item of productosSeleccionados">
+                <td>PROD{{ item.producto.idProducto }}</td>
                 <td>{{ item.producto.nombre }}</td>
                 <td>{{ item.producto.precio }}</td>
                 <td>
@@ -47,7 +50,11 @@
                   {{ item.cantidad }}
                   <button class="btn btn-sm btn-outline-secondary ms-1" (click)="aumentarCantidad(item)">+</button>
                 </td>
-                <td>{{ item.subTotal }}</td>
+                <td> S/ {{ item.subTotal }}</td>
+                <td>
+                  <button class="btn btn-danger"
+                    (click)="eliminarSeleccionado(item.producto.idProducto)">Quitar</button>
+                </td>
               </tr>
             </tbody>
           </table>
@@ -57,18 +64,12 @@
         </div>
         <ng-template #vacioSeleccionados>
           <div class="card-body text-center text-secondary py-5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              class="lucide lucide-package mb-4 opacity-50 mx-auto" style="height: 3rem; width: 3rem;"
-              aria-hidden="true">
-              <path
-                d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z">
-              </path>
-              <path d="M12 22V12"></path>
-              <polyline points="3.29 7 12 12 20.71 7"></polyline>
-              <path d="m7.5 4.27 9 5.15"></path>
-            </svg>
-            <p>No hay productos seleccionados</p>
+            <i class="bi bi-box" style="font-size: 3rem; color: rgb(177, 176, 176);"></i>
+            <div>
+              <p class="parrafo-pequeño">No hay productos seleccionados</p>
+              <p class="parrafo-pequeño">Use el botón "Agregar Producto" para comenzar</p>
+            </div>
+
           </div>
         </ng-template>
       </div>
@@ -76,14 +77,9 @@
       <!-- Botón abrir modal -->
       <div class="d-flex justify-content-between align-items-center mb-3">
         <h2 class="fs-4 fw-semibold text-dark">Catálogo de Productos</h2>
-        <button type="button" class="btn btn-primary d-inline-flex align-items-center gap-2 shadow-sm"
+        <button type="button" class="btn btn-mi-color d-inline-flex align-items-center gap-2 shadow-sm"
           data-bs-toggle="modal" data-bs-target="#modalProductos">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus me-2"
-            style="height: 1rem; width: 1rem;" aria-hidden="true">
-            <path d="M5 12h14"></path>
-            <path d="M12 5v14"></path>
-          </svg>
+          <i class="bi bi-plus me-2"></i>
           Agregar Producto
         </button>
       </div>
@@ -93,7 +89,7 @@
         <div class="card-body d-flex flex-column gap-2">
           <div class="d-flex justify-content-between align-items-center fw-semibold">
             <span>Carrito de Venta</span>
-            <div class="badge bg-secondary text-white px-3 py-1 small rounded-pill">
+            <div class="badge bg-light text-dark px-3 py-1 small rounded-pill">
               {{ carrito.length }} productos
             </div>
           </div>
@@ -102,50 +98,77 @@
           <table class="table table-bordered">
             <thead>
               <tr>
+                <th>Código</th>
                 <th>Producto</th>
-                <th>Cant.</th>
+                <th>Precio Unit.</th>
+                <th>Cantidad</th>
                 <th>Subtotal</th>
+                <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
               <tr *ngFor="let item of carrito">
+                <td>PROD{{ item.producto.idProducto }}</td>
                 <td>{{ item.producto.nombre }}</td>
+                <td>{{ item.producto.precio }}</td>
                 <td>{{ item.cantidad }}</td>
                 <td>{{ item.subTotal }}</td>
+                <td>
+                  <button class="btn btn-danger" (click)="eliminarItemDeVenta(item.producto.idProducto)">Quitar</button>
+                </td>
               </tr>
             </tbody>
           </table>
-          <h4 class="text-end">Total: {{ calcularTotalCarrito() }}</h4>
-          <div class="d-flex justify-content-end">
+          <div class="d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">
+              Total Venta: S/. {{ calcularTotalCarrito() | number:'1.2-2' }}
+            </h4>
             <button class="btn btn-success" (click)="finalizarVenta()">Finalizar Venta</button>
           </div>
         </div>
         <ng-template #vacioCarrito>
           <div class="card-body text-center text-secondary py-5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor"
-              stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-              class="lucide lucide-shopping-cart opacity-50 mb-4 mx-auto" style="height: 3rem; width: 3rem;"
-              aria-hidden="true">
-              <circle cx="8" cy="21" r="1"></circle>
-              <circle cx="19" cy="21" r="1"></circle>
-              <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path>
-            </svg>
-            <p>El carrito está vacío</p>
+            <i class="bi bi-cart" style="font-size: 3rem; color: rgb(177, 176, 176);"></i>
+            <div>
+              <p class="parrafo-pequeño">El carrito está vacío</p>
+              <p class="parrafo-pequeño">Agregue productos desde la selección superior</p>
+            </div>
           </div>
         </ng-template>
       </div>
     </div>
+
+    <!-- ALERTAS -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1055">
+      <div *ngFor="let alerta of alertas" class="alert alert-{{alerta.tipo}} alert-dismissible fade show shadow-sm"
+        role="alert">
+        {{ alerta.mensaje }}
+        <button type="button" class="btn-close" (click)="cerrarAlerta(alerta)"></button>
+      </div>
+    </div>
+
   </div>
 
   <!-- Modal Productos -->
   <div class="modal fade" id="modalProductos" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
       <div class="modal-content">
+
         <div class="modal-header">
           <h5 class="modal-title">Catálogo de Productos</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
+
         <div class="modal-body">
+
+          <!-- FILTROS -->
+          <div class="d-flex flex-column flex-md-row gap-2 mb-3">
+            <!-- Barra de búsqueda -->
+            <input type="text" class="form-control" placeholder="Buscar producto..." [(ngModel)]="textoBusqueda"
+              (input)="filtrarProductos()">
+          </div>
+
+          <!-- Tabla Productos -->
           <table class="table table-hover">
             <thead>
               <tr>
@@ -158,24 +181,28 @@
               </tr>
             </thead>
             <tbody>
-              <tr *ngFor="let p of productos">
-                <td>{{ p.idProducto }}</td>
+              <tr *ngFor="let p of productosFiltrados.length > 0 || textoBusqueda || categoriaSeleccionada
+                          ? productosFiltrados : productos">
+                <td>PROD{{ p.idProducto }}</td>
                 <td>{{ p.nombre }}</td>
                 <td>{{ p.categoria.descripcion }}</td>
-                <td>{{ p.precio}}</td>
+                <td>{{ p.precio }}</td>
                 <td>{{ p.stock }}</td>
                 <td>
-                  <button class="btn btn-sm btn-primary" (click)="agregarSeleccionado(p)">
-                    Agregar
+                  <button class="btn btn-negro btn-sm" (click)="agregarSeleccionado(p)">
+                    <i class="bi bi-plus me-2"></i>Agregar
                   </button>
                 </td>
               </tr>
             </tbody>
           </table>
+
         </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
         </div>
+
       </div>
     </div>
   </div>

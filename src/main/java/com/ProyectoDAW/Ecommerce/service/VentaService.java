@@ -71,9 +71,9 @@ public class VentaService {
 		}
 	}
 
-	public Venta obtenerVentaPorCliente(Integer idVenta, Integer idCliente) {
+	public Venta obtenerVentaPorUsuario(Integer idVenta, Integer idUsuario) {
 		Optional<Venta> ventaOpt = ventaRepository.findById(idVenta);
-		return ventaOpt.filter(v -> v.getUsuario().getIdUsuario().equals(idCliente)).orElse(null);
+		return ventaOpt.filter(v -> v.getUsuario().getIdUsuario().equals(idUsuario)).orElse(null);
 	}
 
 	/* Mapper conviertiendo la entidad venta al dto */
