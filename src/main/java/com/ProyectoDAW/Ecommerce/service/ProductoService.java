@@ -32,6 +32,10 @@ public class ProductoService {
 		return productoRepository.findProductosActivos();
 	}
 	
+	public List<Producto> obtenerProductosActivosPorCategorias(Integer idCategoria){
+		return productoRepository.findProductosActivosByCategories(idCategoria);
+	}
+	
 	
 	
 	

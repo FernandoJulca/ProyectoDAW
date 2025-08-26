@@ -93,7 +93,7 @@
                         <div class="card shadow mt-4" style="width: 80%;">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <span class="fw-semibold">Listado de Ventas</span>
-                                <span class="badge bg-secondary">3 resultados</span>
+                                <span class="badge bg-secondary">{{ ventas.length }} resultados</span>
                             </div>
                             <div class="card-body p-0">
                                 <div class="table-responsive">
@@ -102,7 +102,6 @@
                                             <tr>
                                                 <th>ID Venta</th>
                                                 <th>Fecha</th>
-                                                <th>Cliente</th>
                                                 <th>Vendedor</th>
                                                 <th>Productos</th>
                                                 <th>Total</th>
@@ -111,53 +110,33 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <tr>
-                                                <td class="font-monospace">#1</td>
-                                                <td>14 de enero de 2024</td>
-                                                <td class="fw-medium">Constructora ABC S.A.C.</td>
-                                                <td>Juan Pérez</td>
-                                                <td><span class="badge bg-light text-dark">2 productos</span></td>
-                                                <td class="fw-bold">S/. 827.30</td>
-                                                <td><span class="badge bg-success text-white">Completada</span></td>
+                                            <tr *ngFor="let venta of ventas">
+                                                <td class="font-monospace">#{{ venta.idVenta }}</td>
+                                                <td>{{ venta.fechaRegistro | date:'mediumDate' }}</td>
+                                                <td>{{ venta.usuario.nombres }}</td> <!-- ajusta según tu DTO -->
                                                 <td>
-                                                    <button class="btn btn-outline-secondary btn-sm me-1">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-                                                    <button class="btn btn-outline-secondary btn-sm">
-                                                        <i class="bi bi-download"></i>
-                                                    </button>
+                                                    <span class="badge bg-light text-dark">
+                                                        {{ venta.detalles.length }} {{ venta.detalles.length > 1 ?
+                                                        'productos' : 'producto' }}
+                                                    </span>
                                                 </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font-monospace">#2</td>
-                                                <td>13 de enero de 2024</td>
-                                                <td class="fw-medium">Ferretería El Tornillo</td>
-                                                <td>María García</td>
-                                                <td><span class="badge bg-light text-dark">2 productos</span></td>
-                                                <td class="fw-bold">S/. 288.69</td>
-                                                <td><span class="badge bg-success text-white">Completada</span></td>
+                                                <td class="fw-bold">S/. {{ venta.total | number:'1.2-2' }}</td>
                                                 <td>
-                                                    <button class="btn btn-outline-secondary btn-sm me-1">
-                                                        <i class="bi bi-eye"></i>
-                                                    </button>
-                                                    <button class="btn btn-outline-secondary btn-sm">
-                                                        <i class="bi bi-download"></i>
-                                                    </button>
+                                                    <span class="badge" [ngClass]="{
+          'badge-generado': venta.estado === 'G',
+          'badge-entregado': venta.estado === 'E'
+        }">
+                                                        {{ venta.estado === 'G' ? 'Generado' : 'Entregado' }}
+                                                    </span>
                                                 </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="font-monospace">#3</td>
-                                                <td>12 de enero de 2024</td>
-                                                <td class="fw-medium">Taller Mecánico Rodriguez</td>
-                                                <td>Carlos López</td>
-                                                <td><span class="badge bg-light text-dark">1 producto</span></td>
-                                                <td class="fw-bold">S/. 450.00</td>
-                                                <td><span class="badge bg-success text-white">Completada</span></td>
+
                                                 <td>
-                                                    <button class="btn btn-outline-secondary btn-sm me-1">
+                                                    <button class="btn btn-outline-secondary btn-sm me-1"
+                                                        (click)="abrirDetalle(venta)">
                                                         <i class="bi bi-eye"></i>
                                                     </button>
-                                                    <button class="btn btn-outline-secondary btn-sm">
+                                                    <button class="btn btn-outline-secondary btn-sm"
+                                                        (click)="descargarPDF(venta)">
                                                         <i class="bi bi-download"></i>
                                                     </button>
                                                 </td>
@@ -168,6 +147,58 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Modal Detalles de Venta -->
+                    <div class="modal fade" id="detalleVentaModal" tabindex="-1" aria-labelledby="detalleVentaLabel"
+                        aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                            <div class="modal-content">
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="detalleVentaLabel">Detalle de Venta #{{
+                                        ventaSeleccionada?.idVenta }}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Cerrar"></button>
+                                </div>
+
+                                <div class="modal-body" *ngIf="ventaSeleccionada">
+                                    <p><strong>Vendedor:</strong> {{ ventaSeleccionada.usuario.nombres }}</p>
+                                    <p><strong>Correo:</strong> {{ ventaSeleccionada.usuario.correo }}</p>
+                                    <p><strong>Fecha:</strong> {{ ventaSeleccionada.fechaRegistro | date:'short' }}</p>
+                                    <p><strong>Total:</strong> S/. {{ ventaSeleccionada.total | number:'1.2-2' }}</p>
+                                    <p><strong>Estado: </strong>
+                                        <span class="badge" [ngClass]="{
+            'badge-generado': ventaSeleccionada.estado === 'G',
+            'badge-entregado': ventaSeleccionada.estado === 'E'
+          }">
+                                            {{ ventaSeleccionada.estado === 'G' ? 'Generado' : 'Entregado' }}
+                                        </span>
+                                    </p>
+
+                                    <hr>
+                                    <h6>Productos</h6>
+                                    <table class="table table-sm table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Producto</th>
+                                                <th>Cantidad</th>
+                                                <th>Subtotal</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr *ngFor="let det of ventaSeleccionada.detalles">
+                                                <td>{{ det.nombreProducto }}</td>
+                                                <td>{{ det.cantidad }}</td>
+                                                <td>S/. {{ det.subTotal | number:'1.2-2' }}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

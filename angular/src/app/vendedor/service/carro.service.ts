@@ -5,6 +5,8 @@ import { DetalleVenta } from '../../shared/model/detalleVenta.model';
 import { Producto } from '../../shared/model/producto.model';
 import { Venta } from '../../shared/model/venta.model';
 import { ResultadoResponse } from '../../shared/dto/resultadoResponse.model';
+import { VentaDTO } from '../../shared/dto/ventaDTO.model';
+import { Categoria } from '../../shared/model/categoria.model';
 
 @Injectable({
   providedIn: 'root'
@@ -90,23 +92,33 @@ export class CarroService {
     return [...this.items];
   }
 
+  setItems(nuevosItems: DetalleVenta[]) {
+    this.items = [...nuevosItems];
+  }
 
   //API
-
+  /*
   listarProductosActivos(): Observable<Producto[]> {
     return this.http.get<Producto[]>(`${this.baseUrl}/productos`);
+  }
+  */
+
+  listarProductosActivos(idCategoria?: number): Observable<Producto[]> {
+    let url = `${this.baseUrl}/productos`;
+    if (idCategoria != null) {
+      url += `?idCategoria=${idCategoria}`;
+    }
+    return this.http.get<Producto[]>(url);
   }
 
   finalizarVenta(venta: Venta): Observable<ResultadoResponse> {
     venta.total = this.getTotal();
     venta.detalles = this.getItems();
 
-    // POST /vendedor/grilla
     return this.http.post<ResultadoResponse>(`${this.baseUrl}/grilla`, venta);
   }
 
-  obtenerVentasPorUsuario(idUsuario: number): Observable<Venta[]> {
-    const params = new HttpParams().set('idUsuario', idUsuario.toString());
-    return this.http.get<Venta[]>(`${this.baseUrl}/ventas`, { params });
+  listarVentasVendedor(idUsuario: number): Observable<VentaDTO[]> {
+    return this.http.get<VentaDTO[]>(`${this.baseUrl}/perfil?idUsuario=${idUsuario}`);
   }
 }
