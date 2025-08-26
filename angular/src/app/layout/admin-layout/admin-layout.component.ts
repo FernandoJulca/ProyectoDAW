@@ -15,4 +15,13 @@ styleUrls: ['./admin-layout.component.css']
 })
 export class AdminLayoutComponent {
 
+    isReportesOpen: boolean = false;
+
+     toggleReportes(): void {
+    this.isReportesOpen = !this.isReportesOpen;
+  }
+
+  cerrarMenu(): void {
+    this.isReportesOpen = false;
+  }
 }

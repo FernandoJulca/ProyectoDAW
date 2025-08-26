@@ -13,6 +13,7 @@ import { ListaProductosComponent } from "./crudProducto/lista-productos/lista-pr
 import { CreateProductoComponent } from "./crudProducto/create-producto/create-producto.component";
 import { EditProductoComponent } from "./crudProducto/edit-producto/edit-producto.component";
 import { ReporteStockComponent } from "./reportes/reporte-stock/reporte-stock.component";
+import { ReporteVentaComponent } from "./reportes/reporte-venta/reporte-venta.component";
 
 const routes: Routes = [
 {
@@ -46,7 +47,7 @@ const routes: Routes = [
         path: 'reportes',
         children : [
             {path :'reporteStock', component : ReporteStockComponent},
-           
+            {path :'reporteVenta', component : ReporteVentaComponent},
           
         ]
       }
