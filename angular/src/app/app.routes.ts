@@ -10,6 +10,7 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./cliente/cliente.module').then((m) => m.ClienteModule),
   },
+
   {
     path: 'admin',
     loadChildren: () =>
@@ -26,7 +27,7 @@ export const routes: Routes = [
       import('./repartidor/repartidor.module').then((m) => m.RepartidorModule),
   },
   /* Aun no se define */
-  { path: '', redirectTo: 'cliente/index', pathMatch: 'full' },
+  { path: '', redirectTo: 'admin', pathMatch: 'full' },
 
-  { path: '**', redirectTo: 'auth/login' },
+{ path: '**', redirectTo: 'auth/login' },
 ];

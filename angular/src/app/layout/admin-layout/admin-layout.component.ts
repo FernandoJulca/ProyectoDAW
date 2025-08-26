@@ -8,9 +8,8 @@ import { RouterLink, RouterLinkActive, RouterLinkWithHref, RouterOutlet } from '
     CommonModule,
     RouterOutlet,
     RouterLink,
-    RouterLinkWithHref,
-    RouterLinkActive
-  ],
+    RouterLinkWithHref
+],
   templateUrl: './admin-layout.component.html',
 styleUrls: ['./admin-layout.component.css']
 })

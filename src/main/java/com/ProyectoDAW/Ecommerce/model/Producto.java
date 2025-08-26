@@ -51,7 +51,7 @@ public class Producto {
 	@Column(name="STOCK")
 	private Integer stock;
 
-	@Lob
+	//@Lob
 	@Column(name="IMAGEN")
 	private byte[] imagenBytes;
 
