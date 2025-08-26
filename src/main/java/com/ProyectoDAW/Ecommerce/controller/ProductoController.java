@@ -83,5 +83,14 @@ public class ProductoController {
 		 return ResponseEntity.ok(mensaje);
 	}
 	
-	
+	 @GetMapping({"/listaCategorias","/listaCategorias/{idCategoria}"})
+	 public ResponseEntity<?> listadoCategorias(
+			 @PathVariable(required = false) Integer idCategoria,
+			 @RequestParam(defaultValue = "ASC") String orden) {
+		 if(idCategoria==null || idCategoria.longValue()<0) {
+				return ResponseEntity.ok(prdService.obtenerProductosActivos());
+			}
+		 return ResponseEntity.ok(prdService.listaProductosCategoria(idCategoria,orden));
+	 }
+	 
 }

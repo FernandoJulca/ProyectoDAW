@@ -12,6 +12,7 @@ import { EditProveedorComponent } from "./crudProveedor/edit/edit.component";
 import { ListaProductosComponent } from "./crudProducto/lista-productos/lista-productos.component";
 import { CreateProductoComponent } from "./crudProducto/create-producto/create-producto.component";
 import { EditProductoComponent } from "./crudProducto/edit-producto/edit-producto.component";
+import { ReporteStockComponent } from "./reportes/reporte-stock/reporte-stock.component";
 
 const routes: Routes = [
 {
@@ -38,6 +39,14 @@ const routes: Routes = [
             {path :'', component : ListaProductosComponent},
             {path: 'createProducto' , component : CreateProductoComponent},
             {path: 'editProducto/:id' , component : EditProductoComponent}
+          
+        ]
+      },
+      {
+        path: 'reportes',
+        children : [
+            {path :'reporteStock', component : ReporteStockComponent},
+           
           
         ]
       }
