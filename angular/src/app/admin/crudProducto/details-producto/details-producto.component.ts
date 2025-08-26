@@ -10,6 +10,8 @@ import { Producto } from '../../../shared/model/producto.model';
     template: `
     <h2 mat-dialog-title>Detalles del Proveedor</h2>
     <mat-dialog-content>
+
+      <img [src]="'data:imagen/jpeg;base64,' + data.base64Img">
       <p><strong>ID:</strong> {{data.idProducto}}</p>
       <p><strong>Nombre:</strong> {{data.nombre}}</p>
       <p><strong>descripcion:</strong> {{data.descripcion}}</p>

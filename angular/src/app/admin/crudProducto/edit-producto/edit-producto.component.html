@@ -5,7 +5,7 @@
 
     <mat-form-field class="w-full">
       <mat-label>ID</mat-label>
-      <input matInput [(ngModel)]="producto.idProducto" name="idProducto" readonly/>
+      <input matInput [(ngModel)]="producto.idProducto" name="idProducto" readonly />
     </mat-form-field>
 
 
@@ -13,6 +13,15 @@
       <mat-label>Nombre</mat-label>
       <input matInput [(ngModel)]="producto.nombre" name="nombre" required />
     </mat-form-field>
+
+    <div class="container-md">
+      <img  class="img-thumbnail" [src]="'data:imagen/jpeg;base64,' + producto.base64Img ">
+    </div>
+
+    <div class="container-md">
+      <label>Seleccione una imagen nueva</label>
+      <input type="file" name="imagen" (change)="onFileSelect($event)">
+    </div>
 
     <mat-form-field class="w-full">
       <mat-label>descripcion</mat-label>
@@ -31,12 +40,12 @@
 
     <mat-form-field class="w-full">
       <mat-label>Precio</mat-label>
-      <input matInput [(ngModel)]="producto.precio" name="precio" required/>
+      <input matInput [(ngModel)]="producto.precio" name="precio" required />
     </mat-form-field>
 
     <mat-form-field class="w-full">
       <mat-label>Stock</mat-label>
-      <input matInput [(ngModel)]="producto.stock" name="stock" required/>
+      <input matInput [(ngModel)]="producto.stock" name="stock" required />
     </mat-form-field>
 
 
@@ -44,7 +53,3 @@
     <button mat-raised-button color="primary" type="submit">Actualizar</button>
   </form>
 </mat-card>
-
-
-
-

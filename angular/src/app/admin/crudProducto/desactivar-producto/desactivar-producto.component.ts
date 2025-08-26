@@ -3,6 +3,9 @@ import { MAT_DIALOG_DATA, MatDialogRef, MatDialogModule } from '@angular/materia
 import { CommonModule } from '@angular/common';
 import { Producto } from '../../../shared/model/producto.model';
 import { ProductoServiceService } from '../../service/producto-service.service';
+
+//alert IZI_TOAST_ALERT
+import { AlertIziToast } from '../../../util/iziToastAlert.service';
 @Component({
   selector: 'app-desactivar-producto',
   standalone : true,
@@ -30,14 +33,17 @@ constructor (
     private productoService: ProductoServiceService){}
 
 
+
   onCancel(){
     this.dialogRef.close(false);
   }
 
   onDesactivar(){
+    AlertIziToast.warning(`Estas a punto de desactivar este producto ${this.data.idProducto!}`)
     this.productoService.desactivarProducto(this.data.idProducto!).subscribe({
-      next : (mensaje) =>{
+      next : (data) =>{
         this.dialogRef.close(true);
+         AlertIziToast.error(`Desactivaste este producto codigo ${this.data.idProducto!}`,'¡Exito!')
       }
     })
   }
