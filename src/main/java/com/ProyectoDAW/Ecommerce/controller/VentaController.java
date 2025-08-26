@@ -1,7 +1,9 @@
 package com.ProyectoDAW.Ecommerce.controller;
 
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 import org.springframework.http.HttpHeaders;
 
@@ -33,6 +35,8 @@ import com.itextpdf.text.Phrase;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import org.springframework.web.bind.annotation.RequestParam;
+
 
 
 
@@ -157,5 +161,20 @@ public class VentaController {
 	    }
 	}
 
+	
+	@GetMapping({"/filtradoVentas", "/filtradoVentas/{fechaInicio}&{fechaFin}"})
+	public ResponseEntity<?> ListadoVentaFechaAndTipoVenta(
+			@PathVariable(required = false) LocalDate fechaInicio,
+			@PathVariable(required = false) LocalDate fechaFin,
+			@RequestParam(required = false) String tipoVenta
+			) {
+		
+		if(fechaInicio == null || fechaFin == null ) {
+			return  ResponseEntity.ok(ventaService.ListadoVentaFechaAndTipoVentaNull());
+		}
+		return ResponseEntity.ok(ventaService.ListadoVentaFechaAndTipoVenta(fechaInicio, fechaFin, tipoVenta));
+		
+	};
+	
 	
 }
