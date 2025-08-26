@@ -1,0 +1,68 @@
+.repartidor-container {
+  max-width: 480px;
+  margin: auto;
+  padding: 1rem;
+  font-family: Arial, sans-serif;
+}
+
+.titulo {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.pedido-card {
+  background: #f8f8f8;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 10px;
+  box-shadow: 1px 1px 6px rgba(0,0,0,0.1);
+}
+
+.pedido-card button {
+  margin-top: 0.5rem;
+  padding: 0.5rem;
+  width: 100%;
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  border-radius: 6px;
+}
+
+.detalle-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.detalle-card {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 400px;
+  box-shadow: 2px 2px 12px rgba(0,0,0,0.2);
+}
+
+.detalle-card button {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.7rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+}
+
+.confirmar {
+  background-color: #4CAF50;
+  color: white;
+}
+
+.cerrar {
+  background-color: #f44336;
+  color: white;
+  margin-top: 0.5rem;
+}

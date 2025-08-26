@@ -1,0 +1,21 @@
+<div class="inicio-container">
+  <h2>Bienvenido, {{ repartidor }}</h2>
+  <p>📅 {{ fechaActual }}</p>
+  <p>📍 Te encuentras en: <strong>{{ ubicacion }}</strong></p>
+
+  <div class="resumen">
+    <h3>📊 Resumen del día</h3>
+    <ul>
+      <li>🚚 Pedidos entregados: <strong>{{ pedidosEntregados }}</strong></li>
+      <li>💰 Ganancias estimadas: <strong>S/ {{ ganancias }}</strong></li>
+      <li>📦 Pendientes por entregar: <strong>{{ pendientes }}</strong></li>
+    </ul>
+  </div>
+
+  <div class="notificaciones">
+    <h3>🔔 Notificaciones</h3>
+    <ul>
+      <li *ngFor="let n of notificaciones">{{ n }}</li>
+    </ul>
+  </div>
+</div>
