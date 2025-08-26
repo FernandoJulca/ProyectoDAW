@@ -65,27 +65,10 @@
       <div class="dropdown">
         <button class="btn-personalizado d-flex align-items-center gap-2" type="button" id="dropdownCuenta"
           data-bs-toggle="dropdown" aria-expanded="false">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </svg>
+          <i class="bi bi-person"></i>
           Cuenta
         </button>
         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownCuenta">
-          <li>
-            <a class="dropdown-item d-flex align-items-center gap-2 btn-ancho" routerLink="/vendedor/perfil">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"
-                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                <circle cx="12" cy="7" r="4" />
-              </svg>
-              Mi perfil
-            </a>
-          </li>
-          <li>
-            <hr class="dropdown-divider">
-          </li>
           <li>
             <button class="dropdown-item d-flex align-items-center gap-2 btn-ancho" type="button" (click)="logout()">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"

@@ -67,7 +67,7 @@ public class ProveedorController {
 		return ResponseEntity.ok(_proveedorService.actualizar(id, proveedor));
 	}
 	
-	 @PostMapping("/desactivar/{id}")
+	 @PutMapping("/{id}")
 	 public ResponseEntity<?> desctivarProveedor(@PathVariable Integer id){
 		 
 		 if(id == null || id.longValue() < 0){

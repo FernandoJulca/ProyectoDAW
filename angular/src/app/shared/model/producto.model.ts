@@ -2,7 +2,7 @@ import { Categoria } from "./categoria.model";
 import { Proveedor } from "./proveedor.model";
 
 export interface Producto {
-  idProducto: number;
+  idProducto?: number;
   nombre: string;
   descripcion: string;
   proveedor: Proveedor;
@@ -11,6 +11,6 @@ export interface Producto {
   stock: number;
   imagenBytes?: string;
   base64Img?: string;
-  fechaRegistro: string;
+  fechaRegistro?: string;
   estado: boolean;
 }

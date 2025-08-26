@@ -11,13 +11,13 @@ import { ResultadoResponse } from '../../shared/dto/resultadoResponse.model';
 export class CompraService {
   private baseUrl = 'http://localhost:8080/venta';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   finalizarVenta(venta: Venta): Observable<ResultadoResponse> {
     return this.http.post<ResultadoResponse>(`${this.baseUrl}/finalizar`, venta);
   }
   descargarComprobante(idCliente: number, idVenta: number): Observable<Blob> {
-  const url = `${this.baseUrl}/${idCliente}/pdf/${idVenta}`;
-  return this.http.get(url, { responseType: 'blob' }); 
-}
+    const url = `${this.baseUrl}/${idCliente}/pdf/${idVenta}`;
+    return this.http.get(url, { responseType: 'blob' });
+  }
 }
