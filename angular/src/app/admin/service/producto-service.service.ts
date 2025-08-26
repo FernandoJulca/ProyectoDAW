@@ -17,8 +17,10 @@ export class ProductoServiceService {
     return this.http.get<Producto[]>(`${this.url}/index`)
   }
 
-  createProducto(producto:Producto):Observable<Producto>{
-    return this.http.post<Producto>(`${this.url}/registrar`,producto)
+  createProducto(productoFormData:FormData):Observable<any>{
+    return this.http.post<any>(`${this.url}/registrar`,productoFormData,{
+      headers:{}
+    });
   }
 
   detalleProducto(id:number):Observable<Producto>{

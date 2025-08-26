@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -55,6 +57,10 @@ public class Producto {
 	@Column(name="IMAGEN")
 	private byte[] imagenBytes;
 
+	/*se agrega esta propiedad para que cuando se registre el producto
+	 el campo imagen no lo trate de convertir a formato JSON y solo guarde 
+	 defrente en la bd la imagen en bytes */
+	@JsonIgnore 
 	@Transient
 	private MultipartFile imagen;
 	

@@ -1,5 +1,6 @@
 package com.ProyectoDAW.Ecommerce.controller;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,86 +12,116 @@ import com.ProyectoDAW.Ecommerce.model.Producto;
 import com.ProyectoDAW.Ecommerce.model.Proveedor;
 import com.ProyectoDAW.Ecommerce.service.ProductoService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.PutMapping;
 
-
-
 @RestController
 @RequestMapping("/producto")
 public class ProductoController {
 
-	
 	@Autowired
 	ProductoService prdService;
-	
-	
+
 	@GetMapping("/index")
 	public List<Producto> ListarProductos() {
 		return prdService.obtenerProductosActivos();
 	}
-	
+
 	@GetMapping("/obtenerId/{id}")
-	public ResponseEntity<?>ObtenerId(@PathVariable Integer id) {
-		
-		if(id== null || id.longValue()<0) {
+	public ResponseEntity<?> ObtenerId(@PathVariable Integer id) {
+
+		if (id == null || id.longValue() < 0) {
 			return ResponseEntity.badRequest().body("No se pudo encontrar el Producto");
 		}
 		return ResponseEntity.ok(prdService.ObtenerProductoId(id));
 	}
-	
-	@PostMapping("/registrar")
-	public ResponseEntity<?>RegistrarProducto(@RequestBody Producto producto){
-		
-		if(producto == null) {
-			return ResponseEntity.badRequest().body("Producto con credenciales invalidas");
-		}
 
-		return ResponseEntity.ok(prdService.RegistrarProducto(producto));
-	}
 	
+	@PostMapping(value="/registrar", consumes ={"multipart/form-data"}) //multipart para q pueda aceptar archivos 
+	public ResponseEntity<?> RegistrarProducto(@ModelAttribute Producto producto) {
+		try {
+			if(producto.getImagen()!= null && !producto.getImagen().isEmpty()) {
+				producto.setImagenBytes(producto.getImagen().getBytes());
+			}
+			
+			System.out.println("---INICIANDO EL METODO REGISTRAR------");
+			System.out.println("NOMBRE RECIBIDO: " + producto.getNombre());
+			System.out.println("descripcion RECIBIDO: " + producto.getDescripcion());
+			System.out.println("proveedor RECIBIDO: " + producto.getProveedor().getIdProveedor());
+			System.out.println("categoria RECIBIDO: " + producto.getCategoria().getIdCategoria());
+			System.out.println("precio RECIBIDO: " + producto.getPrecio());
+			System.out.println("stock RECIBIDO: " + producto.getStock());
+			
+			System.out.println("----LA IMAGEN LLEGA EN FORMATO--------");
+			System.out.println("IMAGEN BASE64: " + producto.getBase64Img());
+			System.out.println("IMAGEN MULTIPARTFILE: " + producto.getImagen() );
+			System.out.println("IMAGEN IMAGEN EN BYTES: " + producto.getImagenBytes());
+			
+			
+			
+			
+			producto.setFechaRegistro(LocalDateTime.now());
+			producto.setEstado(true);
+			return ResponseEntity.ok(prdService.RegistrarProducto(producto));
+		}catch (Exception e) {
+			  return ResponseEntity.status(500).body("Error registrando producto: " + e.getMessage());
+		}
+	}
+
 	@PutMapping("/actualizar/{id}")
 	public ResponseEntity<?> ActualizarProducto(
-			@PathVariable Integer id, 
-			@RequestBody Producto producto) {
-		
-		if(id == null || id.longValue() < 0 || producto == null ) {
+			@PathVariable Integer id,
+			@RequestBody  Producto producto) {
+
+		if (id == null || id.longValue() < 0 || producto == null) {
 			return ResponseEntity.badRequest().body("No se pudo actualizar al Proveedor");
 		}
 		
+		System.out.println("---INICIANDO EL METODO actualizar------");
+		System.out.println("NOMBRE RECIBIDO: " + producto.getNombre());
+		System.out.println("descripcion RECIBIDO: " + producto.getDescripcion());
+		System.out.println("proveedor RECIBIDO: " + producto.getProveedor().getIdProveedor());
+		System.out.println("categoria RECIBIDO: " + producto.getCategoria().getIdCategoria());
+		System.out.println("precio RECIBIDO: " + producto.getPrecio());
+		System.out.println("stock RECIBIDO: " + producto.getStock());
+		
+		System.out.println("----LA IMAGEN LLEGA EN FORMATO--------");
+		System.out.println("IMAGEN BASE64: " + producto.getBase64Img());
+		System.out.println("IMAGEN MULTIPARTFILE: " + producto.getImagen() );
+		System.out.println("IMAGEN IMAGEN EN BYTES: " + producto.getImagenBytes());
+		
+
 		return ResponseEntity.ok(prdService.ActualizarProducto(id, producto));
 	}
-	
+
 	@PutMapping("/desactivar/{id}")
-	public ResponseEntity<?> DesactivarProducto(
-			@PathVariable Integer id, 
-			@RequestBody Producto producto) {
-		
-		 if(id == null || id.longValue() < 0){
-			 return ResponseEntity.badRequest().body("No se obtuvo el id");
-		 }
-		 Producto prdEncontrado = prdService.ObtenerProductoId(id);
-		 	if(prdEncontrado == null) {
-		 	   return ResponseEntity.badRequest().body("Producto no encontrado");
-		 	}
-		 
-		 	prdService.DesactivarProducto(id);
-	     	 
-	    String mensaje = ("Se desactivo al proveedor con codigo: " + prdEncontrado.getIdProducto());
-		 return ResponseEntity.ok(mensaje);
+	public ResponseEntity<?> DesactivarProducto(@PathVariable Integer id, @RequestBody Producto producto) {
+
+		if (id == null || id.longValue() < 0) {
+			return ResponseEntity.badRequest().body("No se obtuvo el id");
+		}
+		Producto prdEncontrado = prdService.ObtenerProductoId(id);
+		if (prdEncontrado == null) {
+			return ResponseEntity.badRequest().body("Producto no encontrado");
+		}
+
+		prdService.DesactivarProducto(id);
+
+		String mensaje = ("Se desactivo al proveedor con codigo: " + prdEncontrado.getIdProducto());
+		return ResponseEntity.ok(mensaje);
 	}
-	
-	 @GetMapping({"/listaCategorias","/listaCategorias/{idCategoria}"})
-	 public ResponseEntity<?> listadoCategorias(
-			 @PathVariable(required = false) Integer idCategoria,
-			 @RequestParam(defaultValue = "ASC") String orden) {
-		 if(idCategoria==null || idCategoria.longValue()<0) {
-				return ResponseEntity.ok(prdService.obtenerProductosActivos());
-			}
-		 return ResponseEntity.ok(prdService.listaProductosCategoria(idCategoria,orden));
-	 }
-	 
+
+	@GetMapping({ "/listaCategorias", "/listaCategorias/{idCategoria}" })
+	public ResponseEntity<?> listadoCategorias(@PathVariable(required = false) Integer idCategoria,
+			@RequestParam(defaultValue = "ASC") String orden) {
+		if (idCategoria == null || idCategoria.longValue() < 0) {
+			return ResponseEntity.ok(prdService.obtenerProductosActivos());
+		}
+		return ResponseEntity.ok(prdService.listaProductosCategoria(idCategoria, orden));
+	}
+
 }

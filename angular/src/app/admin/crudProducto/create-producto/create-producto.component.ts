@@ -50,14 +50,33 @@ export class CreateProductoComponent {
       fechaRegistro:'',
       estado:true
   }
+  imagenFile?:File
 
   constructor (
     private productoService:ProductoServiceService,
     private router: Router
   ){}
 
+  onFileSelect(event:any){
+    this.imagenFile = event.target.files[0]
+  }
+
   guardarProveedor():void{
-    this.productoService.createProducto(this.producto).subscribe({
+
+    const formData = new FormData();
+
+    formData.append('nombre',this.producto.nombre); 
+    formData.append('descripcion',this.producto.descripcion);
+    formData.append('proveedor.idProveedor',this.producto.proveedor.idProveedor!.toString());
+    formData.append('categoria.idCategoria',this.producto.categoria.idCategoria!.toString());
+    formData.append('precio',this.producto.precio.toString());
+    formData.append('stock',this.producto.stock.toString());
+
+    if(this.imagenFile){
+      formData.append('imagen', this.imagenFile);
+    }
+
+    this.productoService.createProducto(formData).subscribe({
       next: (data) =>{
         console.log("Producto Creado" + data)
         this.router.navigate(['/admin/crudProducto/'])

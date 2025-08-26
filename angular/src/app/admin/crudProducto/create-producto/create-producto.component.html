@@ -12,6 +12,11 @@
       <input matInput [(ngModel)]="producto.descripcion" name="descripcion" required />
     </mat-form-field>
 
+    <div class="w-full">
+      <label>Seleccione una Imagen</label><br>
+      <input type="file" name="imagen" required (change)="onFileSelect($event)" />
+    </div>
+
     <mat-form-field class="w-full">
       <mat-label>Proveedor</mat-label>
       <input matInput [(ngModel)]="producto.proveedor.idProveedor" name="proveedor" />
@@ -24,12 +29,12 @@
 
     <mat-form-field class="w-full">
       <mat-label>Precio</mat-label>
-      <input matInput [(ngModel)]="producto.precio" name="precio" required/>
+      <input matInput [(ngModel)]="producto.precio" name="precio" required />
     </mat-form-field>
 
     <mat-form-field class="w-full">
       <mat-label>Stock</mat-label>
-      <input matInput [(ngModel)]="producto.stock" name="stock" required/>
+      <input matInput [(ngModel)]="producto.stock" name="stock" required />
     </mat-form-field>
 
 
