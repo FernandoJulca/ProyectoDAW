@@ -21,7 +21,6 @@ import com.ProyectoDAW.Ecommerce.dto.ProductoFilter;
 import com.ProyectoDAW.Ecommerce.dto.VentaDTO;
 import com.ProyectoDAW.Ecommerce.model.Categoria;
 import com.ProyectoDAW.Ecommerce.model.Producto;
-import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.service.CategoriaService;
 import com.ProyectoDAW.Ecommerce.service.ProductoService;
 import com.ProyectoDAW.Ecommerce.service.UsuarioService;

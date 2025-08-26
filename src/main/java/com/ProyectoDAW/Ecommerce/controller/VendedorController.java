@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
+import com.ProyectoDAW.Ecommerce.dto.VentaDTO;
 import com.ProyectoDAW.Ecommerce.model.Producto;
 import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.service.ProductoService;
@@ -29,6 +30,8 @@ public class VendedorController {
 	@Autowired
 	private ProductoService productoService;
 	
+	
+	/*
 	@GetMapping("/productos")
 	public ResponseEntity<List<Producto>> obtenerProductosActivos() {
 	    List<Producto> productos = productoService.obtenerProductosActivos();
@@ -39,6 +42,21 @@ public class VendedorController {
 	    
 	    return ResponseEntity.ok(productos);
 	}
+	*/
+	
+	@GetMapping("/productos")
+	public ResponseEntity<List<Producto>> obtenerProductosActivosPorCategorias(
+	        @RequestParam(value = "idCategoria", required = false) Integer idCategoria) {
+	    
+	    List<Producto> productos = productoService.obtenerProductosActivosPorCategorias(idCategoria);
+
+	    if (productos.isEmpty()) {
+	        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(null);
+	    }
+
+	    return ResponseEntity.ok(productos);
+	}
+	
 	
 	@PostMapping("/grilla")
 	public ResponseEntity<ResultadoResponse> finalizarVentaVendedor(@RequestBody Venta venta) {
@@ -50,14 +68,9 @@ public class VendedorController {
 	    }
 	}
 	
-	@GetMapping("/ventas")
-	public ResponseEntity<List<Venta>> obtenerVentasPorIdUsuario(@RequestParam Integer idUsuario) {
-	    List<Venta> ventas = ventaService.getVentaForIdUser(idUsuario);
-	    
-	    if (ventas.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-	    }
-	    
-	    return ResponseEntity.ok(ventas);
+	@GetMapping("/perfil")
+	public ResponseEntity<?> listarVentasVendedor(@RequestParam Integer idUsuario) {
+		List<VentaDTO> ventasDto = ventaService.getVentasPorUsuario(idUsuario);
+        return ResponseEntity.ok(ventasDto);
 	}
 }

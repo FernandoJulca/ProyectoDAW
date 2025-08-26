@@ -16,6 +16,14 @@ public interface IProductoRepository extends JpaRepository<Producto, Integer> {
 	@Query("SELECT P FROM Producto P WHERE P.estado = TRUE ORDER BY 1 ASC")
 	List<Producto> findProductosActivos();
 	
+	@Query("""
+		    SELECT P FROM Producto P
+		    WHERE P.estado = TRUE
+		      AND (:idCategoria IS NULL OR P.categoria.idCategoria = :idCategoria)
+		    ORDER BY P.idProducto ASC
+		""")
+	List<Producto> findProductosActivosByCategories(@Param("idCategoria") Integer idCategoria);
+	
 	@Query("SELECT P FROM Producto P WHERE P.estado = TRUE")
 	Page<Producto> findProductsActive(Pageable pageable);
 	
