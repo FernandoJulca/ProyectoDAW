@@ -58,9 +58,9 @@ public class VentaController {
 	    }
 	}
 	
-	@GetMapping("/{idCliente}/pdf/{idVenta}")
-	public ResponseEntity<byte[]> descargarVentaPdf(@PathVariable Integer idCliente, @PathVariable Integer idVenta) {
-	    Venta venta = ventaService.obtenerVentaPorCliente(idVenta, idCliente);
+	@GetMapping("/{idUsuario}/pdf/{idVenta}")
+	public ResponseEntity<byte[]> descargarVentaPdf(@PathVariable Integer idUsuario, @PathVariable Integer idVenta) {
+	    Venta venta = ventaService.obtenerVentaPorUsuario(idVenta, idUsuario);
 	    if (venta == null) {
 	        return ResponseEntity.notFound().build();
 	    }

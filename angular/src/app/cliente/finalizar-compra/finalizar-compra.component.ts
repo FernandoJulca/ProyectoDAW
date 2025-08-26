@@ -8,6 +8,7 @@ import { Venta } from '../../shared/model/venta.model';
 import { Usuario } from '../../shared/model/usuario.model';
 import { AlertService } from '../../util/alert.service';
 import { Router } from '@angular/router';
+import { AuthService } from '../service/auth.service';
 declare var bootstrap: any;
 
 @Component({
@@ -30,31 +31,13 @@ export class FinalizarCompraComponent implements OnInit {
     anio: '',
     cvv: '',
   };
-  usuario: Usuario = {
-    idUsuario: 2,
-    nombres: 'María',
-    apePaterno: 'Ramírez',
-    apeMaterno: 'Lopez',
-    correo: 'maria.ramirez@example.com',
-    clave: 'clave123',
-    nroDocumento: '23456789',
-    direccion: 'Calle Real 456',
-    telefono: '987654322',
-    rol: {
-      idRol: 2,
-      descripcion: 'Cliente',
-    },
-    distrito: {
-      idDistrito: 2,
-      nombre: 'Nombre del distrito',
-    },
-    fechaRegistro: new Date().toISOString(),
-    estado: true,
-  };
+  usuario!: Usuario;
+
   constructor(
     private carritoService: CarritoService,
     private compraService: CompraService,
-    private router: Router
+    private router: Router,
+    private authService : AuthService
   ) {}
 
   ngOnInit(): void {
@@ -127,8 +110,14 @@ console.log('Venta a enviar:', venta);
 
 
   abrirModalPago() {
-    const modal = new bootstrap.Modal(document.getElementById('modalPago')!);
-    modal.show();
+
+    if(!this.authService.isLoggedIn){
+      this.router.navigate(['/login'])
+    }else{
+      const modal = new bootstrap.Modal(document.getElementById('modalPago')!);
+      modal.show();
+    }
+
   }
   formatearNumeroTarjeta() {
     let num = this.tarjeta.numero.replace(/\s+/g, '').replace(/[^0-9]/gi, '');

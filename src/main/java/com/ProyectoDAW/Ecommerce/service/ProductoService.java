@@ -43,6 +43,12 @@ public class ProductoService {
 		return productos;
 	}
 
+	
+	public List<Producto> obtenerProductosActivosPorCategorias(Integer idCategoria){
+		return productoRepository.findProductosActivosByCategories(idCategoria);
+	}
+	
+  
 	public Producto RegistrarProducto(Producto producto) {
 
 		if (producto.getImagenBytes() == null || producto.getImagenBytes().length == 0) {
