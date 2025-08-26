@@ -7,7 +7,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import com.ProyectoDAW.Ecommerce.model.Venta;
+import com.ProyectoDAW.Ecommerce.model.Venta; 
+import com.ProyectoDAW.Ecommerce.dto.VentaFiltroFechaTipoUsuario;
 
 public interface IVentaRepository extends JpaRepository<Venta, Integer>{
 	@Query("SELECT v FROM Venta v WHERE v.usuario.idUsuario = :idUsuario ORDER BY v.idVenta DESC")
@@ -69,5 +70,26 @@ public interface IVentaRepository extends JpaRepository<Venta, Integer>{
         FROM Venta v
     """)
     Double obtenerIngresosTotales();
+    
+    
+    @Query("""
+    		SELECT NEW com.ProyectoDAW.Ecommerce.dto.VentaFiltroFechaTipoUsuario
+    		(v.idVenta, CONCAT(us.nombres,' ',us.apePaterno), us.direccion,
+    		v.fechaRegistro,v.total,v.estado,v.tipoVenta) FROM Venta v
+    		JOIN v.usuario us
+    		WHERE FUNCTION('DATE', v.fechaRegistro) BETWEEN :fechaInicio AND :fechaFin
+    		AND (:tipoVenta IS NULL or v.tipoVenta =:tipoVenta)
+    		""")
+    List<VentaFiltroFechaTipoUsuario>ListadoVentaFechaAndTipoVenta(@Param("fechaInicio")LocalDate fechaInicio,@Param("fechaFin")LocalDate fechaFin, @Param("tipoVenta")String tipoVenta );
+    	
+    
+    @Query("""
+    		SELECT NEW com.ProyectoDAW.Ecommerce.dto.VentaFiltroFechaTipoUsuario
+    		(v.idVenta, CONCAT(us.nombres,' ',us.apePaterno), us.direccion,
+    		v.fechaRegistro,v.total,v.estado,v.tipoVenta) FROM Venta v
+    		JOIN v.usuario us
+    		""")
+    List<VentaFiltroFechaTipoUsuario>ListadoVentaFechaAndTipoVentaNull();
+    
     
 }

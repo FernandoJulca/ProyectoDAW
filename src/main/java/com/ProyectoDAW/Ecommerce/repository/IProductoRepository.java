@@ -41,4 +41,14 @@ public interface IProductoRepository extends JpaRepository<Producto, Integer> {
 	@Query("UPDATE Producto p SET p.stock = :nuevoStock WHERE p.idProducto = :id")
 	void actualizarStock(@Param("id") Integer id, @Param("nuevoStock") Integer nuevoStock);
 
+	@Query
+	(""" 
+			SELECT p FROM Producto p
+			JOIN p.categoria c
+			where c.idCategoria =:idCategoria
+			ORDER BY 
+				CASE WHEN :orden = 'ASC' THEN p.stock END ASC,
+				CASE WHEN :orden = 'DESC' THEN p.stock END DESC
+			""")
+	List<Producto>listaPorCategorias(@Param("idCategoria") Integer idCategoria, @Param("orden")String orden);
 }

@@ -32,4 +32,6 @@ export class ProveedorService{
     desactivarProveedor(id:number):Observable<string>{
         return this.http.put(`${this.url}/${id}`, {} , { responseType: 'text' }) as Observable<string>;
     }
+
+    
 }

@@ -89,6 +89,9 @@ public class ProductoService {
 	}
 	
 	
-	
+	public List<Producto> listaProductosCategoria(Integer idCategoria, String orden){
+		
+		return productoRepository.listaPorCategorias(idCategoria,orden);
+	}
 	
 }

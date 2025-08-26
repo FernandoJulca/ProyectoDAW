@@ -33,4 +33,13 @@ export class ProductoServiceService {
      return this.http.put(`${this.url}/desactivar/${id}`, {}, { responseType: 'text' }) as Observable<string>;
 
   }   
+
+  listarProductoPorCategoria(idCategoria:number, orden:string= 'ASC'):Observable<Producto[]>{
+   let urlBase = `${this.url}/listaCategorias`
+   if(idCategoria!=null && idCategoria>0){
+    urlBase+=`/${idCategoria}`;
+   }
+   urlBase+=`?orden=${orden}`
+   return this.http.get<Producto[]>(urlBase);
+  }
 }

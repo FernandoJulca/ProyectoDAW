@@ -14,12 +14,31 @@
           <li class="nav-item">
             <a class="nav-link text-white" routerLink="/admin/configuracion">Configuración</a>
           </li>
-           <li class="nav-item">
+          <li class="nav-item">
             <a class="nav-link text-white" routerLink="/admin/crudProveedor">Listado Proveeedores</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-white" routerLink="crudProducto">Listado Productos</a>
           </li>
+
+          <li class="nav-item open_submenu">
+            <a id="btnReportes" class="nav-link text-white" (click)="toggleReportes()">Reportes
+              <i class="fa-solid fa-sort-down"></i>
+            </a>
+            <div class="submenu" [ngClass]="{ 'show': isReportesOpen }">
+              <ul>
+                <li>
+                  <a routerLink="/admin/reportes/reporteStock" 
+                  class="nav-link text-white" (click)="cerrarMenu()">Reporte Stock Productos</a>
+                </li>
+                <li>
+                  <a routerLink="/admin/reportes/reporteVenta" 
+                  class="nav-link text-white" (click)="cerrarMenu()">Reporte de Ventas</a>
+                </li>
+              </ul>
+            </div>
+          </li>
+
         </ul>
       </div>
     </nav>
@@ -32,7 +51,7 @@
       </header>
 
       <router-outlet></router-outlet>
-      
+
     </main>
   </div>
 </div>

@@ -14,6 +14,7 @@ import com.ProyectoDAW.Ecommerce.dto.DetalleVentaDTO;
 import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
 import com.ProyectoDAW.Ecommerce.dto.UsuarioDTO;
 import com.ProyectoDAW.Ecommerce.dto.VentaDTO;
+import com.ProyectoDAW.Ecommerce.dto.VentaFiltroFechaTipoUsuario;
 import com.ProyectoDAW.Ecommerce.model.DetalleVenta;
 import com.ProyectoDAW.Ecommerce.model.Producto;
 import com.ProyectoDAW.Ecommerce.model.Venta;
@@ -179,4 +180,13 @@ public class VentaService {
 		return ventaRepository.obtenerIngresosTotales();
 	}
 
+	
+	public List<VentaFiltroFechaTipoUsuario> ListadoVentaFechaAndTipoVenta(LocalDate fechaInicio, LocalDate fechaFin, String tipoVenta){
+		return ventaRepository.ListadoVentaFechaAndTipoVenta(fechaInicio, fechaFin, tipoVenta);
+	}
+	
+	public List<VentaFiltroFechaTipoUsuario>ListadoVentaFechaAndTipoVentaNull(){
+		return ventaRepository.ListadoVentaFechaAndTipoVentaNull();
+	}
+	
 }
