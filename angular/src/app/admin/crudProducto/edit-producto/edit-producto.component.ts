@@ -12,6 +12,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 
+
+//alert IZI_TOAST_ALERT
+import { AlertIziToast } from '../../../util/iziToastAlert.service';
+
 @Component({
   selector: 'app-edit-producto',
   standalone: true,
@@ -101,6 +105,7 @@ export class EditProductoComponent implements OnInit {
     this.productoService.actualizarProducto(this.producto.idProducto!, this.producto).subscribe({
       next: (data) => {
         console.log("Se actualizo el producto code", data.idProducto)
+        AlertIziToast.info(`Actualizaste el producto ${data.nombre} codigo: ${data.idProducto}`);
         this.router.navigate(['/admin/crudProducto'])
       },
       error: (err) => {

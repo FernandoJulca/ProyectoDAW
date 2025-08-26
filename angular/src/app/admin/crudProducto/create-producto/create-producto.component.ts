@@ -15,6 +15,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 
+//alert IZI_TOAST_ALERT
+import { AlertIziToast } from '../../../util/iziToastAlert.service';
 
 
 @Component({
@@ -78,7 +80,9 @@ export class CreateProductoComponent {
 
     this.productoService.createProducto(formData).subscribe({
       next: (data) =>{
+        this.producto = data
         console.log("Producto Creado" + data)
+        AlertIziToast.success(`Se guardo el producto ${this.producto.nombre} codigo:${this.producto.idProducto}`)
         this.router.navigate(['/admin/crudProducto/'])
       },
       error : (err) =>{

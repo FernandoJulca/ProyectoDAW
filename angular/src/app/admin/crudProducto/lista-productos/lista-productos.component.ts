@@ -16,14 +16,13 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatInputModule } from '@angular/material/input';
 import {MatPaginator, MatPaginatorModule} from '@angular/material/paginator';
 
-
-
 //import MODAL Producto
 import { MatDialog } from '@angular/material/dialog'
 import { DetailsProductoComponent } from '../details-producto/details-producto.component';
 import { DesactivarProductoComponent } from '../desactivar-producto/desactivar-producto.component'
 
-
+//alert IZI_TOAST_ALERT
+import { AlertIziToast } from '../../../util/iziToastAlert.service';
 
 @Component({
   selector: 'app-lista-productos',
