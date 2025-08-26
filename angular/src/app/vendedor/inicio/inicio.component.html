@@ -3,7 +3,7 @@
     <div class="container-xl mx-auto">
       <div class="d-flex flex-column flex-lg-row align-items-lg-center justify-content-lg-between gap-3">
         <div>
-          <h1 class="fs-2 fw-bold text-dark">¡Bienvenido, Usuario! 👋</h1>
+           <h1 class="fs-2 fw-bold text-dark">¡Bienvenido, {{ nombreUsuario }}! 👋</h1>
           <p class="text-secondary mt-1">Panel de control - {{ fechaCompleta }}</p>
         </div>
         <div class="d-flex align-items-center gap-2 text-secondary">
@@ -31,8 +31,8 @@
                   {{ inicialUsuario }}
                 </div>
                 <!-- Mostrar imagen si hay foto cargada -->
-                <img *ngIf="fotoUsuario" [src]="fotoUsuario" class="rounded-circle"
-                  style="width:80px; height:80px; object-fit:cover;" />
+                 <img *ngIf="fotoUsuario" [src]="fotoUsuario" class="rounded-circle"
+              style="width:80px; height:80px; object-fit:cover;" />
 
                 <div class="flex-grow-1">
                   <h5 class="mb-0">{{ nombreUsuario }}</h5>

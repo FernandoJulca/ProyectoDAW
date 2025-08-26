@@ -13,8 +13,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.ProyectoDAW.Ecommerce.util.JwtFilter;
 
-
-
 @Configuration
 public class SecurityConfig {
 
@@ -31,14 +29,16 @@ public class SecurityConfig {
             .cors().and()
             .csrf().disable()
             
-            // Configurar rutas públicas
+            //Configurar rutas públicas
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/login").permitAll()
                 .requestMatchers("/cliente/index").permitAll()
                 .requestMatchers("/cliente/producto").permitAll()
                 .anyRequest().authenticated()
-            )
-            
+            )/*
+            .authorizeHttpRequests(auth -> auth
+                    .anyRequest().permitAll()  // Permite todas las rutas sin autenticación
+                )*/
             // Configurar sesiones como Stateless
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 

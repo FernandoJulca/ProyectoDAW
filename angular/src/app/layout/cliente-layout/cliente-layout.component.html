@@ -85,10 +85,10 @@
                   Mi perfil
                 </a>
               </li>
-              <li>
+              <li *ngIf="checkLoginStatus()">
                 <hr class="dropdown-divider">
               </li>
-              <li>
+              <li *ngIf="checkLoginStatus()">
                 <button class="dropdown-item d-flex align-items-center gap-2 btn-ancho" type="button"
                   (click)="logout()">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" stroke="currentColor"

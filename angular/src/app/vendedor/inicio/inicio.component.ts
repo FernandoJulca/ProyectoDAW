@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterLinkWithHref } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterLinkWithHref } from '@angular/router';
 import { ReporteService } from '../service/reporte.service';
 import { forkJoin } from 'rxjs';
+import { AuthService } from '../../cliente/service/auth.service';
 
 
 @Component({
@@ -24,25 +25,31 @@ export class InicioComponent implements OnInit {
   fechaCompleta: string = '';
   fechaCorta: string = '';
 
-  // DATOS DEL USUARIO EN LA CARD
-  correoUsuario: string = 'usuario@correo.com';
-  nombreUsuario: string = 'Odetari God';
-  inicialUsuario: string = 'OG';
-  fotoUsuario: string | ArrayBuffer | null = null;
+  correoUsuario: string = ''; 
+nombreUsuario: string = ''; 
+inicialUsuario: string = ''; 
+fotoUsuario: string | ArrayBuffer | null = null;
+private usuario: any = null; 
 
-  // DATOS DEL MINI DASHBOARD MENSUAL
   ventasMensual: number = 0;
   prodsVendidosMensual: number = 0;
   clisAtendidosMensual: number = 0;
   ingresosMensuales: number = 0;
 
-  constructor(private reporteService: ReporteService) { }
+  constructor(private reporteService: ReporteService,private authService: AuthService,private router: Router) { }
 
-  ngOnInit(): void {
-    this.obtenerFecha();
-    this.generarInicial();
-    this.cargarDatosMensuales();
+  // En tu InicioComponent
+ngOnInit(): void {
+  if (!this.authService.isLoggedIn()) {
+    console.log('Usuario no logueado. Redirigiendo a login...');
+    this.router.navigate(['/login'], { queryParams: { message: 'login_required' } });
+    return;
   }
+
+  this.obtenerFecha();
+  this.cargarDatosUsuario();
+  this.cargarDatosMensuales();
+}
 
   obtenerFecha(): void {
     const fecha = new Date();
@@ -56,11 +63,24 @@ export class InicioComponent implements OnInit {
     this.fechaCorta = fecha.toLocaleDateString('es-ES');
   }
 
-  generarInicial(): void {
-    if (this.nombreUsuario && this.nombreUsuario.length > 0) {
+  cargarDatosUsuario(): void {
+  this.authService.getUsuario().subscribe({
+    next: (usuario) => {
+      this.usuario = usuario;
+      this.correoUsuario = usuario.correo || 'N/A';
+      this.nombreUsuario = usuario.nombres || 'N/A';
       this.inicialUsuario = this.nombreUsuario.charAt(0).toUpperCase();
+
+    },
+    error: (err) => {
+      console.error('Error al cargar datos del usuario:', err);
+      if (err.status === 401) {
+        this.authService.logout();
+        this.router.navigate(['/login'], { queryParams: { message: 'session_expired' } });
+      }
     }
-  }
+  });
+}
 
   subirFoto(event: any): void {
     const file = event.target.files[0];

@@ -30,4 +30,13 @@ export class AlertService {
       confirmButtonText: 'Aceptar',
     });
   }
+
+  static errorPromise(message: string): Promise<any> {
+    return Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: message,
+      confirmButtonText: 'OK'
+    });
+  }
 }

@@ -1,5 +1,7 @@
 package com.ProyectoDAW.Ecommerce.service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -7,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.ProyectoDAW.Ecommerce.model.Usuario;
 import com.ProyectoDAW.Ecommerce.repository.IUsuarioRepository;
 
 @Service
@@ -27,5 +30,9 @@ public class UsuarioService implements UserDetailsService{
 					.password("{noop}" + u.getClave()).roles(u.getRol().getDescripcion().replace("ROLE_", "")).build()
 				).orElseThrow();
 		
+	}
+	
+	public Optional<Usuario> obtenerDatos(String username) {
+		return usuarioRepository.findUsuarioByCorreo(username);
 	}
 }

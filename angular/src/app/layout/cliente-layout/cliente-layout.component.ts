@@ -1,8 +1,17 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core'; 
-import {  Router, RouterLink, RouterLinkActive, RouterLinkWithHref, RouterOutlet } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import {
+  Router,
+  RouterLink,
+  RouterLinkActive,
+  RouterLinkWithHref,
+  RouterOutlet,
+} from '@angular/router';
 import { DetalleVenta } from '../../shared/model/detalleVenta.model';
 import { CarritoService } from '../../cliente/service/carro.service';
+import { AuthService } from '../../cliente/service/auth.service';
+import { UserService } from '../../cliente/service/user.service';
+import { AlertService } from '../../util/alert.service';
 declare var bootstrap: any;
 
 @Component({
@@ -16,16 +25,21 @@ declare var bootstrap: any;
     RouterLinkActive,
   ],
   templateUrl: './cliente-layout.component.html',
-  styleUrls: ['./cliente-layout.component.css'] // corregí aquí (styleUrls)
+  styleUrls: ['./cliente-layout.component.css'], 
 })
 export class ClienteLayoutComponent implements OnInit {
   carrito: DetalleVenta[] = [];
   total: number = 0;
-
-  constructor(private route: Router,private carritoService: CarritoService) {}
+  constructor(
+    private route: Router,
+    private carritoService: CarritoService,
+    private authService: AuthService,
+    private userService: UserService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    this.carritoService.getCarritoObservable().subscribe(items => {
+    this.carritoService.getCarritoObservable().subscribe((items) => {
       this.carrito = items;
       this.total = this.carritoService.getTotal();
     });
@@ -54,27 +68,31 @@ export class ClienteLayoutComponent implements OnInit {
       alert(e.message);
     }
   }
-
+checkLoginStatus(): boolean {
+  return this.authService.isLoggedIn();
+}
   logout() {
-    // tu lógica para cerrar sesión
+    this.authService.logout();
+    this.userService.clearUser();
+    this.router.navigate(['/cliente/index']);
+    AlertService.success('Has cerrado sesión');
   }
   finalizarCompra() {
-  const offcanvasElement = document.getElementById('offcanvasCarrito');
-  if (offcanvasElement) {
-    const offcanvasInstance = bootstrap.Offcanvas.getInstance(offcanvasElement);
-    offcanvasInstance?.hide(); // Cierra el panel
-  }
+    const offcanvasElement = document.getElementById('offcanvasCarrito');
+    if (offcanvasElement) {
+      const offcanvasInstance =
+        bootstrap.Offcanvas.getInstance(offcanvasElement);
+      offcanvasInstance?.hide(); 
+    }
 
     this.route.navigate(['/cliente/finalizarCompra']);
-}
-
+  }
 
   onImageError(event: Event) {
-  const target = event.target as HTMLImageElement;
-  target.src = 'assets/no-imagen.jpg'; 
-}
-getCantidadTotal(): number {
-  return this.carrito.reduce((sum, item) => sum + item.cantidad, 0);
-}
-
+    const target = event.target as HTMLImageElement;
+    target.src = 'assets/no-imagen.jpg';
+  }
+  getCantidadTotal(): number {
+    return this.carrito.reduce((sum, item) => sum + item.cantidad, 0);
+  }
 }
