@@ -189,4 +189,8 @@ public class VentaService {
 		return ventaRepository.ListadoVentaFechaAndTipoVentaNull();
 	}
 	
+	//
+	public List<Object[]> listadoVentaPorMes(){
+		return ventaRepository.listadoVentaPorMes();
+	}
 }

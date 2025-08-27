@@ -3,10 +3,12 @@
     <!-- Sidebar -->
     <nav class="col-md-2 d-none d-md-block bg-dark sidebar text-white vh-100">
       <div class="position-sticky pt-3">
-        <h5 class="px-3">Admin</h5>
+        <h5 class="flat">Admin Panel</h5>
         <ul class="nav flex-column">
           <li class="nav-item">
-            <a class="nav-link text-white" routerLink="/admin/dashboard">Dashboard</a>
+            <a class="nav-link text-white" routerLink="/admin/dashboard"><i class="fa-solid fa-chart-line"></i>
+              
+              Dashboard</a>
           </li>
           <li class="nav-item">
             <a class="nav-link text-white" routerLink="/admin/usuarios">Usuarios</a>
@@ -15,10 +17,15 @@
             <a class="nav-link text-white" routerLink="/admin/configuracion">Configuración</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" routerLink="/admin/crudProveedor">Listado Proveeedores</a>
+              
+            <a class="nav-link text-white" routerLink="/admin/crudProveedor"><i class="fa-solid fa-clipboard-list"></i>
+              
+              Listado Proveeedores</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link text-white" routerLink="crudProducto">Listado Productos</a>
+            <a class="nav-link text-white" routerLink="crudProducto"><i class="fa-solid fa-clipboard-list"></i> 
+              
+              Listado Productos</a>
           </li>
 
           <li class="nav-item open_submenu">
@@ -28,12 +35,12 @@
             <div class="submenu" [ngClass]="{ 'show': isReportesOpen }">
               <ul>
                 <li>
-                  <a routerLink="/admin/reportes/reporteStock" 
-                  class="nav-link text-white" (click)="cerrarMenu()">Reporte Stock Productos</a>
+                  <a routerLink="/admin/reportes/reporteStock" class="nav-link text-white"
+                    (click)="cerrarMenu()">Reporte Stock Productos</a>
                 </li>
                 <li>
-                  <a routerLink="/admin/reportes/reporteVenta" 
-                  class="nav-link text-white" (click)="cerrarMenu()">Reporte de Ventas</a>
+                  <a routerLink="/admin/reportes/reporteVenta" class="nav-link text-white"
+                    (click)="cerrarMenu()">Reporte de Ventas</a>
                 </li>
               </ul>
             </div>

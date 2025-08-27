@@ -66,3 +66,16 @@ position: relative;
 .open_submenu {
   position: relative;
 }
+
+.flat{
+    color: #000;
+    border-radius: 28px;
+    background: #e0e0e0;
+    box-shadow: inset 7px 7px 14px #8b8b8b, inset -7px -7px 14px #ffffff;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    height: 40px;
+    justify-content: space-around;
+    align-content: space-around;
+}
