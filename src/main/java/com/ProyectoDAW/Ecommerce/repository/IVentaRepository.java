@@ -99,4 +99,8 @@ public interface IVentaRepository extends JpaRepository<Venta, Integer> {
 		""", nativeQuery = true)
 	List<Object[]> listadoVentaPorMes();
 
+	
+	
+	
+	
 }

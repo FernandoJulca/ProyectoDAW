@@ -1,7 +1,7 @@
 import { Component, AfterViewInit, ViewChild } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 
-import { Chart, LineController, LineElement, PointElement, LinearScale, Title, CategoryScale } from 'chart.js';
+import { Chart, LineController, LineElement, PointElement, LinearScale, Title, CategoryScale,ChartConfiguration  } from 'chart.js';
 
 
 import { VentaServiceService } from '../../service/venta-service.service';
@@ -42,11 +42,16 @@ export class ComponenteUnoComponent implements AfterViewInit {
         }]
       };
 
-      const config = {
-        type: 'line' as const,
+      const config:ChartConfiguration <'line',number[],string> = {
+        type: 'line',
         data: chartData,
         options: {
           responsive: true,
+          animation:{
+              duration: 3500,   
+               easing: 'easeInOutCubic',
+                 delay: 0, 
+          },
           plugins: {
             title: { display: true, text: 'Ventas Del 2025' }
           }

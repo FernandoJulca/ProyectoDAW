@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { ComponenteUnoComponent } from '../graficosComponentes/componente-uno/componente-uno.component';
 import { ComponenteDosComponent } from '../graficosComponentes/componente-dos/componente-dos.component';
 import { ComponenteTresComponent } from '../graficosComponentes/componente-tres/componente-tres.component';
+import { ComponenteCuatroComponent } from "../graficosComponentes/componente-cuatro/componente-cuatro.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -9,8 +10,9 @@ import { ComponenteTresComponent } from '../graficosComponentes/componente-tres/
   imports: [
     ComponenteUnoComponent,
     ComponenteDosComponent,
-  ComponenteTresComponent,
-  ],
+    ComponenteTresComponent,
+    ComponenteCuatroComponent
+],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })

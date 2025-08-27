@@ -1,13 +1,19 @@
 package com.ProyectoDAW.Ecommerce.controller;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ProyectoDAW.Ecommerce.dto.ProductoPorCategoriaDTO;
+import com.ProyectoDAW.Ecommerce.dto.ProductoPorProveedor;
+import com.ProyectoDAW.Ecommerce.dto.VentaPorFechasDTO;
 import com.ProyectoDAW.Ecommerce.model.Producto;
 import com.ProyectoDAW.Ecommerce.model.Proveedor;
 import com.ProyectoDAW.Ecommerce.service.ProductoService;
@@ -124,4 +130,52 @@ public class ProductoController {
 		return ResponseEntity.ok(prdService.listaProductosCategoria(idCategoria, orden));
 	}
 
+	
+	@GetMapping("/listadoProductoCategoria")
+	public ResponseEntity<List<ProductoPorCategoriaDTO>> getProductoPorCategoria() {
+		try {
+			
+			List<Object[]> resultado = prdService.totalStockPorCategoria();
+			
+			List<ProductoPorCategoriaDTO> productoPorCategoria = resultado.stream()
+					.map(row -> {
+	                    String descripcion = ((String) row[0]).trim();
+	                    int totalProductos = ((Number) row[1]).intValue();
+	                    return new ProductoPorCategoriaDTO(descripcion, totalProductos);
+	                })
+	                .collect(Collectors.toList());;
+	                return ResponseEntity.ok(productoPorCategoria); 
+			
+		} catch (Exception e) {
+			  e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body(Collections.emptyList());
+		}
+	}
+	
+	
+	@GetMapping("/listadoProductoProveedor")
+	public ResponseEntity<List<ProductoPorProveedor>> getProductoPorProveedor() {
+		try {
+			
+			List<Object[]> resultado = prdService.totalStockPorProveedor();
+			
+			List<ProductoPorProveedor> productoPorProveedor = resultado.stream()
+					.map(row -> {
+	                    String razonSocial = ((String) row[0]).trim();
+	                    int totalProductos = ((Number) row[1]).intValue();
+	                    return new ProductoPorProveedor(razonSocial, totalProductos);
+	                })
+	                .collect(Collectors.toList());;
+	                return ResponseEntity.ok(productoPorProveedor); 
+			
+		} catch (Exception e) {
+			  e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body(Collections.emptyList());
+		}
+	}
+	
+	
+	
 }
