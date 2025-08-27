@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ProyectoDAW.Ecommerce.dto.VentaDTO;
+import com.ProyectoDAW.Ecommerce.dto.VentaDeliveryDTO;
 import com.ProyectoDAW.Ecommerce.service.VentaService;
 
 @RestController
@@ -22,8 +23,8 @@ public class RepartidorController {
 
     
     @GetMapping("/pedidos")
-    public ResponseEntity<List<VentaDTO>> obtenerPedidosDeliveryPendientes() {
-        List<VentaDTO> pedidos = ventaService.obtenerPedidosDeliveryPendientes();
+    public ResponseEntity<List<VentaDeliveryDTO>> obtenerPedidosDeliveryPendientes() {
+        List<VentaDeliveryDTO> pedidos = ventaService.obtenerPedidosDeliveryPendientes();
         return ResponseEntity.ok(pedidos);
     }
 	

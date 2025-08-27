@@ -108,7 +108,7 @@ lng!: number;
     const target = event.target as HTMLImageElement;
     target.src = 'assets/no-imagen.jpg';
   }
-  realizarPago() {
+realizarPago() {
   if (this.carrito.length === 0) {
     AlertService.info('El carrito está vacío.');
     return;
@@ -119,26 +119,30 @@ lng!: number;
     return;
   }
 
-  const ventaDelivery: VentaDeliveryDTO = {
-    idUsuario: this.usuario.idUsuario ?? 0,
-    total: this.total,
-    direccionEntrega: this.usuario.direccion, // opcional, se puede guardar solo para referencia
-    latitud: this.lat,
-    longitud: this.lng,
-    detalles: this.carrito.map(d => ({
-      idProducto: d.producto.idProducto ?? 0,
-      cantidad: d.cantidad,
-      subTotal: d.subTotal,
-      nombreProducto: d.producto.nombre
-    }))
+  const tipoVenta = this.metodoPago === 'R' ? 'D' : 'T'; // 'D' = Delivery, 'T' = Tienda
+
+  // Construimos un objeto compatible con el backend
+  const ventaParaBackend: any = {
+  idUsuario: this.usuario.idUsuario,
+  total: this.total,
+  tipoVenta: tipoVenta,
+  estado: 'P',
+  fechaRegistro: new Date().toISOString(),
+  direccionEntrega: tipoVenta === 'D' ? this.usuario.direccion : null,
+  latitud: tipoVenta === 'D' ? this.lat : null,
+  longitud: tipoVenta === 'D' ? this.lng : null,
+  detalles: this.carrito.map(d => ({
+    idProducto: d.producto.idProducto,
+    cantidad: d.cantidad,
+    subTotal: d.subTotal
+  }))
   };
 
-  this.compraService.guardarVentaDelivery(ventaDelivery).subscribe({
+  this.compraService.guardarVentaDelivery(ventaParaBackend).subscribe({
     next: response => {
       if (response.valor) {
         AlertService.success(response.mensaje);
         this.carritoService.limpiarCarrito();
-        // cerrar modal, limpiar variables...
       } else {
         AlertService.error(response.mensaje);
       }
@@ -148,6 +152,7 @@ lng!: number;
     }
   });
 }
+
 
 
   // En tu FinalizarCompraComponent

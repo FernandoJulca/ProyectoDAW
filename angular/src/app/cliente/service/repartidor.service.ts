@@ -2,6 +2,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { ResultadoResponse } from '../../shared/dto/resultadoResponse.model';
 
 
 export interface DetalleVenta {
@@ -62,6 +63,8 @@ export interface DetalleVentaListadoDTO {
   subTotal: number;
 }
 
+
+
 @Injectable({
   providedIn: 'root'
 })
@@ -74,6 +77,10 @@ export class RepartidorService {
   obtenerPedidosDeliveryPendientes(): Observable<VentaDTO[]> {
     return this.http.get<VentaDTO[]>(`${this.baseUrl}/pedidos`);
   }
+
+  actualizarEstadoPedido(idVenta: number, estado: string): Observable<ResultadoResponse> {
+  return this.http.patch<ResultadoResponse>(`${this.baseUrl}/estado/${idVenta}`, { estado });
+}
 
   
 }

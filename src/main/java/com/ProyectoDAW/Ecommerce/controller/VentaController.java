@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -58,6 +60,18 @@ public class VentaController {
 	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultado);
 	    }
 	}
+	
+	
+	/*
+	 * @PatchMapping("/estado/{idVenta}") public ResponseEntity<ResultadoResponse>
+	 * actualizarEstado(@PathVariable Integer idVenta, @RequestBody Map<String,
+	 * String> body) { String nuevoEstado = body.get("estado"); ResultadoResponse
+	 * response = ventaService.actualizarEstado(idVenta, nuevoEstado); if
+	 * (response.isValor()) { return ResponseEntity.ok(response); } return
+	 * ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response); }
+	 */
+
+	
 	
 	@GetMapping("/{idUsuario}/pdf/{idVenta}")
 	public ResponseEntity<byte[]> descargarVentaPdf(@PathVariable Integer idUsuario, @PathVariable Integer idVenta) {

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RepartidorService, VentaDTO } from '../../cliente/service/repartidor.service';
 import { catchError, firstValueFrom, forkJoin, map, Observable, of } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-listado',
@@ -13,7 +14,9 @@ export class RepartidorListadoComponent implements OnInit {
   pedidos: VentaDTO[] = [];
   pedidoSeleccionado: VentaDTO | null = null;
 
-  constructor(private repartidorService: RepartidorService) {}
+  constructor(private repartidorService: RepartidorService,
+    private router: Router
+  ) {}
 
   ngOnInit(): void {
     this.cargarPedidos();
@@ -85,8 +88,9 @@ cargarPedidos(): void {
 
 
   verDetalle(pedido: VentaDTO) {
-    this.pedidoSeleccionado = pedido;
-  }
+    console.log('Pedido que se va a enviar:', pedido);
+  this.router.navigate(['/repartidor/inicio'], { state: { pedido } });
+}
 
   cerrarDetalle() {
     this.pedidoSeleccionado = null;

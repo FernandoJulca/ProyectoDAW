@@ -19,6 +19,7 @@ import com.ProyectoDAW.Ecommerce.dto.VentaDeliveryDTO;
 import com.ProyectoDAW.Ecommerce.dto.VentaFiltroFechaTipoUsuario;
 import com.ProyectoDAW.Ecommerce.model.DetalleVenta;
 import com.ProyectoDAW.Ecommerce.model.Producto;
+import com.ProyectoDAW.Ecommerce.model.Usuario;
 import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.repository.IProductoRepository;
 import com.ProyectoDAW.Ecommerce.repository.IUsuarioRepository;
@@ -203,13 +204,42 @@ public class VentaService {
 
 	
 	
-	public List<VentaDTO> obtenerPedidosDeliveryPendientes() {
-	    List<Venta> ventas = ventaRepository.findByTipoVentaAndEstado("D", "P");
-	    return ventas.stream().map(this::mapVentaToDTO).collect(Collectors.toList());
+	@Transactional
+	public List<VentaDeliveryDTO> obtenerPedidosDeliveryPendientes() {
+	    List<Venta> ventas = ventaRepository.findByTipoVentaAndEstado("D", "P"); // solo delivery pendientes
+
+	    return ventas.stream().map(venta -> {
+	        VentaDeliveryDTO dto = new VentaDeliveryDTO();
+	        dto.setIdUsuario(venta.getUsuario().getIdUsuario());
+	        dto.setUsuario(venta.getUsuario());
+	        dto.setTotal(BigDecimal.valueOf(venta.getTotal()));
+	        dto.setDireccionEntrega(venta.getDireccionEntrega());
+	        dto.setLatitud(venta.getLatitud());
+	        dto.setLongitud(venta.getLongitud());
+	        dto.setIdRepartidor(null);
+	        dto.setTipoVenta(venta.getTipoVenta()); // asignamos el tipo
+	        dto.setDetalles(venta.getDetalles().stream().map(det -> {
+	            DetalleVentaDTO detDTO = new DetalleVentaDTO();
+	            detDTO.setIdProducto(det.getProducto().getIdProducto());
+	            detDTO.setNombreProducto(det.getProducto().getNombre());
+	            detDTO.setCantidad(det.getCantidad());
+	            detDTO.setSubTotal(det.getSubTotal());
+	            return detDTO;
+	        }).collect(Collectors.toList()));
+	        return dto;
+	    }).collect(Collectors.toList());
 	}
 
+
 	
-	
+	/*
+	 * @Transactional public ResultadoResponse actualizarEstado(Integer idVenta,
+	 * String estado) { Venta venta = ventaRepository.findById(idVenta)
+	 * .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
+	 * venta.setEstado(estado); ventaRepository.save(venta); return new
+	 * ResultadoResponse(true, "Estado actualizado"); }
+	 */
+
 
 	// Vista-Inicio-Vendedor
 	private String obtenerMesActual() {

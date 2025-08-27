@@ -9,7 +9,6 @@
   <h4>{{ pedido.usuario.nombres }}</h4>
   <p>Dirección: {{ pedido.direccionLegible || pedido.direccionEntrega }}</p>
   <p>Total: S/ {{ pedido.total }}</p>
-  <p>Estado: {{ pedido.estado }}</p>
   <button (click)="verDetalle(pedido)">Ver detalle</button>
 </div>
 
