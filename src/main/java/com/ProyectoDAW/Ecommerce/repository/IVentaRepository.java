@@ -111,4 +111,14 @@ public interface IVentaRepository extends JpaRepository<Venta, Integer> {
 			""", nativeQuery = true)
 	List<Object[]> listadoDeTipoDeVentasPorMes();
 
+	@Query(value = """
+			SELECT dt.NOMBRE as distrito, COUNT(*) as ventasTotales
+			 FROM TB_VENTA vt
+			 INNER JOIN TB_USUARIO us ON vt.ID_USUARIO = us.ID_USUARIO
+			 INNER JOIN TB_DISTRITO dt ON us.ID_DISTRITO = dt.ID_DISTRITO
+			 GROUP BY dt.NOMBRE
+			 ORDER BY ventasTotales DESC
+			""", nativeQuery = true)
+	List<Object[]> listaVentaPorDistrito();
+
 }

@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
+import com.ProyectoDAW.Ecommerce.dto.VentaPorDistrito;
 import com.ProyectoDAW.Ecommerce.dto.VentaPorFechasDTO;
 import com.ProyectoDAW.Ecommerce.dto.VentaPorTipoVentaMesDTO;
 import com.ProyectoDAW.Ecommerce.model.DetalleVenta;
@@ -229,6 +230,24 @@ public class VentaController {
 		}
 	}
 	
-	
-	
+	@GetMapping("/listadoVentaMes")
+	public ResponseEntity<List<VentaPorDistrito>>getListadoMesDistrito(){
+			try {
+				
+				List<Object[]>result = ventaService.listadoDeDistroPorVentas();
+				
+				List<VentaPorDistrito> ventaPorDistrito = result.stream()
+						 .map(row -> {
+			                    String mes = ((String) row[0]).trim();
+			                    int ventasTotales = ((Number) row[1]).intValue();
+			                    return new VentaPorDistrito(mes,ventasTotales);
+			                })
+			                .collect(Collectors.toList());
+				   return ResponseEntity.ok(ventaPorDistrito);
+			} catch (Exception e) {
+				e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body(Collections.emptyList());
+			}
+	}
 }

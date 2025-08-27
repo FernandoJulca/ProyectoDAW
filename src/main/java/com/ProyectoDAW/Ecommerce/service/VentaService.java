@@ -198,4 +198,8 @@ public class VentaService {
 		return ventaRepository.listadoDeTipoDeVentasPorMes();
 	}
 	
+	public List<Object[]>listadoDeDistroPorVentas(){
+		return ventaRepository.listaVentaPorDistrito();
+	}
+	
 }

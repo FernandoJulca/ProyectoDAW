@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { VentaFiltroFechaTipoUsuario } from '../../../app/shared/dto/VentaFiltroFechaTipoUsuario.model';
 import { VentaPorFechasDTO } from '../../shared/dto/VentaPorFechasDTO.model';
 import { VentaPorTipoVentaMesDTO } from '../../shared/dto/ventaPorTipoVentaMesDTO.model';
+import { VentaPorDistrito } from '../../shared/dto/ventaPorDistrito.model';
 
 @Injectable({
   providedIn: 'root'
@@ -39,4 +40,9 @@ private url = "http://localhost:8080/venta"
   listadoVentaPorTipoVentaMes():Observable<VentaPorTipoVentaMesDTO[]>{
     return this.http.get<VentaPorTipoVentaMesDTO[]>(`${this.url}/listoVentaTipo`)
   }
+
+  listadoVentaPorDistrito():Observable<VentaPorDistrito[]>{
+    return this.http.get<VentaPorDistrito[]>(`${this.url}/listadoVentaMes`)
+  }
+
 }
