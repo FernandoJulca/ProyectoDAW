@@ -12,6 +12,10 @@
         <option value="ASC">Ascendente</option>
         <option value="DESC">Descendente</option>
     </select>
+
+    <div>
+      <button (click)="generarPDF()">Descargar PDF</button>
+    </div>
 </div>
 
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">

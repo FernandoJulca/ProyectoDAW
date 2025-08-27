@@ -1,13 +1,19 @@
+import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { filter, map, mergeMap } from 'rxjs';
+import { DashboardComponent } from './admin/dashboard/dashboard.component';
 
 
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  standalone : true,
+  imports: [
+    CommonModule,
+    RouterOutlet
+],
   templateUrl: './app.component.html'
 })
 export class AppComponent implements OnInit{

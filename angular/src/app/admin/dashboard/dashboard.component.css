@@ -1,0 +1,58 @@
+.contenedorDashboar {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows:repeat( 7, 200px);
+  border: 5px solid red;
+  padding: 1rem;
+  max-height: calc(93vh - 60px);
+  min-height: 600px;
+  overflow-y: auto;
+  gap: 1rem;
+}
+
+app-componente-uno {
+  border: 5px solid black;
+  grid-row: 3/ 5;
+  grid-column: 1 / 3;
+  min-height: 200px;
+}
+
+app-componente-dos {
+  border: 5px solid blue;
+  grid-row: 3 / 6;
+  grid-column: 3 / 4;
+  min-height: 200px;
+}
+
+app-componente-tres {
+  border: 5px solid beige;
+  grid-row: 5 / 8;
+  grid-column: 1 / 2;
+
+  align-items: center;
+}
+
+app-componente-cuatro{
+  border: 5px solid green;
+  grid-row: 5 / 8;
+  grid-column: 2 / 3;
+  min-height: 200px;
+}
+app-componente-cinco {
+  border: 5px solid greenyellow;
+  grid-row: 1 / 3;
+  grid-column: 1 / 4;
+  min-height: 200px;
+}
+.flat{
+    color: #000;
+    border-radius: 28px;
+    background: #e0e0e0;
+    box-shadow: inset 7px 7px 14px #8b8b8b, inset -7px -7px 14px #ffffff;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    justify-content: space-around;
+    align-content: space-around;
+
+}

@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Service;
 
 import com.ProyectoDAW.Ecommerce.dto.ProductoFilter;
@@ -43,12 +44,10 @@ public class ProductoService {
 		return productos;
 	}
 
-	
-	public List<Producto> obtenerProductosActivosPorCategorias(Integer idCategoria){
+	public List<Producto> obtenerProductosActivosPorCategorias(Integer idCategoria) {
 		return productoRepository.findProductosActivosByCategories(idCategoria);
 	}
-	
-  
+
 	public Producto RegistrarProducto(Producto producto) {
 
 		if (producto.getImagenBytes() == null || producto.getImagenBytes().length == 0) {
@@ -72,12 +71,12 @@ public class ProductoService {
 		catEncontrado.setIdCategoria(producto.getCategoria().getIdCategoria());
 		prdUpdate.setCategoria(catEncontrado);
 
-		//solo se actualiza si es que el cliente manda una una imagen sino se queda con la imagen q esta registrada
-		if(producto.getImagenBytes()!=null && producto.getImagenBytes().length>0) {
+		// solo se actualiza si es que el cliente manda una una imagen sino se queda con
+		// la imagen q esta registrada
+		if (producto.getImagenBytes() != null && producto.getImagenBytes().length > 0) {
 			prdUpdate.setImagenBytes(producto.getImagenBytes());
 		}
-		
-		
+
 		prdUpdate.setPrecio(producto.getPrecio());
 		prdUpdate.setStock(producto.getStock());
 		prdUpdate.setFechaRegistro(
@@ -111,4 +110,12 @@ public class ProductoService {
 		return productoRepository.listaPorCategorias(idCategoria, orden);
 	}
 
+	
+	public List<Object[]>totalStockPorCategoria(){
+		return productoRepository.totalStockPorCategoriaDescripcion();
+	}
+	
+	public List<Object[]>totalStockPorProveedor(){
+		return productoRepository.totalStockPorProveedorRazonSocial();
+	}
 }
