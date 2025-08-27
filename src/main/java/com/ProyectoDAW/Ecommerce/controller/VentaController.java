@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
+import com.ProyectoDAW.Ecommerce.dto.VentaDeliveryDTO;
 import com.ProyectoDAW.Ecommerce.model.DetalleVenta;
 import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.service.VentaService;
@@ -176,5 +177,14 @@ public class VentaController {
 		
 	};
 	
+	 @PostMapping("/delivery")
+	    public ResponseEntity<ResultadoResponse> guardarVentaDelivery(@RequestBody VentaDeliveryDTO ventaDTO) {
+	        ResultadoResponse response = ventaService.guardarVentaDelivery(ventaDTO);
+	        if (response.isValor()) {
+	            return ResponseEntity.ok(response);
+	        } else {
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+	        }
+	    }
 	
 }

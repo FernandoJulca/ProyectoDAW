@@ -91,5 +91,6 @@ public interface IVentaRepository extends JpaRepository<Venta, Integer>{
     		""")
     List<VentaFiltroFechaTipoUsuario>ListadoVentaFechaAndTipoVentaNull();
     
+    List<Venta> findByTipoVentaAndEstado(String tipoVenta, String estado);
     
 }

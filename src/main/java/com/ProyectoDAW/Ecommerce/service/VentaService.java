@@ -1,5 +1,6 @@
 package com.ProyectoDAW.Ecommerce.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,11 +15,13 @@ import com.ProyectoDAW.Ecommerce.dto.DetalleVentaDTO;
 import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
 import com.ProyectoDAW.Ecommerce.dto.UsuarioDTO;
 import com.ProyectoDAW.Ecommerce.dto.VentaDTO;
+import com.ProyectoDAW.Ecommerce.dto.VentaDeliveryDTO;
 import com.ProyectoDAW.Ecommerce.dto.VentaFiltroFechaTipoUsuario;
 import com.ProyectoDAW.Ecommerce.model.DetalleVenta;
 import com.ProyectoDAW.Ecommerce.model.Producto;
 import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.repository.IProductoRepository;
+import com.ProyectoDAW.Ecommerce.repository.IUsuarioRepository;
 import com.ProyectoDAW.Ecommerce.repository.IVentaRepository;
 
 import jakarta.transaction.Transactional;
@@ -30,6 +33,9 @@ public class VentaService {
 
 	@Autowired
 	private IProductoRepository productoRepository;
+	
+	@Autowired
+	private IUsuarioRepository usuarioRepository;
 
 	public List<VentaDTO> getVentasPorUsuario(Integer idUsuario) {
 		List<Venta> ventas = ventaRepository.findByUsuarioId(idUsuario);
@@ -144,6 +150,66 @@ public class VentaService {
 			return new ResultadoResponse(false, "Error al registrar la venta: " + ex.getMessage());
 		}
 	}
+	
+	
+	
+	@Transactional
+	public ResultadoResponse guardarVentaDelivery(VentaDeliveryDTO ventaDTO) {
+	    try {
+	        Venta venta = new Venta();
+	        venta.setUsuario(usuarioRepository.findById(ventaDTO.getIdUsuario())
+	                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado")));
+	        venta.setFechaRegistro(LocalDateTime.now());
+	        venta.setTipoVenta("D"); // Delivery
+	        venta.setEstado("P"); // Pendiente
+	        venta.setDireccionEntrega(ventaDTO.getDireccionEntrega());
+	        venta.setLatitud(ventaDTO.getLatitud());
+	        venta.setLongitud(ventaDTO.getLongitud());
+	        
+
+	        double totalVenta = 0;
+
+	        for (DetalleVentaDTO detDTO : ventaDTO.getDetalles()) {
+	            Producto producto = productoRepository.findById(detDTO.getIdProducto())
+	                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + detDTO.getIdProducto()));
+
+	            if (producto.getStock() < detDTO.getCantidad()) {
+	                return new ResultadoResponse(false, "Stock insuficiente para: " + producto.getNombre());
+	            }
+
+	            // Reducir stock
+	            productoRepository.actualizarStock(producto.getIdProducto(), producto.getStock() - detDTO.getCantidad());
+
+	            // Crear detalle
+	            DetalleVenta detalle = new DetalleVenta();
+	            detalle.setProducto(producto);
+	            detalle.setCantidad(detDTO.getCantidad());
+	            detalle.setSubTotal(producto.getPrecio() * detDTO.getCantidad());
+	            detalle.setVenta(venta);
+
+	            venta.getDetalles().add(detalle);
+	            totalVenta += detalle.getSubTotal();
+	        }
+
+	        venta.setTotal(totalVenta);
+
+	        ventaRepository.save(venta);
+
+	        return new ResultadoResponse(true, "Venta delivery registrada correctamente.");
+	    } catch (Exception e) {
+	        return new ResultadoResponse(false, "Error al registrar la venta delivery: " + e.getMessage());
+	    }
+	}
+
+	
+	
+	public List<VentaDTO> obtenerPedidosDeliveryPendientes() {
+	    List<Venta> ventas = ventaRepository.findByTipoVentaAndEstado("D", "P");
+	    return ventas.stream().map(this::mapVentaToDTO).collect(Collectors.toList());
+	}
+
+	
+	
 
 	// Vista-Inicio-Vendedor
 	private String obtenerMesActual() {

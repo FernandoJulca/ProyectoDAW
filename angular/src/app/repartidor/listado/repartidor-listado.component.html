@@ -1,25 +1,15 @@
-<div class="repartidor-container">
-  <h2 class="titulo">Mis pedidos</h2>
 
-  <div class="pedido-card" *ngFor="let pedido of pedidos">
-    <div class="pedido-info">
-      <p><strong>Pedido #{{pedido.id}}</strong></p>
-      <p>Dirección: {{pedido.direccion}}</p>
-      <p>Cliente: {{pedido.cliente}}</p>
-    </div>
-    <button (click)="verDetalle(pedido)">Ver detalle</button>
-  </div>
 
-  <!-- Detalle del pedido (como una ventanita modal o tarjeta fija) -->
-  <div *ngIf="pedidoSeleccionado" class="detalle-overlay">
-    <div class="detalle-card">
-      <h3>Detalle del Pedido</h3>
-      <p><strong>Cliente:</strong> {{pedidoSeleccionado.cliente}}</p>
-      <p><strong>Dirección:</strong> {{pedidoSeleccionado.direccion}}</p>
-      <p><strong>Total:</strong> S/ {{pedidoSeleccionado.precio}}</p>
-      <p><strong>Pago:</strong> {{pedidoSeleccionado.tipoPago}}</p>
-      <button class="confirmar" (click)="confirmarEntrega()">✅ Entrega realizada</button>
-      <button class="cerrar" (click)="cerrarDetalle()">Cerrar</button>
-    </div>
-  </div>
+<ng-template #noPedidos>
+  <p>No hay pedidos pendientes.</p>
+</ng-template>
+
+<!-- Modal de detalle -->
+<div *ngFor="let pedido of pedidos" class="pedido-card">
+  <h4>{{ pedido.usuario.nombres }}</h4>
+  <p>Dirección: {{ pedido.direccionLegible || pedido.direccionEntrega }}</p>
+  <p>Total: S/ {{ pedido.total }}</p>
+  <p>Estado: {{ pedido.estado }}</p>
+  <button (click)="verDetalle(pedido)">Ver detalle</button>
 </div>
+

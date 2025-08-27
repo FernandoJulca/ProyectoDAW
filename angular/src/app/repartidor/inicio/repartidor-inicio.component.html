@@ -1,21 +1,47 @@
 <div class="inicio-container">
+  <!-- Bienvenida y fecha -->
   <h2>Bienvenido, {{ repartidor }}</h2>
   <p>📅 {{ fechaActual }}</p>
   <p>📍 Te encuentras en: <strong>{{ ubicacion }}</strong></p>
 
-  <div class="resumen">
-    <h3>📊 Resumen del día</h3>
-    <ul>
-      <li>🚚 Pedidos entregados: <strong>{{ pedidosEntregados }}</strong></li>
-      <li>💰 Ganancias estimadas: <strong>S/ {{ ganancias }}</strong></li>
-      <li>📦 Pendientes por entregar: <strong>{{ pendientes }}</strong></li>
-    </ul>
-  </div>
+  <!-- Resumen del día -->
+  
 
-  <div class="notificaciones">
+  <!-- Notificaciones -->
+  <div class="notificaciones" *ngIf="notificaciones && notificaciones.length > 0">
     <h3>🔔 Notificaciones</h3>
     <ul>
       <li *ngFor="let n of notificaciones">{{ n }}</li>
     </ul>
   </div>
+
+  <!-- Pedidos de delivery pendientes -->
+  <div class="pedidos-pendientes" *ngIf="pedidos && pedidos.length > 0">
+    <h3>📦 Pedidos Delivery Pendientes</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>ID Venta</th>
+          <th>Cliente</th>
+          <th>Dirección de entrega</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pedido of pedidos">
+          <td>{{ pedido.idVenta }}</td>
+          <td>{{ pedido.usuario?.nombres }} {{ pedido.usuario?.apePaterno }} {{ pedido.usuario?.apeMaterno }}</td>
+          <td>{{ pedido.direccionEntrega }}</td>
+          <td>S/ {{ pedido.total }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Mensaje si no hay pedidos pendientes -->
+  <div *ngIf="pedidos && pedidos.length === 0">
+    <p>No hay pedidos de delivery pendientes.</p>
+  </div>
 </div>
+
+

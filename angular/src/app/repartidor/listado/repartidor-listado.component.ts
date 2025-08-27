@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RepartidorService, VentaDTO } from '../../cliente/service/repartidor.service';
+import { catchError, firstValueFrom, forkJoin, map, Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-listado',
@@ -7,32 +9,82 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./repartidor-listado.component.css'],
   imports :[CommonModule]
 })
-export class RepartidorListadoComponent {
-  pedidos = [
-    {
-      id: 1,
-      cliente: 'Juan Pérez',
-      direccion: 'Av. Los Olivos 123',
-      precio: 48.90,
-      tipoPago: 'Yape'
-    },
-    {
-      id: 2,
-      cliente: 'María López',
-      direccion: 'Calle 12, Mz B, Lt 4',
-      precio: 32.00,
-      tipoPago: 'Efectivo'
-    }
-  ];
+export class RepartidorListadoComponent implements OnInit {
+  pedidos: VentaDTO[] = [];
+  pedidoSeleccionado: VentaDTO | null = null;
 
-  pedidoSeleccionado: any = null;
+  constructor(private repartidorService: RepartidorService) {}
 
-    ngOnInit(): void {
-    console.log('Pedidos cargados:', this.pedidos);
+  ngOnInit(): void {
+    this.cargarPedidos();
   }
 
-  verDetalle(pedido: any) {
-    console.log('Ver detalle de pedido:', pedido);
+convertirCoordenadasADireccion(lat?: number, lng?: number): Observable<string> {
+  return new Observable(observer => {
+    if (lat == null || lng == null) {
+      observer.next('Dirección desconocida');
+      observer.complete();
+      return;
+    }
+
+    if (!google || !google.maps || !google.maps.Geocoder) {
+      observer.next('Google Maps no cargado');
+      observer.complete();
+      return;
+    }
+
+    const geocoder = new google.maps.Geocoder();
+    geocoder.geocode({ location: { lat, lng } }, (results, status) => {
+      if (status === 'OK' && results && results[0]) {
+        observer.next(results[0].formatted_address);
+        observer.complete();
+      } else {
+        observer.next('No se pudo obtener dirección');
+        observer.complete();
+      }
+    });
+  });
+}
+
+
+
+
+
+cargarPedidos(): void {
+  this.repartidorService.obtenerPedidosDeliveryPendientes().subscribe({
+    next: (data) => {
+      console.log('Datos recibidos del backend:', data); // <-- aquí
+      if (!data || data.length === 0) {
+        this.pedidos = [];
+        return;
+      }
+
+      const pedidosConDireccion$ = data.map(pedido =>
+        this.convertirCoordenadasADireccion(pedido.latitud, pedido.longitud).pipe(
+          map(direccionLegible => ({ ...pedido, direccionLegible }))
+        )
+      );
+
+      forkJoin(pedidosConDireccion$).subscribe({
+        next: pedidos => {
+          this.pedidos = pedidos;
+          console.log('Pedidos con dirección legible:', this.pedidos);
+        },
+        error: err => {
+          console.error('Error al procesar pedidos:', err);
+          this.pedidos = data; // fallback
+        }
+      });
+    },
+    error: err => console.error('Error al traer pedidos:', err)
+  });
+}
+
+
+
+
+
+  verDetalle(pedido: VentaDTO) {
     this.pedidoSeleccionado = pedido;
   }
 
@@ -41,7 +93,10 @@ export class RepartidorListadoComponent {
   }
 
   confirmarEntrega() {
-    alert('Entrega confirmada.');
-    this.cerrarDetalle();
+    if (this.pedidoSeleccionado) {
+      alert(`Entrega confirmada para ${this.pedidoSeleccionado.usuario.nombres}`);
+      this.cerrarDetalle();
+    }
   }
 }
+

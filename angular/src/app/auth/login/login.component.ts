@@ -66,7 +66,7 @@ ngOnInit(): void {
               AlertService.success(`¡Bienvenido, ${usuario.nombres}!`);
               switch (rolDescripcion) {
                 case 'A':
-                  this.router.navigate(['/admin/dashboard']);
+                  this.router.navigate(['/admin/crudProducto']);
                   break;
                 case 'C':
                   this.router.navigate(['/cliente/index']);
