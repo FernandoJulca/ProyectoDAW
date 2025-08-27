@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +22,29 @@ public class ProductoService {
 	private IProductoRepository productoRepository;
 
 	public Page<Producto> getProducteForCategorie(ProductoFilter filter, Pageable pageable) {
-		if (filter.getIdCategorias() == null || filter.getIdCategorias().isEmpty()) {
-			return productoRepository.findProductsActive(pageable);
-		} else {
-			return productoRepository.findAllWithFilter(filter.getIdCategorias(), pageable);
-		}
+	    Page<Producto> productPage;
+
+	    if (filter.getIdCategorias() == null || filter.getIdCategorias().isEmpty()) {
+	        productPage = productoRepository.findProductsActive(pageable);
+	    } else {
+	        productPage = productoRepository.findAllWithFilter(filter.getIdCategorias(), pageable);
+	    }
+
+	    List<Producto> productos = productPage.getContent();
+	    List<Producto> productosConBase64 = convertImagesToBase64(productos);
+	    return new PageImpl<>(productosConBase64, pageable, productPage.getTotalElements());
 	}
 
+	
+	private List<Producto> convertImagesToBase64(List<Producto> productos) {
+	    for (Producto producto : productos) {
+	        if (producto.getImagenBytes() != null) {
+	            producto.setBase64Img(Base64.getEncoder().encodeToString(producto.getImagenBytes()));
+	        }
+	    }
+	    return productos;
+	}
+	
 	public long countProductos() {
 		return productoRepository.count();
 	}
