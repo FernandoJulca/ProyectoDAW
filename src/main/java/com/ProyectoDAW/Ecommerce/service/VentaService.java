@@ -286,6 +286,18 @@ public class VentaService {
 		return ventaRepository.ListadoVentaFechaAndTipoVentaNull();
 	}
 	
+	// LISTADOS PARA LOS GRAFICOS
+	public List<Object[]> listadoVentaPorMes(){
+		return ventaRepository.listadoVentaPorMes();
+	}
+	
+	public List<Object[]>listadoDeTipoDeVentasPorMes(){
+		return ventaRepository.listadoDeTipoDeVentasPorMes();
+	}
+	
+	public List<Object[]>listadoDeDistroPorVentas(){
+		return ventaRepository.listaVentaPorDistrito();
+	}
 	@Transactional
 	public void marcarComoEntregado(Integer idVenta) {
         ventaRepository.actualizarEstadoEntregado(idVenta);

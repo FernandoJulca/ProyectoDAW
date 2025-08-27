@@ -2,6 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Producto } from '../../shared/model/producto.model';
+import { ProductoPorCategoriaDTO } from '../../shared/dto/productoPorCategoriaDTO.model';
+import { ProductoPorProveedor } from '../../shared/dto/productoPorProveedor.model';
 
 @Injectable({
   providedIn: 'root'
@@ -44,4 +46,17 @@ export class ProductoServiceService {
    urlBase+=`?orden=${orden}`
    return this.http.get<Producto[]>(urlBase);
   }
+
+  //para el grafico
+  listadoDeProductoPorCategoria():Observable<ProductoPorCategoriaDTO[]>{
+    return this.http.get<ProductoPorCategoriaDTO[]>(`${this.url}/listadoProductoCategoria`)
+  }
+
+  listadoDeProductoPorProveedor():Observable<ProductoPorProveedor[]>{
+    return this.http.get<ProductoPorProveedor[]>(`${this.url}/listadoProductoProveedor`)
+  }
+
+/*  listadoDeVentasPorMes():Observable<VentaPorFechasDTO[]>{
+    return this.http.get<VentaPorFechasDTO[]>(`${this.url}/ListaMes`)
+  }*/
 }

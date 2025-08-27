@@ -1,55 +1,55 @@
-<mat-card>
-  <h2>Nuevo Producto</h2>
+<mat-card class="card-form">
+  <h2 class="titulo-form"> Editar Producto</h2>
 
-  <form (ngSubmit)="actualizarProducto()">
+  <form (ngSubmit)="actualizarProducto()" class="form-producto">
 
-    <mat-form-field class="w-full">
+    <mat-form-field appearance="outline" class="w-full">
       <mat-label>ID</mat-label>
       <input matInput [(ngModel)]="producto.idProducto" name="idProducto" readonly />
     </mat-form-field>
 
-
-    <mat-form-field class="w-full">
+    <mat-form-field appearance="outline" class="w-full">
       <mat-label>Nombre</mat-label>
       <input matInput [(ngModel)]="producto.nombre" name="nombre" required />
     </mat-form-field>
 
-    <div class="container-md">
-      <img  class="img-thumbnail" [src]="'data:imagen/jpeg;base64,' + producto.base64Img ">
+    <div class="img-preview">
+      <label> Imagen actual</label>
+      <img class="img-thumbnail" [src]="'data:image/jpeg;base64,' + producto.base64Img" alt="Producto" />
     </div>
 
-    <div class="container-md">
-      <label>Seleccione una imagen nueva</label>
-      <input type="file" name="imagen" (change)="onFileSelect($event)">
+    <div class="file-upload">
+      <label for="fileInput">Subir nueva imagen</label>
+      <input id="fileInput" type="file" name="imagen" (change)="onFileSelect($event)" />
     </div>
 
-    <mat-form-field class="w-full">
-      <mat-label>descripcion</mat-label>
-      <input matInput [(ngModel)]="producto.descripcion" name="descripcion" required />
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Descripción</mat-label>
+      <textarea matInput [(ngModel)]="producto.descripcion" name="descripcion" required></textarea>
     </mat-form-field>
 
-    <mat-form-field class="w-full">
-      <mat-label>Proveedor</mat-label>
-      <input matInput [(ngModel)]="producto.proveedor.idProveedor" name="proveedor" />
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Proveedor (ID)</mat-label>
+      <input matInput type="number" [(ngModel)]="producto.proveedor.idProveedor" name="proveedor" />
     </mat-form-field>
 
-    <mat-form-field class="w-full">
-      <mat-label>Categoria</mat-label>
-      <input matInput [(ngModel)]="producto.categoria.idCategoria" name="categoria" />
+    <mat-form-field appearance="outline" class="w-full">
+      <mat-label>Categoría (ID)</mat-label>
+      <input matInput type="number" [(ngModel)]="producto.categoria.idCategoria" name="categoria" />
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field appearance="outline" class="w-full">
       <mat-label>Precio</mat-label>
-      <input matInput [(ngModel)]="producto.precio" name="precio" required />
+      <input matInput type="number" [(ngModel)]="producto.precio" name="precio" required />
     </mat-form-field>
 
-    <mat-form-field class="w-full">
+    <mat-form-field appearance="outline" class="w-full">
       <mat-label>Stock</mat-label>
-      <input matInput [(ngModel)]="producto.stock" name="stock" required />
+      <input matInput type="number" [(ngModel)]="producto.stock" name="stock" required />
     </mat-form-field>
 
-
-
-    <button mat-raised-button color="primary" type="submit">Actualizar</button>
+    <div class="acciones">
+      <button mat-raised-button color="primary" type="submit"> Actualizar</button>
+    </div>
   </form>
 </mat-card>

@@ -3,7 +3,9 @@ package com.ProyectoDAW.Ecommerce.controller;
 import java.io.ByteArrayOutputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
@@ -22,7 +24,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
+
+import com.ProyectoDAW.Ecommerce.dto.VentaPorDistrito;
+import com.ProyectoDAW.Ecommerce.dto.VentaPorFechasDTO;
+import com.ProyectoDAW.Ecommerce.dto.VentaPorTipoVentaMesDTO;
+
 import com.ProyectoDAW.Ecommerce.dto.VentaDeliveryDTO;
+
 import com.ProyectoDAW.Ecommerce.model.DetalleVenta;
 import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.service.VentaService;
@@ -209,4 +217,72 @@ public class VentaController {
 	        }
 	    }
 	
+	@GetMapping("/ListaMes")
+	 public ResponseEntity<List<VentaPorFechasDTO>> getVentasPorMes() {
+        try {
+
+            List<Object[]> resultados = ventaService.listadoVentaPorMes();
+            
+            List<VentaPorFechasDTO> ventasPorMes = resultados.stream()
+                .map(row -> {
+                    String mes = ((String) row[0]).trim();
+                    int ventasTotales = ((Number) row[1]).intValue();
+                    return new VentaPorFechasDTO(mes, ventasTotales);
+                })
+                .collect(Collectors.toList());
+                
+            return ResponseEntity.ok(ventasPorMes);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(Collections.emptyList());
+        }
+    }
+	
+	@GetMapping("/listoVentaTipo")
+	public ResponseEntity<List<VentaPorTipoVentaMesDTO>>getListadoVenta(){
+		try {
+			List<Object[]>result = ventaService.listadoDeTipoDeVentasPorMes();
+			
+			List<VentaPorTipoVentaMesDTO> ventaPorTipoMes = result.stream()
+					 .map(row -> {
+		                    String mes = ((String) row[0]).trim();
+		                    Object tipoObject = row[1];
+		                    String tipoVenta= tipoObject instanceof Character 
+		                            ? tipoObject.toString() 
+		                                    : ((String) tipoObject).trim();
+		                    int cantidadVentas = ((Number) row[2]).intValue();
+		                    return new VentaPorTipoVentaMesDTO(mes,tipoVenta ,cantidadVentas);
+		                })
+		                .collect(Collectors.toList());
+			   return ResponseEntity.ok(ventaPorTipoMes);
+			
+		} catch (Exception e) {
+			  e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body(Collections.emptyList());
+		}
+	}
+	
+	@GetMapping("/listadoVentaMes")
+	public ResponseEntity<List<VentaPorDistrito>>getListadoMesDistrito(){
+			try {
+				
+				List<Object[]>result = ventaService.listadoDeDistroPorVentas();
+				
+				List<VentaPorDistrito> ventaPorDistrito = result.stream()
+						 .map(row -> {
+			                    String mes = ((String) row[0]).trim();
+			                    int ventasTotales = ((Number) row[1]).intValue();
+			                    return new VentaPorDistrito(mes,ventasTotales);
+			                })
+			                .collect(Collectors.toList());
+				   return ResponseEntity.ok(ventaPorDistrito);
+			} catch (Exception e) {
+				e.printStackTrace();
+	            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+	                .body(Collections.emptyList());
+			}
+	}
 }

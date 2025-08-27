@@ -26,7 +26,8 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./repartidor/repartidor.module').then((m) => m.RepartidorModule),
   },
-  { path: '', redirectTo: 'cliente/index', pathMatch: 'full' },
 
-{ path: '**', redirectTo: 'auth/login' },
+
+  { path: '', redirectTo: 'cliente/index', pathMatch: 'full' },
+  { path: '**', redirectTo: 'auth/login' },
 ];
