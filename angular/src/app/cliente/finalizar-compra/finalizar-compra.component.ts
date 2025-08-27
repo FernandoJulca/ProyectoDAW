@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DetalleVenta } from '../../shared/model/detalleVenta.model';
 import { CarritoService } from '../service/carro.service';
 import { CommonModule } from '@angular/common';
@@ -9,11 +9,14 @@ import { Usuario } from '../../shared/model/usuario.model';
 import { AlertService } from '../../util/alert.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../service/auth.service';
+import { GoogleMapsModule, MapMarker } from '@angular/google-maps';
+import { VentaDeliveryDTO } from '../service/repartidor.service';
+
 declare var bootstrap: any;
 
 @Component({
   selector: 'app-finalizar-compra',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, GoogleMapsModule],
   templateUrl: './finalizar-compra.component.html',
   styleUrl: './finalizar-compra.component.css',
 })
@@ -21,6 +24,14 @@ export class FinalizarCompraComponent implements OnInit {
   carrito: DetalleVenta[] = [];
   total: number = 0;
   metodoPago: 'P' | 'R' = 'P';
+    zoom = 15;
+center: google.maps.LatLngLiteral = { lat: -12.0464, lng: -77.0428 }; // Ubicación inicial
+lat: number | null = null;
+  lng: number | null = null;
+
+  @ViewChild('marker') marker!: MapMarker;
+
+
 
   meses = Array.from({ length: 12 }, (_, i) => i + 1);
   anios = Array.from({ length: 46 }, (_, i) => 2025 + i);
@@ -41,26 +52,49 @@ export class FinalizarCompraComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.carritoService.getCarritoObservable().subscribe((items) => {
-      this.carrito = items;
-      this.total = this.carritoService.getTotal();
-    });
+  // 1️⃣ Cargar carrito y total
+  this.carritoService.getCarritoObservable().subscribe((items) => {
+    this.carrito = items;
+    this.total = this.carritoService.getTotal();
+    
+  });
 
-    // Fetch user data when the component initializes, but only if they are logged in.
-    if (this.authService.isLoggedIn()) {
-      this.authService.getUsuario().subscribe({
-        next: (usuario) => {
-          this.usuario = usuario;
-        },
-        error: (error) => {
-          console.error('Error al cargar datos de usuario:', error);
-          AlertService.error('Tus datos de usuario no están completos. Intenta recargar la página.');
-          // Optionally, log out the user if the token is invalid
-          this.authService.logout();
-        }
-      });
-    }
-  }
+  // 2️⃣ Cargar datos del usuario si está logeado
+  if (this.authService.isLoggedIn()) {
+    this.authService.getUsuario().subscribe({
+      next: (usuario) => {
+        if (usuario && usuario.nombres) {
+          this.usuario = usuario;
+
+          // 3️⃣ Inicializar centro del mapa con la dirección del usuario
+          // Si el usuario tiene lat/lng guardado, úsalo; si no, usa un default
+          if (usuario.latitud && usuario.longitud) {
+            this.center = { lat: usuario.latitud, lng: usuario.longitud };
+            this.lat = usuario.latitud;
+            this.lng = usuario.longitud;
+          } else {
+            this.center = { lat: -12.0464, lng: -77.0428 }; // Lima por defecto
+            this.lat = this.center.lat;
+            this.lng = this.center.lng;
+          }
+
+        } else {
+          AlertService.error('Tus datos de usuario no están completos.');
+          this.authService.logout();
+        }
+      },
+      error: (error) => {
+        console.error('Error al cargar datos de usuario:', error);
+        AlertService.error('Error al cargar tus datos. Intenta recargar la página.');
+        this.authService.logout();
+      }
+    });
+  } else {
+    // Redirigir a login si no hay sesión
+    this.router.navigate(['/login'], { queryParams: { message: 'login_required' } });
+  }
+}
+
 
   aumentarCantidad(idProducto: number) {
     try {
@@ -78,52 +112,61 @@ export class FinalizarCompraComponent implements OnInit {
     const target = event.target as HTMLImageElement;
     target.src = 'assets/no-imagen.jpg';
   }
-  realizarPago() {
-    console.log('Método de pago actual:', this.metodoPago);
-    if (this.carrito.length === 0) {
-      AlertService.info('El carrito está vacío.');
-      return;
-    }
+realizarPago() {
+    if (this.carrito.length === 0) {
+        AlertService.info('El carrito está vacío.');
+        return;
+    }
 
-    const venta: Venta = {
-      idVenta: 0,
-      usuario: this.usuario,
-      detalles: this.carrito,
-      total: this.total,
-      tipoVenta: this.metodoPago,
-    };
-    console.log('Venta a enviar:', venta);
-    this.compraService.finalizarVenta(venta).subscribe({
-      next: (response) => {
-        if (response.valor) {
-          AlertService.success(response.mensaje);
-          this.carritoService.limpiarCarrito();
+    if (this.metodoPago === 'R' && (!this.lat || !this.lng)) {
+        AlertService.error('Debes seleccionar tu ubicación en el mapa.');
+        return;
+    }
+    
+    const tipoVenta = this.metodoPago; 
 
-          const modalElement = document.getElementById('modalPago');
-          if (modalElement) {
-            const modal = bootstrap.Modal.getInstance(modalElement);
-            if (modal) {
-              modal.hide();
-            }
-          }
+    const ventaParaBackend: any = {
+        idUsuario: this.usuario.idUsuario,
+        total: this.total,
+        tipoVenta: tipoVenta,
+        estado: 'P',
+        fechaRegistro: new Date().toISOString(),
+        direccionEntrega: tipoVenta === 'R' ? this.usuario.direccion : null,
+        latitud: tipoVenta === 'R' ? this.lat : null,
+        longitud: tipoVenta === 'R' ? this.lng : null,
+        detalles: this.carrito.map(d => ({
+            idProducto: d.producto.idProducto,
+            cantidad: d.cantidad,
+            subTotal: d.subTotal
+        }))
+    };
 
-          this.total = 0;
-          this.carrito = [];
-        } else {
-          AlertService.error(response.mensaje);
-        }
-        console.log('Respuesta:', response);
-      },
-      error: (error) => {
-        console.log('error:', error);
-        AlertService.error(
-          'Error al procesar la compra: ' +
-            (error.error || error.message || 'Intente más tarde')
-        );
-      },
-    });
-  }
+    this.compraService.guardarVentaDelivery(ventaParaBackend).subscribe({
+        next: response => {
+            if (response.valor) {
+                AlertService.success(response.mensaje);
+                this.carritoService.limpiarCarrito();
 
+                // --- Start of new code ---
+                // Get the modal instance and hide it
+                const modalElement = document.getElementById('modalPago');
+                if (modalElement) {
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    if (modal) {
+                        modal.hide();
+                    }
+                }
+                // --- End of new code ---
+
+            } else {
+                AlertService.error(response.mensaje);
+            }
+        },
+        error: err => {
+            AlertService.error('Error al procesar la compra: ' + err.message);
+        }
+    });
+}
   // En tu FinalizarCompraComponent
 abrirModalPago() {
   // Correctly call the function to get its boolean result
@@ -162,4 +205,23 @@ abrirModalPago() {
   irProducto() {
     this.router.navigate(['/cliente/producto']);
   }
+
+    onMapClick(event: google.maps.MapMouseEvent) {
+  const coords = event.latLng;
+  if (coords) {
+    this.lat = coords.lat();
+    this.lng = coords.lng();
+    this.center = { lat: this.lat, lng: this.lng };
+  }
 }
+
+ onMarkerDragEnd(): void {
+    const position = this.marker.getPosition();
+    if (position) {
+      this.lat = position.lat();
+      this.lng = position.lng();
+      console.log('Nueva posición del marcador:', this.lat, this.lng);
+    }
+  }
+}
+

@@ -20,4 +20,8 @@ export class CompraService {
     const url = `${this.baseUrl}/${idCliente}/pdf/${idVenta}`;
     return this.http.get(url, { responseType: 'blob' });
   }
+
+   guardarVentaDelivery(ventaDelivery: any): Observable<ResultadoResponse> {
+    return this.http.post<ResultadoResponse>(`${this.baseUrl}/delivery`, ventaDelivery);
+  }
 }

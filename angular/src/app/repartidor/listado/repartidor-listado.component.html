@@ -1,25 +1,25 @@
 <div class="repartidor-container">
-  <h2 class="titulo">Mis pedidos</h2>
+  <h2 class="titulo">Pedidos Pendientes</h2>
 
-  <div class="pedido-card" *ngFor="let pedido of pedidos">
-    <div class="pedido-info">
-      <p><strong>Pedido #{{pedido.id}}</strong></p>
-      <p>Dirección: {{pedido.direccion}}</p>
-      <p>Cliente: {{pedido.cliente}}</p>
-    </div>
-    <button (click)="verDetalle(pedido)">Ver detalle</button>
-  </div>
+  <ng-container *ngIf="pedidos.length > 0; else noPedidos">
+    <div class="pedido-grid">
+      <div *ngFor="let pedido of pedidos" class="pedido-card">
+        <div class="card-header">
+          <div class="icono-usuario">👤</div>
+          <h4>{{ pedido.usuario.nombres }}</h4>
+        </div>
 
-  <!-- Detalle del pedido (como una ventanita modal o tarjeta fija) -->
-  <div *ngIf="pedidoSeleccionado" class="detalle-overlay">
-    <div class="detalle-card">
-      <h3>Detalle del Pedido</h3>
-      <p><strong>Cliente:</strong> {{pedidoSeleccionado.cliente}}</p>
-      <p><strong>Dirección:</strong> {{pedidoSeleccionado.direccion}}</p>
-      <p><strong>Total:</strong> S/ {{pedidoSeleccionado.precio}}</p>
-      <p><strong>Pago:</strong> {{pedidoSeleccionado.tipoPago}}</p>
-      <button class="confirmar" (click)="confirmarEntrega()">✅ Entrega realizada</button>
-      <button class="cerrar" (click)="cerrarDetalle()">Cerrar</button>
+        <div class="card-body">
+          <p><strong>Dirección:</strong> {{ pedido.direccionLegible || pedido.direccionEntrega }}</p>
+          <p><strong>Total:</strong> <span class="precio"> S/{{ pedido.total | number:'1.2-2' }}</span></p>
+        </div>
+
+        <button (click)="verDetalle(pedido)">Ver Ubicación</button>
+      </div>
     </div>
-  </div>
+  </ng-container>
+
+  <ng-template #noPedidos>
+    <p class="sin-pedidos">No hay pedidos pendientes.</p>
+  </ng-template>
 </div>

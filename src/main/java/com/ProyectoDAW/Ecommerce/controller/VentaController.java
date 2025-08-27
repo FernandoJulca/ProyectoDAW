@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 
@@ -15,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,9 +24,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ProyectoDAW.Ecommerce.dto.ResultadoResponse;
+
 import com.ProyectoDAW.Ecommerce.dto.VentaPorDistrito;
 import com.ProyectoDAW.Ecommerce.dto.VentaPorFechasDTO;
 import com.ProyectoDAW.Ecommerce.dto.VentaPorTipoVentaMesDTO;
+
+import com.ProyectoDAW.Ecommerce.dto.VentaDeliveryDTO;
+
 import com.ProyectoDAW.Ecommerce.model.DetalleVenta;
 import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.service.VentaService;
@@ -63,6 +69,18 @@ public class VentaController {
 	    }
 	}
 	
+	
+	/*
+	 * @PatchMapping("/estado/{idVenta}") public ResponseEntity<ResultadoResponse>
+	 * actualizarEstado(@PathVariable Integer idVenta, @RequestBody Map<String,
+	 * String> body) { String nuevoEstado = body.get("estado"); ResultadoResponse
+	 * response = ventaService.actualizarEstado(idVenta, nuevoEstado); if
+	 * (response.isValor()) { return ResponseEntity.ok(response); } return
+	 * ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response); }
+	 */
+
+	
+	
 	@GetMapping("/{idUsuario}/pdf/{idVenta}")
 	public ResponseEntity<byte[]> descargarVentaPdf(@PathVariable Integer idUsuario, @PathVariable Integer idVenta) {
 	    Venta venta = ventaService.obtenerVentaPorUsuario(idVenta, idUsuario);
@@ -92,7 +110,15 @@ public class VentaController {
 
 	        String estadoTexto = venta.getTipoVenta().equals("P") ? "Presencial" :
 	                             venta.getTipoVenta().equals("R") ? "Remota" : "Estado desconocido";
-
+	        String rol = venta.getUsuario().getRol().getDescripcion();
+	        String rolTexto;
+	        if ("C".equals(rol)) {
+	            rolTexto = "Cliente";
+	        } else if ("V".equals(rol)) {
+	            rolTexto = "Vendedor";
+	        } else {
+	            rolTexto = "Usuario"; 
+	        }
 	        // Encabezado
 	        Paragraph tituloEmpresa = new Paragraph("Toolify", empresaFont);
 	        tituloEmpresa.setAlignment(Element.ALIGN_CENTER);
@@ -109,7 +135,7 @@ public class VentaController {
 	        document.add(Chunk.NEWLINE);
 
 	        document.add(new Paragraph("Venta ID: " + venta.getIdVenta(), tituloFont));
-	        document.add(new Paragraph("Cliente: " + venta.getUsuario().getNombres(), textoFont));
+	        document.add(new Paragraph(rolTexto + ": " + venta.getUsuario().getNombres(), textoFont));
 	        document.add(new Paragraph("Dirección: " + venta.getUsuario().getDireccion(), textoFont));
 	        document.add(new Paragraph("Fecha: " + venta.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")), textoFont));
 	        document.add(new Paragraph("Tipo de venta: " + estadoTexto, textoFont));
@@ -181,6 +207,15 @@ public class VentaController {
 		
 	};
 	
+	 @PostMapping("/delivery")
+	    public ResponseEntity<ResultadoResponse> guardarVentaDelivery(@RequestBody VentaDeliveryDTO ventaDTO) {
+	        ResultadoResponse response = ventaService.guardarVentaDelivery(ventaDTO);
+	        if (response.isValor()) {
+	            return ResponseEntity.ok(response);
+	        } else {
+	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+	        }
+	    }
 	
 	@GetMapping("/ListaMes")
 	 public ResponseEntity<List<VentaPorFechasDTO>> getVentasPorMes() {

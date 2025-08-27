@@ -85,7 +85,7 @@
         </div>
 
         <!-- Cuerpo -->
-        <div class="modal-body px-4 py-4">
+        <div class="modal-body px-4 py-4" [ngClass]="{'scrollable-content': metodoPago === 'R'}">
           <!-- Información del usuario -->
           <div class="row g-3 mb-4">
             <div class="col-md-6">
@@ -123,11 +123,36 @@
             <input class="form-check-input" type="radio" name="payment" id="pagoTarjeta" value="R"
               [(ngModel)]="metodoPago" required />
             <label class="form-check-label" for="pagoTarjeta">
-              Envío a domicilio y pagar con tarjeta débito/crédito </label>
+              Envío a domicilio y pagar con tarjeta débito/crédito
+            </label>
           </div>
 
+<!-- Contenedor del mapa, solo se muestra si metodoPago === 'R' -->
+<div *ngIf="metodoPago === 'R'" class="mapa-container mt-3">
+  <google-map 
+    height="200px" 
+    width="100%" 
+    [center]="center" 
+    [zoom]="zoom"
+    (mapClick)="onMapClick($event)">
+    
+    <!-- Mostrar el marcador en el lugar donde se hace clic -->
+ <map-marker
+  #marker
+  *ngIf="lat && lng"
+  [position]="{ lat: lat, lng: lng }"
+  [options]="{ draggable: true }"
+  (mapDragEnd)="onMarkerDragEnd()">
+</map-marker>
+
+  </google-map>
+
+  <p *ngIf="lat && lng">Coordenadas seleccionadas: {{ lat }}, {{ lng }}</p>
+</div>
+
+
           <!-- Datos tarjeta (condicional) -->
-          <div *ngIf="metodoPago === 'R'"  class="mt-3 border rounded p-2 bg-light" style="font-size: 0.92rem;">
+          <div *ngIf="metodoPago === 'R'" class="mt-3 border rounded p-2 bg-light" style="font-size: 0.92rem;">
             <div class="mb-3">
               <label for="tarjetaNumber" class="form-label fw-semibold">Número de tarjeta</label>
               <input type="text" id="tarjetaNumber" name="tarjetaNumber" class="form-control" maxlength="19"
