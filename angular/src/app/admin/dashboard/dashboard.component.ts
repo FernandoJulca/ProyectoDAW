@@ -3,6 +3,7 @@ import { ComponenteUnoComponent } from '../graficosComponentes/componente-uno/co
 import { ComponenteDosComponent } from '../graficosComponentes/componente-dos/componente-dos.component';
 import { ComponenteTresComponent } from '../graficosComponentes/componente-tres/componente-tres.component';
 import { ComponenteCuatroComponent } from "../graficosComponentes/componente-cuatro/componente-cuatro.component";
+import { ComponenteCincoComponent } from '../graficosComponentes/componente-cinco/componente-cinco.component';
 
 @Component({
   selector: 'app-dashboard',
@@ -11,7 +12,8 @@ import { ComponenteCuatroComponent } from "../graficosComponentes/componente-cua
     ComponenteUnoComponent,
     ComponenteDosComponent,
     ComponenteTresComponent,
-    ComponenteCuatroComponent
+    ComponenteCuatroComponent,
+    ComponenteCincoComponent
 ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'

@@ -89,18 +89,26 @@ public interface IVentaRepository extends JpaRepository<Venta, Integer> {
 	List<VentaFiltroFechaTipoUsuario> ListadoVentaFechaAndTipoVentaNull();
 
 	@Query(value = """
-		    SELECT 
-		        TO_CHAR(fecha, 'TMMonth') AS mes,
-		        COUNT(*) AS ventas_totales
-		    FROM tb_venta
-		    WHERE EXTRACT(YEAR FROM fecha) = 2025
-		    GROUP BY TO_CHAR(fecha, 'TMMonth'), EXTRACT(MONTH FROM fecha)
-		    ORDER BY EXTRACT(MONTH FROM fecha)
-		""", nativeQuery = true)
+			    SELECT
+			        TO_CHAR(fecha, 'TMMonth') AS mes,
+			        COUNT(*) AS ventas_totales
+			    FROM tb_venta
+			    WHERE EXTRACT(YEAR FROM fecha) = 2025
+			    GROUP BY TO_CHAR(fecha, 'TMMonth'), EXTRACT(MONTH FROM fecha)
+			    ORDER BY EXTRACT(MONTH FROM fecha)
+			""", nativeQuery = true)
 	List<Object[]> listadoVentaPorMes();
 
-	
-	
-	
-	
+	@Query(value = """
+			SELECT
+			     TO_CHAR(fecha, 'TMMonth') AS mes,
+			     tipo_venta,
+			     COUNT(*) AS cantidadVentas
+			 FROM tb_venta
+			 WHERE EXTRACT(YEAR FROM fecha) = 2025
+			 GROUP BY TO_CHAR(fecha, 'TMMonth'), tipo_venta, EXTRACT(MONTH FROM fecha)
+			 ORDER BY EXTRACT(MONTH FROM fecha)
+			""", nativeQuery = true)
+	List<Object[]> listadoDeTipoDeVentasPorMes();
+
 }

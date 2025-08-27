@@ -189,8 +189,13 @@ public class VentaService {
 		return ventaRepository.ListadoVentaFechaAndTipoVentaNull();
 	}
 	
-	//
+	// LISTADOS PARA LOS GRAFICOS
 	public List<Object[]> listadoVentaPorMes(){
 		return ventaRepository.listadoVentaPorMes();
 	}
+	
+	public List<Object[]>listadoDeTipoDeVentasPorMes(){
+		return ventaRepository.listadoDeTipoDeVentasPorMes();
+	}
+	
 }
