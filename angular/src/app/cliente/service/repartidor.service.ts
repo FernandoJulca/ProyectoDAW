@@ -85,9 +85,10 @@ export class RepartidorService {
 
   marcarPedidoComoEntregado(idVenta: number): Observable<string> {
   return this.http.put(`${this.baseUrl}/marcar-entregado/${idVenta}`, null, {
-    responseType: 'text'
+    responseType: 'text' 
   });
 }
+
 
 
 }

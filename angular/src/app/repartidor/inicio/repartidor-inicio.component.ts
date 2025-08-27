@@ -209,19 +209,21 @@ actualizarMarcadorYo(): void {
 }
 
   confirmarEntregaSimulada(idVenta: number): void {
-    this.repartidorService.marcarPedidoComoEntregado(idVenta).subscribe({
-      next: (mensaje) => {
-        AlertService.success(mensaje);
-        this.simulandoRecorrido = false;
-        this.pedidoSeleccionado = undefined;
-        this.cargarPedidos(); // actualiza la lista
-      },
-      error: (err) => {
-        console.error('Error al confirmar entrega:', err);
-        alert('Error al confirmar entrega');
-      },
-    });
-  }
+  this.repartidorService.marcarPedidoComoEntregado(idVenta).subscribe({
+    next: (mensaje) => {
+      AlertService.success(mensaje);
+      this.simulandoRecorrido = false;
+      this.pedidoSeleccionado = undefined;
+      this.cargarPedidos();
+    },
+    error: (err) => {
+      console.error('Error al confirmar entrega:', err);
+      alert('Error al confirmar entrega');
+    },
+  });
+}
+
+
   extraerPuntosDeRuta(directionsResult: google.maps.DirectionsResult): google.maps.LatLngLiteral[] {
   const puntos: google.maps.LatLngLiteral[] = [];
 

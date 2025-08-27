@@ -1,6 +1,7 @@
 package com.ProyectoDAW.Ecommerce.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ProyectoDAW.Ecommerce.dto.VentaDTO;
 import com.ProyectoDAW.Ecommerce.dto.VentaDeliveryDTO;
 import com.ProyectoDAW.Ecommerce.service.VentaService;
 
@@ -31,7 +31,7 @@ public class RepartidorController {
     }
     
     @PutMapping("/marcar-entregado/{idVenta}")
-    public ResponseEntity<String> marcarVentaComoEntregada(@PathVariable Integer idVenta) {
+    public ResponseEntity<?> marcarVentaComoEntregada(@PathVariable Integer idVenta) {
         ventaService.marcarComoEntregado(idVenta);
         return ResponseEntity.ok("Venta marcada como entregada");
     }
