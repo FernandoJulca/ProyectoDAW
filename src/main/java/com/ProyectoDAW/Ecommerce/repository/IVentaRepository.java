@@ -89,6 +89,14 @@ public interface IVentaRepository extends JpaRepository<Venta, Integer> {
 			""")
 	List<VentaFiltroFechaTipoUsuario> ListadoVentaFechaAndTipoVentaNull();
 
+    List<Venta> findByTipoVentaAndEstado(String tipoVenta, String estado);
+	
+    @Modifying
+    @Query("UPDATE Venta v SET v.estado = 'E' WHERE v.idVenta = :idVenta")
+    void actualizarEstadoEntregado(@Param("idVenta") Integer idVenta);
+	
+	
+	
 	@Query(value = """
 			    SELECT
 			        TO_CHAR(fecha, 'TMMonth') AS mes,

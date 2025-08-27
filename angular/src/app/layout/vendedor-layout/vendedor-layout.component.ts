@@ -18,7 +18,8 @@ import { AlertService } from '../../util/alert.service';
   styleUrl: './vendedor-layout.component.css'
 })
 export class VendedorLayoutComponent {
-  constructor(    private authService: AuthService,
+  constructor(    
+    private authService: AuthService,
     private userService: UserService,
     private router: Router){
       
