@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DetalleVenta } from '../../shared/model/detalleVenta.model';
 import { CarritoService } from '../service/carro.service';
 import { CommonModule } from '@angular/common';
@@ -9,7 +9,7 @@ import { Usuario } from '../../shared/model/usuario.model';
 import { AlertService } from '../../util/alert.service';
 import { Router } from '@angular/router';
 import { AuthService } from '../service/auth.service';
-import { GoogleMapsModule } from '@angular/google-maps';
+import { GoogleMapsModule, MapMarker } from '@angular/google-maps';
 import { VentaDeliveryDTO } from '../service/repartidor.service';
 
 declare var bootstrap: any;
@@ -26,8 +26,11 @@ export class FinalizarCompraComponent implements OnInit {
   metodoPago: 'P' | 'R' = 'P';
     zoom = 15;
 center: google.maps.LatLngLiteral = { lat: -12.0464, lng: -77.0428 }; // Ubicación inicial
-lat!: number;
-lng!: number;
+lat: number | null = null;
+  lng: number | null = null;
+
+  @ViewChild('marker') marker!: MapMarker;
+
 
 
   meses = Array.from({ length: 12 }, (_, i) => i + 1);
@@ -204,10 +207,21 @@ abrirModalPago() {
   }
 
     onMapClick(event: google.maps.MapMouseEvent) {
-  if (event.latLng) {
-    this.lat = event.latLng.lat();
-    this.lng = event.latLng.lng();
+  const coords = event.latLng;
+  if (coords) {
+    this.lat = coords.lat();
+    this.lng = coords.lng();
+    this.center = { lat: this.lat, lng: this.lng };
   }
 }
+
+ onMarkerDragEnd(): void {
+    const position = this.marker.getPosition();
+    if (position) {
+      this.lat = position.lat();
+      this.lng = position.lng();
+      console.log('Nueva posición del marcador:', this.lat, this.lng);
+    }
+  }
 }
 

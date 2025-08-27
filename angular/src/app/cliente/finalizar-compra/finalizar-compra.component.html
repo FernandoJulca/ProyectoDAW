@@ -127,12 +127,28 @@
             </label>
           </div>
 
-          <!-- Contenedor del mapa, solo se muestra si metodoPago === 'R' -->
-          <div *ngIf="metodoPago === 'R'" class="mapa-container mt-3">
-            <google-map height="100px" width="100%" [center]="center" [zoom]="zoom" (mapClick)="onMapClick($event)">
-            </google-map>
-            <p *ngIf="lat && lng">Coordenadas seleccionadas: {{ lat }}, {{ lng }}</p>
-          </div>
+<!-- Contenedor del mapa, solo se muestra si metodoPago === 'R' -->
+<div *ngIf="metodoPago === 'R'" class="mapa-container mt-3">
+  <google-map 
+    height="200px" 
+    width="100%" 
+    [center]="center" 
+    [zoom]="zoom"
+    (mapClick)="onMapClick($event)">
+    
+    <!-- Mostrar el marcador en el lugar donde se hace clic -->
+ <map-marker
+  #marker
+  *ngIf="lat && lng"
+  [position]="{ lat: lat, lng: lng }"
+  [options]="{ draggable: true }"
+  (mapDragEnd)="onMarkerDragEnd()">
+</map-marker>
+
+  </google-map>
+
+  <p *ngIf="lat && lng">Coordenadas seleccionadas: {{ lat }}, {{ lng }}</p>
+</div>
 
 
           <!-- Datos tarjeta (condicional) -->

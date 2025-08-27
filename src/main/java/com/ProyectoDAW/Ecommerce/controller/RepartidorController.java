@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -27,5 +29,10 @@ public class RepartidorController {
         List<VentaDeliveryDTO> pedidos = ventaService.obtenerPedidosDeliveryPendientes();
         return ResponseEntity.ok(pedidos);
     }
-	
+    
+    @PutMapping("/marcar-entregado/{idVenta}")
+    public ResponseEntity<String> marcarVentaComoEntregada(@PathVariable Integer idVenta) {
+        ventaService.marcarComoEntregado(idVenta);
+        return ResponseEntity.ok("Venta marcada como entregada");
+    }
 }

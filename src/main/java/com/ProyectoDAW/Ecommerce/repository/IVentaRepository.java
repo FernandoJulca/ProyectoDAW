@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -93,4 +94,8 @@ public interface IVentaRepository extends JpaRepository<Venta, Integer>{
     
     List<Venta> findByTipoVentaAndEstado(String tipoVenta, String estado);
     
+    @Modifying
+    @Query("UPDATE Venta v SET v.estado = 'E' WHERE v.idVenta = :idVenta")
+    void actualizarEstadoEntregado(@Param("idVenta") Integer idVenta);
+
 }

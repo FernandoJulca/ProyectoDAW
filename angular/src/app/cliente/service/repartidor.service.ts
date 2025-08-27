@@ -38,6 +38,7 @@ export interface DetalleVentaDTO {
 }
 
 export interface VentaDeliveryDTO {
+  idVenta: number; 
   idUsuario: number;
   total: number;
   direccionEntrega: string;
@@ -82,5 +83,11 @@ export class RepartidorService {
   return this.http.patch<ResultadoResponse>(`${this.baseUrl}/estado/${idVenta}`, { estado });
 }
 
-  
+  marcarPedidoComoEntregado(idVenta: number): Observable<string> {
+  return this.http.put(`${this.baseUrl}/marcar-entregado/${idVenta}`, null, {
+    responseType: 'text'
+  });
+}
+
+
 }

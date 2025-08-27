@@ -210,6 +210,7 @@ public class VentaService {
 
 	    return ventas.stream().map(venta -> {
 	        VentaDeliveryDTO dto = new VentaDeliveryDTO();
+	        dto.setIdVenta(venta.getIdVenta());
 	        dto.setIdUsuario(venta.getUsuario().getIdUsuario());
 	        dto.setUsuario(venta.getUsuario());
 	        dto.setTotal(BigDecimal.valueOf(venta.getTotal()));
@@ -284,5 +285,10 @@ public class VentaService {
 	public List<VentaFiltroFechaTipoUsuario>ListadoVentaFechaAndTipoVentaNull(){
 		return ventaRepository.ListadoVentaFechaAndTipoVentaNull();
 	}
+	
+	@Transactional
+	public void marcarComoEntregado(Integer idVenta) {
+        ventaRepository.actualizarEstadoEntregado(idVenta);
+    }
 	
 }

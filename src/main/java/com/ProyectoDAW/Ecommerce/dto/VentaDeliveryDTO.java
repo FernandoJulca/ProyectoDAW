@@ -15,6 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VentaDeliveryDTO {
+	private Integer idVenta;
     private Integer idUsuario;
     private Usuario usuario;
     private BigDecimal total;
