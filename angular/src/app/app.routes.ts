@@ -27,7 +27,7 @@ export const routes: Routes = [
       import('./repartidor/repartidor.module').then((m) => m.RepartidorModule),
   },
   /* Aun no se define */
-  { path: '', redirectTo: 'admin', pathMatch: 'full' },
+  { path: '', redirectTo: 'cliente/index', pathMatch: 'full' },
 
 { path: '**', redirectTo: 'auth/login' },
 ];
