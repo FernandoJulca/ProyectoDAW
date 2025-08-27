@@ -102,7 +102,15 @@ public class VentaController {
 
 	        String estadoTexto = venta.getTipoVenta().equals("P") ? "Presencial" :
 	                             venta.getTipoVenta().equals("R") ? "Remota" : "Estado desconocido";
-
+	        String rol = venta.getUsuario().getRol().getDescripcion();
+	        String rolTexto;
+	        if ("C".equals(rol)) {
+	            rolTexto = "Cliente";
+	        } else if ("V".equals(rol)) {
+	            rolTexto = "Vendedor";
+	        } else {
+	            rolTexto = "Usuario"; 
+	        }
 	        // Encabezado
 	        Paragraph tituloEmpresa = new Paragraph("Toolify", empresaFont);
 	        tituloEmpresa.setAlignment(Element.ALIGN_CENTER);
@@ -119,7 +127,7 @@ public class VentaController {
 	        document.add(Chunk.NEWLINE);
 
 	        document.add(new Paragraph("Venta ID: " + venta.getIdVenta(), tituloFont));
-	        document.add(new Paragraph("Cliente: " + venta.getUsuario().getNombres(), textoFont));
+	        document.add(new Paragraph(rolTexto + ": " + venta.getUsuario().getNombres(), textoFont));
 	        document.add(new Paragraph("Dirección: " + venta.getUsuario().getDireccion(), textoFont));
 	        document.add(new Paragraph("Fecha: " + venta.getFechaRegistro().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")), textoFont));
 	        document.add(new Paragraph("Tipo de venta: " + estadoTexto, textoFont));

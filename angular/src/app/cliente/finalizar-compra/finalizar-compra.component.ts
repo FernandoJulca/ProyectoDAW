@@ -53,6 +53,7 @@ lng!: number;
   this.carritoService.getCarritoObservable().subscribe((items) => {
     this.carrito = items;
     this.total = this.carritoService.getTotal();
+    
   });
 
   // 2️⃣ Cargar datos del usuario si está logeado
@@ -109,52 +110,60 @@ lng!: number;
     target.src = 'assets/no-imagen.jpg';
   }
 realizarPago() {
-  if (this.carrito.length === 0) {
-    AlertService.info('El carrito está vacío.');
-    return;
-  }
-
-  if (this.metodoPago === 'R' && (!this.lat || !this.lng)) {
-    AlertService.error('Debes seleccionar tu ubicación en el mapa.');
-    return;
-  }
-
-  const tipoVenta = this.metodoPago === 'R' ? 'D' : 'T'; // 'D' = Delivery, 'T' = Tienda
-
-  // Construimos un objeto compatible con el backend
-  const ventaParaBackend: any = {
-  idUsuario: this.usuario.idUsuario,
-  total: this.total,
-  tipoVenta: tipoVenta,
-  estado: 'P',
-  fechaRegistro: new Date().toISOString(),
-  direccionEntrega: tipoVenta === 'D' ? this.usuario.direccion : null,
-  latitud: tipoVenta === 'D' ? this.lat : null,
-  longitud: tipoVenta === 'D' ? this.lng : null,
-  detalles: this.carrito.map(d => ({
-    idProducto: d.producto.idProducto,
-    cantidad: d.cantidad,
-    subTotal: d.subTotal
-  }))
-  };
-
-  this.compraService.guardarVentaDelivery(ventaParaBackend).subscribe({
-    next: response => {
-      if (response.valor) {
-        AlertService.success(response.mensaje);
-        this.carritoService.limpiarCarrito();
-      } else {
-        AlertService.error(response.mensaje);
-      }
-    },
-    error: err => {
-      AlertService.error('Error al procesar la compra: ' + err.message);
+    if (this.carrito.length === 0) {
+        AlertService.info('El carrito está vacío.');
+        return;
     }
-  });
+
+    if (this.metodoPago === 'R' && (!this.lat || !this.lng)) {
+        AlertService.error('Debes seleccionar tu ubicación en el mapa.');
+        return;
+    }
+    
+    const tipoVenta = this.metodoPago; 
+
+    const ventaParaBackend: any = {
+        idUsuario: this.usuario.idUsuario,
+        total: this.total,
+        tipoVenta: tipoVenta,
+        estado: 'P',
+        fechaRegistro: new Date().toISOString(),
+        direccionEntrega: tipoVenta === 'R' ? this.usuario.direccion : null,
+        latitud: tipoVenta === 'R' ? this.lat : null,
+        longitud: tipoVenta === 'R' ? this.lng : null,
+        detalles: this.carrito.map(d => ({
+            idProducto: d.producto.idProducto,
+            cantidad: d.cantidad,
+            subTotal: d.subTotal
+        }))
+    };
+
+    this.compraService.guardarVentaDelivery(ventaParaBackend).subscribe({
+        next: response => {
+            if (response.valor) {
+                AlertService.success(response.mensaje);
+                this.carritoService.limpiarCarrito();
+
+                // --- Start of new code ---
+                // Get the modal instance and hide it
+                const modalElement = document.getElementById('modalPago');
+                if (modalElement) {
+                    const modal = bootstrap.Modal.getInstance(modalElement);
+                    if (modal) {
+                        modal.hide();
+                    }
+                }
+                // --- End of new code ---
+
+            } else {
+                AlertService.error(response.mensaje);
+            }
+        },
+        error: err => {
+            AlertService.error('Error al procesar la compra: ' + err.message);
+        }
+    });
 }
-
-
-
   // En tu FinalizarCompraComponent
 abrirModalPago() {
   // Correctly call the function to get its boolean result

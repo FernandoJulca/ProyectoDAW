@@ -161,7 +161,7 @@ public class VentaService {
 	        venta.setUsuario(usuarioRepository.findById(ventaDTO.getIdUsuario())
 	                        .orElseThrow(() -> new RuntimeException("Usuario no encontrado")));
 	        venta.setFechaRegistro(LocalDateTime.now());
-	        venta.setTipoVenta("D"); // Delivery
+	        venta.setTipoVenta(ventaDTO.getTipoVenta());
 	        venta.setEstado("P"); // Pendiente
 	        venta.setDireccionEntrega(ventaDTO.getDireccionEntrega());
 	        venta.setLatitud(ventaDTO.getLatitud());
@@ -196,7 +196,7 @@ public class VentaService {
 
 	        ventaRepository.save(venta);
 
-	        return new ResultadoResponse(true, "Venta delivery registrada correctamente.");
+	        return new ResultadoResponse(true, "Venta registrada correctamente.");
 	    } catch (Exception e) {
 	        return new ResultadoResponse(false, "Error al registrar la venta delivery: " + e.getMessage());
 	    }
@@ -206,7 +206,7 @@ public class VentaService {
 	
 	@Transactional
 	public List<VentaDeliveryDTO> obtenerPedidosDeliveryPendientes() {
-	    List<Venta> ventas = ventaRepository.findByTipoVentaAndEstado("D", "P"); // solo delivery pendientes
+	    List<Venta> ventas = ventaRepository.findByTipoVentaAndEstado("R", "P"); // solo delivery pendientes
 
 	    return ventas.stream().map(venta -> {
 	        VentaDeliveryDTO dto = new VentaDeliveryDTO();

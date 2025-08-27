@@ -11,12 +11,14 @@
 
 
 <google-map 
-  height="500px" 
-  width="100%" 
-  [center]="center" 
-  [zoom]="zoom"
+  height="500px" 
+  width="100%" 
+  [center]="center" 
+  [zoom]="zoom"
 >
-  <map-marker *ngFor="let m of markers" [position]="m.position" [label]="m.label"></map-marker>
-  
-  <map-directions-renderer *ngIf="directions" [directions]="directions!"></map-directions-renderer>
+  <ng-container *ngIf="markers.length > 0">
+    <map-marker *ngFor="let m of markers" [position]="m.position" [label]="m.label"></map-marker>
+  </ng-container>
+  
+  <map-directions-renderer *ngIf="directions" [directions]="directions!"></map-directions-renderer>
 </google-map>

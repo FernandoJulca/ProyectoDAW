@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { AuthService } from '../../cliente/service/auth.service';
 import { UserService } from '../../cliente/service/user.service';
 import { VentaDTO } from '../../shared/dto/ventaDTO.model';
@@ -6,13 +7,17 @@ import { RepartidorService, VentaDeliveryDTO } from '../../cliente/service/repar
 import { GoogleMap, MapDirectionsRenderer, MapMarker } from '@angular/google-maps';
 import { Router } from '@angular/router';
 
-
+// Define a new type for your marker data
+interface MarkerOptions {
+  position: google.maps.LatLngLiteral;
+  label: string;
+}
 
 @Component({
   selector: 'app-repartidor-inicio',
   templateUrl: './repartidor-inicio.component.html',
   styleUrls: ['./repartidor-inicio.component.css'],
-  imports: [GoogleMap, MapMarker, MapDirectionsRenderer]
+  imports: [GoogleMap, MapMarker, MapDirectionsRenderer, CommonModule]
 })
 export class RepartidorInicioComponent implements OnInit {
   repartidor: string = '';
@@ -30,8 +35,11 @@ export class RepartidorInicioComponent implements OnInit {
   zoom = 15;
   pedidoSeleccionado?: VentaDeliveryDTO;
   directions: google.maps.DirectionsResult | null = null;
+  
+  myLocation: google.maps.LatLngLiteral = { lat: 0, lng: 0 };
 
-  markers: google.maps.MarkerOptions[] = [];
+  // Use the new type for the markers array
+  markers: MarkerOptions[] = [];
 
   constructor(
     private repartidorService: RepartidorService,
@@ -43,26 +51,21 @@ export class RepartidorInicioComponent implements OnInit {
     this.cargarDatosRepartidor();
     this.cargarPedidos();
 
-    // Capturamos el pedido enviado por el router
     const statePedido = history.state.pedido as VentaDeliveryDTO | undefined;
-    if (statePedido) {
-      this.pedidoSeleccionado = statePedido;
-    }
-
-    // Obtener ubicación del repartidor
+    
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         position => {
-          this.center = {
+          this.myLocation = { 
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
+          this.center = this.myLocation; 
+          
+          this.markers.push({ position: this.myLocation, label: 'Yo' });
 
-          // Marcador del repartidor
-          this.markers.push({ position: this.center, label: 'Yo' });
-
-          // Mostrar ruta si hay pedido seleccionado
-          if (this.pedidoSeleccionado) {
+          if (statePedido) {
+            this.pedidoSeleccionado = statePedido;
             this.mostrarRuta(this.pedidoSeleccionado);
           }
         },
@@ -101,10 +104,15 @@ export class RepartidorInicioComponent implements OnInit {
   }
 
   mostrarRuta(pedido: VentaDeliveryDTO) {
-    // Aseguramos que lat/lng existan
     if (!pedido?.latitud || !pedido?.longitud) return;
 
-    // Marcador del pedido
+    this.center = { lat: pedido.latitud, lng: pedido.longitud };
+
+    // Clear existing markers to show only the new ones
+    this.markers = [];
+    
+    // Add markers for both your location and the customer's location
+    this.markers.push({ position: this.myLocation, label: 'Yo' });
     this.markers.push({
       position: { lat: pedido.latitud, lng: pedido.longitud },
       label: 'Pedido'
@@ -112,18 +120,19 @@ export class RepartidorInicioComponent implements OnInit {
 
     const directionsService = new google.maps.DirectionsService();
     directionsService.route(
-  {
-    origin: this.center,
-    destination: { lat: pedido.latitud, lng: pedido.longitud },
-    travelMode: google.maps.TravelMode.DRIVING
-  },
-  (result, status) => {
-    if (status === 'OK' && result) {
-      this.directions = result;
-    } else {
-      console.error('Error mostrando ruta:', status);
-      this.directions = null; // evita problemas con el template
-    }
+      {
+        origin: this.myLocation,
+        destination: { lat: pedido.latitud, lng: pedido.longitud },
+        travelMode: google.maps.TravelMode.DRIVING
+      },
+      (result, status) => {
+        if (status === 'OK' && result) {
+          this.directions = result;
+        } else {
+          console.error('Error mostrando ruta:', status);
+          this.directions = null;
+        }
+      }
+    );
   }
-);
-  }}
+}
