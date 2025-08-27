@@ -1,10 +1,6 @@
 <div class="app-container">
   <!-- Encabezado -->
-  <header class="app-header">
-    <h4>Bienvenido, Repartidor</h4>
-    <button class="btn btn-sm btn-outline-light" (click)="cerrarSesion()">Cerrar sesión</button>
-  </header>
-
+ 
   <!-- Contenido dinámico -->
   <main class="app-main">
     <router-outlet></router-outlet>
@@ -12,15 +8,16 @@
 
   <!-- Navbar inferior -->
   <nav class="app-navbar">
-    <a routerLink="/repartidor/pedidos" routerLinkActive="active">
-      📦<span>Pedidos</span>
-    </a>
-    <a routerLink="/repartidor/historial" routerLinkActive="active">
-      📜<span>Historial</span>
-    </a>
-    <a (click)="cerrarSesion()">
-      🚪<span>Salir</span>
-    </a>
-  </nav>
+  <a routerLink="/repartidor/pedidos" routerLinkActive="active">
+    📦<span>Pedidos</span>
+  </a>
+  <a routerLink="/repartidor/inicio" routerLinkActive="active">
+    📍<span>Ubicación</span> 
+  </a>
+  <a (click)="cerrarSesion()">
+    🚪<span>Salir</span>
+  </a>
+</nav>
+
   
 </div>
