@@ -4,6 +4,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ResultadoResponse } from '../../shared/dto/resultadoResponse.model';
 
+//ENTORNO DE CONFIGURACION CON DOCKER
+import {environment} from '@envs/environment'
 
 export interface DetalleVenta {
   idDetalleVenta: number;
@@ -71,7 +73,7 @@ export interface DetalleVentaListadoDTO {
 })
 export class RepartidorService {
 
-  private baseUrl = 'http://localhost:8080/repartidor';
+  private baseUrl =  `${environment.api_URL}/repartidor`;
 
   constructor(private http: HttpClient) { }
 

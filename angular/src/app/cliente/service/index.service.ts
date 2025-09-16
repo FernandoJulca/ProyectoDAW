@@ -3,11 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { IndexResponse } from '../../shared/dto/categoriaVentas.model';
 
+//ENTORNO DE CONFIGURACION CON DOCKER
+import {environment} from '@envs/environment'
+
 @Injectable({
   providedIn: 'root',
 })
 export class IndexService {
-  private baseClienteUrl = 'http://localhost:8080/cliente';
+  private baseClienteUrl = `${environment.api_URL}/cliente`;
   private indexPath = 'index';
 
   constructor(private http: HttpClient) {}

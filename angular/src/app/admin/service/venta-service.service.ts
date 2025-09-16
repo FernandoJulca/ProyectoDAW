@@ -6,11 +6,14 @@ import { VentaPorFechasDTO } from '../../shared/dto/VentaPorFechasDTO.model';
 import { VentaPorTipoVentaMesDTO } from '../../shared/dto/ventaPorTipoVentaMesDTO.model';
 import { VentaPorDistrito } from '../../shared/dto/ventaPorDistrito.model';
 
+//ENTORNO DE CONFIGURACION CON DOCKER
+import {environment} from '@envs/environment'
+
 @Injectable({
   providedIn: 'root'
 })
 export class VentaServiceService {
-private url = "http://localhost:8080/venta"
+private url = `${environment.api_URL}/venta`;
   constructor(
       private http: HttpClient
   ) { }

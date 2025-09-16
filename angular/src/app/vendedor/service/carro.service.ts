@@ -8,12 +8,15 @@ import { ResultadoResponse } from '../../shared/dto/resultadoResponse.model';
 import { VentaDTO } from '../../shared/dto/ventaDTO.model';
 import { Categoria } from '../../shared/model/categoria.model';
 
+//ENTORNO DE CONFIGURACION CON DOCKER
+import {environment} from '@envs/environment'
+
 @Injectable({
   providedIn: 'root'
 })
 export class CarroService {
 
-  private baseUrl = 'http://localhost:8080/vendedor';
+  private baseUrl = `${environment.api_URL}/vendedor`;
 
   private items: DetalleVenta[] = [];
   private carrito$ = new BehaviorSubject<DetalleVenta[]>([]);

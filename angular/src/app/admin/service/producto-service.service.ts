@@ -5,12 +5,15 @@ import { Producto } from '../../shared/model/producto.model';
 import { ProductoPorCategoriaDTO } from '../../shared/dto/productoPorCategoriaDTO.model';
 import { ProductoPorProveedor } from '../../shared/dto/productoPorProveedor.model';
 
+//ENTORNO DE CONFIGURACION CON DOCKER
+import {environment} from '@envs/environment'
+
 @Injectable({
   providedIn: 'root'
 })
 export class ProductoServiceService {
 
-  private url = "http://localhost:8080/producto"
+  private url = `${environment.api_URL}/producto`
   constructor(
     private http: HttpClient
   ) { }

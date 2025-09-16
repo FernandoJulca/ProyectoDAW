@@ -6,11 +6,14 @@ import { Categoria } from '../../shared/model/categoria.model';
 import { ProductoFilter } from '../../shared/dto/productofilter.model';
 import { Page } from '../../shared/dto/page.model';
 
+//ENTORNO DE CONFIGURACION CON DOCKER
+import {environment} from '@envs/environment'
+
 @Injectable({
   providedIn: 'root',
 })
 export class ProductoService {
-  private baseClienteUrl = 'http://localhost:8080/cliente';
+  private baseClienteUrl = `${environment.api_URL}/cliente`;
   private productoPath = 'producto';
 
   constructor(private http: HttpClient) {}

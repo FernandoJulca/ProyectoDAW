@@ -4,11 +4,14 @@ import { Observable } from 'rxjs';
 import { Venta } from '../../shared/model/venta.model';
 import { VentaDTO } from '../../shared/dto/ventaDTO.model';
 
+//ENTORNO DE CONFIGURACION CON DOCKER
+import {environment} from '@envs/environment'
+
 @Injectable({
   providedIn: 'root',
 })
 export class PerfilService {
-  private baseUrl = 'http://localhost:8080/cliente';
+  private baseUrl = `${environment.api_URL}/cliente`;
 
   constructor(private http: HttpClient) {}
 

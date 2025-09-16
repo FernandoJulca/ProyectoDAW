@@ -4,12 +4,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ResultadoResponse } from '../../shared/dto/resultadoResponse.model';
 
+//ENTORNO DE CONFIGURACION CON DOCKER
+import {environment} from '@envs/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompraService {
-  private baseUrl = 'http://localhost:8080/venta';
+  private baseUrl = `${environment.api_URL}/venta`;
 
   constructor(private http: HttpClient) { }
 

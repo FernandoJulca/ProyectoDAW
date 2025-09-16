@@ -2,11 +2,14 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
+//ENTORNO DE CONFIGURACION CON DOCKER
+import {environment} from '@envs/environment'
+
 @Injectable({
   providedIn: 'root'
 })
 export class ReporteService {
-  private baseUrl = 'http://localhost:8080/reporte';
+  private baseUrl = `${environment.api_URL}/reporte`;
 
   constructor(private http: HttpClient) {}
 
