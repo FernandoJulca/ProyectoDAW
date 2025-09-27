@@ -17,7 +17,7 @@ public class CorsConfig {
                         .allowedOrigins(
                         		"http://localhost:4200",
                         		"http://localhost",
-                        		 "https://angular-pt81d8qvc-codevecks-projects-e7719d2a.vercel.app") 
+                        		"https://angular-mu-gray.vercel.app/") 
                         .allowedMethods("GET", "POST", "PUT", "PATCH","DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
