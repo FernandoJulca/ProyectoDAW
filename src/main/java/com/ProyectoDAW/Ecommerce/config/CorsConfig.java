@@ -14,7 +14,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("http://localhost:4200","http://localhost") 
+                        .allowedOrigins(
+                        		"http://localhost:4200",
+                        		"http://localhost",
+                        		 "https://angular-pt81d8qvc-codevecks-projects-e7719d2a.vercel.app") 
                         .allowedMethods("GET", "POST", "PUT", "PATCH","DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
