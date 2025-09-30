@@ -1,5 +1,6 @@
 package com.ProyectoDAW.Ecommerce.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,6 +47,17 @@ public class Venta {
 	
 	@Column(name="TIPO_VENTA")
 	private String tipoVenta;
+	
+	@Column(name = "DIRECCION_ENTREGA")
+	private String direccionEntrega;
+
+	@Column(name = "LATITUD")
+	private BigDecimal latitud;
+
+	@Column(name = "LONGITUD")
+	private BigDecimal longitud;
+
+
 	
 	@OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<DetalleVenta> detalles = new ArrayList<>();

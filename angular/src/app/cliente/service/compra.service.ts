@@ -4,12 +4,14 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ResultadoResponse } from '../../shared/dto/resultadoResponse.model';
 
+//ENTORNO DE CONFIGURACION CON DOCKER
+import {environment} from '@envs/environment'
 
 @Injectable({
   providedIn: 'root'
 })
 export class CompraService {
-  private baseUrl = 'http://localhost:8080/venta';
+  private baseUrl = `${environment.api_URL}/venta`;
 
   constructor(private http: HttpClient) { }
 
@@ -19,5 +21,9 @@ export class CompraService {
   descargarComprobante(idCliente: number, idVenta: number): Observable<Blob> {
     const url = `${this.baseUrl}/${idCliente}/pdf/${idVenta}`;
     return this.http.get(url, { responseType: 'blob' });
+  }
+
+   guardarVentaDelivery(ventaDelivery: any): Observable<ResultadoResponse> {
+    return this.http.post<ResultadoResponse>(`${this.baseUrl}/delivery`, ventaDelivery);
   }
 }

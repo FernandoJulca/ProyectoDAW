@@ -95,4 +95,5 @@ checkLoginStatus(): boolean {
   getCantidadTotal(): number {
     return this.carrito.reduce((sum, item) => sum + item.cantidad, 0);
   }
+  
 }

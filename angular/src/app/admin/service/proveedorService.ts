@@ -4,11 +4,13 @@ import { Observable } from 'rxjs';
 
 import { Proveedor } from '../../shared/model/proveedor.model';
 
+//ENTORNO DE CONFIGURACION CON DOCKER
+import {environment} from '@envs/environment'
 @Injectable({
     providedIn : "root"
 })
 export class ProveedorService{
-    private url = "http://localhost:8080/proveedor";
+    private url = `${environment.api_URL}/proveedor`;
       
     constructor(private http: HttpClient) {}
 

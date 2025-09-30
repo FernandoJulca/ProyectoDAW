@@ -79,3 +79,9 @@ position: relative;
     justify-content: space-around;
     align-content: space-around;
 }
+
+
+#containerDashboar{
+    background-color: #e0e0e0  !important;
+    height: max-content !important;
+}

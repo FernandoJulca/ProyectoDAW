@@ -4,12 +4,15 @@ import { Observable } from 'rxjs';
 import { HttpParams } from '@angular/common/http';
 import { jwtDecode } from 'jwt-decode';
 
+//ENTORNO DE CONFIGURACION CON DOCKER
+import {environment} from '@envs/environment'
+
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:8080/auth/login';
-  private userUrl = 'http://localhost:8080/auth/me';
+  private apiUrl = `${environment.api_URL}/auth/login`;
+  private userUrl = `${environment.api_URL}/auth/me`;
 
   constructor(private http: HttpClient) {}
 

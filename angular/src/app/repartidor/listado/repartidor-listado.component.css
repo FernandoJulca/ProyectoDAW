@@ -1,68 +1,85 @@
 .repartidor-container {
-  max-width: 480px;
-  margin: auto;
+  max-width: 1000px;
+  margin: 2rem auto;
   padding: 1rem;
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .titulo {
   text-align: center;
-  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  color: #1976d2;
+  margin-bottom: 2rem;
 }
 
+/* Grid de tarjetas 3xN */
+.pedido-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+/* Tarjeta individual */
 .pedido-card {
-  background: #f8f8f8;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  border-radius: 10px;
-  box-shadow: 1px 1px 6px rgba(0,0,0,0.1);
+  background: #ffffff;
+  padding: 1rem 1.2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  transition: transform 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.pedido-card:hover {
+  transform: scale(1.02);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 0.8rem;
+}
+
+.icono-usuario {
+  background-color: #e3f2fd;
+  padding: 8px;
+  border-radius: 50%;
+  font-size: 1.2rem;
+}
+
+.card-body p {
+  margin: 0.3rem 0;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.precio {
+  color: #4CAF50;
+  font-weight: bold;
 }
 
 .pedido-card button {
-  margin-top: 0.5rem;
-  padding: 0.5rem;
-  width: 100%;
-  background-color: #2196F3;
-  color: white;
-  border: none;
-  border-radius: 6px;
-}
-
-.detalle-overlay {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.detalle-card {
-  background: white;
-  padding: 1.5rem;
-  border-radius: 12px;
-  width: 90%;
-  max-width: 400px;
-  box-shadow: 2px 2px 12px rgba(0,0,0,0.2);
-}
-
-.detalle-card button {
   margin-top: 1rem;
   width: 100%;
-  padding: 0.7rem;
+  padding: 0.6rem;
+  background-color: #1976d2;
+  color: white;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.pedido-card button:hover {
+  background-color: #0f5ca8;
+}
+
+.sin-pedidos {
+  text-align: center;
   font-size: 1rem;
-}
-
-.confirmar {
-  background-color: #4CAF50;
-  color: white;
-}
-
-.cerrar {
-  background-color: #f44336;
-  color: white;
-  margin-top: 0.5rem;
+  color: #888;
 }

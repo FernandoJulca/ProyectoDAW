@@ -61,21 +61,23 @@ ngOnInit(): void {
   });
 }
   descargarPDF(ventaId: number): void {
-    const clienteId = this.userService.getUser()?.id;
-    if (!clienteId) {
-      AlertService.error('No se pudo encontrar su ID de usuario.');
-      return;
-    }
 
-    this.compraService.descargarComprobante(clienteId, ventaId).subscribe({
-      next: (data: Blob) => {
-        const blob = new Blob([data], { type: 'application/pdf' });
-        saveAs(blob, `venta_${ventaId}.pdf`);
-      },
-      error: (err) => {
-        console.error('Error al descargar PDF:', err);
-        AlertService.error('Error al descargar el PDF. Intente más tarde.');
-      }
-    });
+  const clienteId = this.userService.getUser()?.idUsuario;
+
+  if (!clienteId) {
+    AlertService.error('No se pudo encontrar su ID de usuario.');
+    return;
   }
+
+  this.compraService.descargarComprobante(clienteId, ventaId).subscribe({
+    next: (data: Blob) => {
+      const blob = new Blob([data], { type: 'application/pdf' });
+      saveAs(blob, `venta_${ventaId}.pdf`);
+    },
+    error: (err) => {
+      console.error('Error al descargar PDF:', err);
+      AlertService.error('Error al descargar el PDF. Intente más tarde.');
+    }
+  });
+}
 }

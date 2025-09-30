@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -88,6 +89,14 @@ public interface IVentaRepository extends JpaRepository<Venta, Integer> {
 			""")
 	List<VentaFiltroFechaTipoUsuario> ListadoVentaFechaAndTipoVentaNull();
 
+    List<Venta> findByTipoVentaAndEstado(String tipoVenta, String estado);
+	
+    @Modifying
+    @Query("UPDATE Venta v SET v.estado = 'E' WHERE v.idVenta = :idVenta")
+    void actualizarEstadoEntregado(@Param("idVenta") Integer idVenta);
+	
+	
+	
 	@Query(value = """
 			    SELECT
 			        TO_CHAR(fecha, 'TMMonth') AS mes,
@@ -110,5 +119,15 @@ public interface IVentaRepository extends JpaRepository<Venta, Integer> {
 			 ORDER BY EXTRACT(MONTH FROM fecha)
 			""", nativeQuery = true)
 	List<Object[]> listadoDeTipoDeVentasPorMes();
+
+	@Query(value = """
+			SELECT dt.NOMBRE as distrito, COUNT(*) as ventasTotales
+			 FROM TB_VENTA vt
+			 INNER JOIN TB_USUARIO us ON vt.ID_USUARIO = us.ID_USUARIO
+			 INNER JOIN TB_DISTRITO dt ON us.ID_DISTRITO = dt.ID_DISTRITO
+			 GROUP BY dt.NOMBRE
+			 ORDER BY ventasTotales DESC
+			""", nativeQuery = true)
+	List<Object[]> listaVentaPorDistrito();
 
 }

@@ -15,18 +15,22 @@
     <div class="accordion" id="accordionVentas">
       <div class="accordion-item shadow-sm mb-3 border-0" *ngFor="let venta of ventas; let i = index">
         <h2 class="accordion-header" [id]="'headingVenta' + i">
-          <button class="accordion-button collapsed fw-semibold bg-color-custom" type="button"
-                  data-bs-toggle="collapse"
-                  [attr.data-bs-target]="'#collapseVenta' + i"
-                  [attr.aria-controls]="'collapseVenta' + i">
+          <button class="accordion-button collapsed fw-semibold bg-color-custom" type="button" data-bs-toggle="collapse"
+            [attr.data-bs-target]="'#collapseVenta' + i" [attr.aria-controls]="'collapseVenta' + i">
             Venta #{{ venta.idVenta }} — {{ venta.fechaRegistro | date: 'dd/MM/yyyy' }} — S/. {{ venta.total }}
           </button>
         </h2>
-        <div [id]="'collapseVenta' + i" class="accordion-collapse collapse"
-             [attr.aria-labelledby]="'headingVenta' + i"
-             data-bs-parent="#accordionVentas">
+        <div [id]="'collapseVenta' + i" class="accordion-collapse collapse" [attr.aria-labelledby]="'headingVenta' + i"
+          data-bs-parent="#accordionVentas">
           <div class="accordion-body">
-            <p><strong>Estado:</strong> {{ venta.estado }}</p>
+            <p>
+              <strong>Estado:</strong>
+              {{ venta.estado === 'E' ? 'Entregado' :
+              venta.estado === 'P' ? 'Pendiente' :
+              venta.estado === 'T' ? 'Transportado' :
+              venta.estado === 'C' ? 'Cancelado' :
+              'Desconocido' }}
+            </p>
             <p><strong>Tipo:</strong> {{ venta.tipoVenta === 'P' ? 'Presencial' : 'Remota' }}</p>
 
             <div *ngIf="venta.detalles && venta.detalles.length > 0; else sinDetalles">
@@ -53,8 +57,8 @@
             </ng-template>
 
             <button (click)="descargarPDF(venta.idVenta)" class="btn btn-primary mt-3">
-  Descargar comprobante PDF
-</button>
+              Descargar comprobante PDF
+            </button>
 
           </div>
         </div>

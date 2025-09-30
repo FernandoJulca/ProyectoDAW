@@ -1,21 +1,27 @@
-<div class="inicio-container">
-  <h2>Bienvenido, {{ repartidor }}</h2>
-  <p>📅 {{ fechaActual }}</p>
-  <p>📍 Te encuentras en: <strong>{{ ubicacion }}</strong></p>
+<div class="map-container">
+  <google-map 
+    [center]="center" 
+    [zoom]="zoom" 
+    [height]="'100%'" 
+    [width]="'100%'">
+    
+    <!-- Marcadores -->
+    <ng-container *ngIf="markers.length > 0">
+      <map-marker *ngFor="let m of markers" [position]="m.position" [label]="m.label"></map-marker>
+    </ng-container>
 
-  <div class="resumen">
-    <h3>📊 Resumen del día</h3>
-    <ul>
-      <li>🚚 Pedidos entregados: <strong>{{ pedidosEntregados }}</strong></li>
-      <li>💰 Ganancias estimadas: <strong>S/ {{ ganancias }}</strong></li>
-      <li>📦 Pendientes por entregar: <strong>{{ pendientes }}</strong></li>
-    </ul>
-  </div>
+    <!-- Ruta en el mapa -->
+    <map-directions-renderer *ngIf="directions" [directions]="directions!"></map-directions-renderer>
+  </google-map>
 
-  <div class="notificaciones">
-    <h3>🔔 Notificaciones</h3>
-    <ul>
-      <li *ngFor="let n of notificaciones">{{ n }}</li>
-    </ul>
+  <!-- Controles sobre el mapa -->
+  <div class="controls-overlay">
+    <ng-container *ngIf="pedidoSeleccionado && !simulandoRecorrido">
+      <button (click)="iniciarPedido(pedidoSeleccionado)">Iniciar Pedido</button>
+    </ng-container>
+
+    <ng-container *ngIf="simulandoRecorrido">
+      <p>Entregando pedido...<br>Tiempo restante: {{ tiempoRestante }}s</p>
+    </ng-container>
   </div>
 </div>
