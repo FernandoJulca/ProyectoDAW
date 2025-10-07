@@ -33,7 +33,7 @@ public class Venta {
 	private LocalDateTime fechaRegistro;
 
     @Column(name="TOTAL", precision = 10, scale = 2)
-	private BigDecimal total;
+	private Double total;
 	
 	@Column(name="ESTADO", length = 1)
 	private String estado;
