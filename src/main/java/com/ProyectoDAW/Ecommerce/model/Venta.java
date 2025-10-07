@@ -5,20 +5,12 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Entity
 @Table(name = "TB_VENTA")
@@ -35,32 +27,30 @@ public class Venta {
 	@ManyToOne
 	@JoinColumn(name="ID_USUARIO")
 	private Usuario usuario;
-	
-	@Column(name="FECHA")
+
+    @CreationTimestamp
+    @Column(name="FECHA")
 	private LocalDateTime fechaRegistro;
+
+    @Column(name="TOTAL", precision = 10, scale = 2)
+	private BigDecimal total;
 	
-	@Column(name="TOTAL")
-	private Double total;
-	
-	@Column(name="ESTADO")
+	@Column(name="ESTADO", length = 1)
 	private String estado;
 	
-	@Column(name="TIPO_VENTA")
+	@Column(name="TIPO_VENTA", length = 1)
 	private String tipoVenta;
 	
-	@Column(name = "DIRECCION_ENTREGA")
-	private String direccionEntrega;
+	@Column(name = "METODO_ENTREGA", length = 1)
+	private String metodoEntrega;
 
-	@Column(name = "LATITUD")
-	private BigDecimal latitud;
-
-	@Column(name = "LONGITUD")
-	private BigDecimal longitud;
-
-
+    @Column(name = "ESPECIFICACIONES")
+    private String especificaciones;
 	
 	@OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<DetalleVenta> detalles = new ArrayList<>();
 
+    @OneToOne(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Pedido pedido;
 
 }
