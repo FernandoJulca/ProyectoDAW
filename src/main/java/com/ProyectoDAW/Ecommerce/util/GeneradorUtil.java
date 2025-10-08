@@ -42,7 +42,7 @@ public class GeneradorUtil {
             hints.put(EncodeHintType.ERROR_CORRECTION, ErrorCorrectionLevel.M); // nivel medio
             hints.put(EncodeHintType.MARGIN, 1); // margen pequeño
 
-            int size = 250;
+            int size = 150;
 
             BitMatrix bitMatrix = qrCodeWriter.encode(texto, BarcodeFormat.QR_CODE, size, size, hints);
 

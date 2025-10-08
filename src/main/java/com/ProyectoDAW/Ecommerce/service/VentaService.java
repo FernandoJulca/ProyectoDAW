@@ -1,6 +1,5 @@
 package com.ProyectoDAW.Ecommerce.service;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,8 +26,16 @@ import com.ProyectoDAW.Ecommerce.util.GeneradorUtil;
 
 import jakarta.transaction.Transactional;
 
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @Service
 public class VentaService {
+	
+	
+	private static final Logger log = LoggerFactory.getLogger(VentaService.class);
+
 	@Autowired
 	private IVentaRepository ventaRepository;
 
@@ -115,83 +122,70 @@ public class VentaService {
 			return new ResultadoResponse(false, "Error al registrar la venta: " + ex.getMessage());
 		}
 	}
+	
+	
 
-    @Transactional
-    public ResultadoResponse guardarVentaDelivery(Venta venta) {
+	@Transactional
+	public ResultadoResponse guardarVentaDelivery(Venta venta) {
         try {
-            if (venta.getIdVenta() != null && venta.getIdVenta() <= 0) {
-                venta.setIdVenta(null);
-            }
 
+            if (venta.getIdVenta() != null) venta.setIdVenta(null);
             venta.setTipoVenta("R");
             venta.setEstado("P");
-            venta.setMetodoEntrega("D");
 
-            venta.setUsuario(usuarioRepository.findById(venta.getUsuario().getIdUsuario())
-                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado")));
+            Usuario usuario = usuarioRepository.findById(venta.getUsuario().getIdUsuario())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+            venta.setUsuario(usuario);
 
-            // Inicializar lista de detalles
-            if (venta.getDetalles() == null) {
-                venta.setDetalles(new ArrayList<>());
-            }
+            List<DetalleVenta> detallesProcesados = venta.getDetalles().stream()
+                    .map(detalle -> {
+                        Producto producto = productoRepository.findById(detalle.getProducto().getIdProducto())
+                                .orElseThrow(() -> new RuntimeException("Producto no encontrado."));
 
-            double totalVenta = 0;
+                        if (producto.getStock() < detalle.getCantidad()) {
+                            throw new RuntimeException("Stock insuficiente para: " + producto.getNombre());
+                        }
 
-            for (DetalleVenta detDTO : venta.getDetalles()) {
-                Producto producto = productoRepository.findById(detDTO.getProducto().getIdProducto())
-                        .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + detDTO.getProducto().getIdProducto()));
+                        productoRepository.actualizarStock(producto.getIdProducto(), producto.getStock() - detalle.getCantidad());
 
-                if (producto.getStock() < detDTO.getCantidad()) {
-                    return new ResultadoResponse(false, "Stock insuficiente para: " + producto.getNombre());
-                }
+                        detalle.setVenta(venta); // Establece la relación bidireccional crucial
+                        detalle.setProducto(producto);
+                        detalle.setSubTotal(producto.getPrecio() * detalle.getCantidad());
+                        return detalle;
+                    }).toList();
+            venta.getDetalles().clear();
+            venta.getDetalles().addAll(detallesProcesados);
+            venta.setTotal(detallesProcesados.stream().mapToDouble(DetalleVenta::getSubTotal).sum());
 
-                // Actualizar stock
-                productoRepository.actualizarStock(producto.getIdProducto(), producto.getStock() - detDTO.getCantidad());
-
-                // Crear detalle
-                DetalleVenta detalle = new DetalleVenta();
-                detalle.setProducto(producto);
-                detalle.setCantidad(detDTO.getCantidad());
-                detalle.setSubTotal(producto.getPrecio() * detDTO.getCantidad());
-                detalle.setVenta(venta);
-
-                venta.getDetalles().add(detalle);
-                totalVenta += detalle.getSubTotal();
-            }
-
-            venta.setTotal(totalVenta);
-
+            // Asignación de especificaciones por defecto
             if (venta.getEspecificaciones() == null || venta.getEspecificaciones().isBlank()) {
                 venta.setEspecificaciones("Venta autogestionada");
             }
 
-            ventaRepository.save(venta);
+            // Gestión del pedido si es de delivery
+            if ("D".equals(venta.getMetodoEntrega()) && venta.getPedido() != null) {
 
-            if (venta.getMetodoEntrega().equals("D")) {
-                Pedido pedido = new Pedido();
+                Pedido pedido = venta.getPedido();
                 pedido.setVenta(venta);
-
-                String codigoPedido = GeneradorUtil.generarCodigoPedido();
-                pedido.setNumPedido(codigoPedido);
-
-                // El QR se genera basado en el número de pedido
-                String qrBase64 = GeneradorUtil.generarQRBase64(codigoPedido);
-                pedido.setQrVerificacion(qrBase64);
-
+                pedido.setNumPedido(GeneradorUtil.generarCodigoPedido());
+                pedido.setQrVerificacion(GeneradorUtil.generarCodigoPedido());
                 pedido.setEstado("PE");
-                pedido.setDireccionEntrega(venta.getPedido().getDireccionEntrega());
-                pedido.setLatitud(venta.getPedido().getLatitud());
-                pedido.setLongitud(venta.getPedido().getLongitud());
 
-                pedidoRepository.save(pedido);
+                venta.setPedido(pedido);
+
+            } else {
+                venta.setPedido(null);
             }
 
-            return new ResultadoResponse(true, "Venta delivery registrada correctamente.");
+            Venta ventaGuardada = ventaRepository.save(venta);
+
+            return new ResultadoResponse(true, "Venta registrada con ID: " + ventaGuardada.getIdVenta());
         } catch (Exception e) {
-            e.printStackTrace();
-            return new ResultadoResponse(false, "Error al registrar la venta delivery: " + e.getMessage());
+            log.error("Error al registrar la venta: {}", e.getMessage(), e);
+            return new ResultadoResponse(false, "Error al registrar la venta: " + e.getMessage());
         }
-    }
+	}
+
 
 
     @Transactional

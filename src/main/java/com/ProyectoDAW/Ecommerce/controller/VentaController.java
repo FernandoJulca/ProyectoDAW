@@ -74,6 +74,8 @@ public class VentaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
+    
+    
 	
 	@GetMapping("/{idUsuario}/pdf/{idVenta}")
 	public ResponseEntity<byte[]> descargarVentaPdf(@PathVariable Integer idUsuario, @PathVariable Integer idVenta) {
