@@ -2,6 +2,7 @@ package com.ProyectoDAW.Ecommerce.service;
 
 import com.ProyectoDAW.Ecommerce.dto.DetalleVentaDTO;
 import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
+import com.ProyectoDAW.Ecommerce.model.Pedido;
 import com.ProyectoDAW.Ecommerce.model.Venta;
 import com.ProyectoDAW.Ecommerce.repository.IPedidoRepository;
 import com.ProyectoDAW.Ecommerce.repository.IVentaRepository;
@@ -22,33 +23,43 @@ public class PedidoService {
     @Autowired
     IVentaRepository ventaRepository;
 
+    
     @Transactional
-    public List<PedidoDTO> obtenerPedidosDeliveryPendientes() {
-        List<PedidoDTO> ventas = pedidoRepository.findAll(); // solo delivery pendientes
+    public List<PedidoDTO> listarPedidosPendientes() {
+        List<Pedido> pedidos = pedidoRepository.listarPedidosPendientes();
 
-        return ventas.stream().map(venta -> {
-            PedidoDTO dto = new PedidoDTO();
-            dto.setIdVenta(venta.getIdVenta());
-            dto.setIdUsuario(venta.getUsuario().getIdUsuario());
-            dto.setUsuario(venta.getUsuario());
-            dto.setTotal(BigDecimal.valueOf(venta.getTotal()));
-            dto.setDireccionEntrega(venta.getDireccionEntrega());
-            dto.setLatitud(venta.getLatitud());
-            dto.setLongitud(venta.getLongitud());
-            dto.setIdRepartidor(null);
-            dto.setTipoVenta(venta.getTipoVenta()); // asignamos el tipo
-            dto.setDetalles(venta.getDetalles().stream().map(det -> {
-                DetalleVentaDTO detDTO = new DetalleVentaDTO();
-                detDTO.setIdProducto(det.getProducto().getIdProducto());
-                detDTO.setNombreProducto(det.getProducto().getNombre());
-                detDTO.setCantidad(det.getCantidad());
-                detDTO.setSubTotal(det.getSubTotal());
-                return detDTO;
-            }).collect(Collectors.toList()));
-            return dto;
-        }).collect(Collectors.toList());
+        return pedidos.stream().map(p -> {
+            Venta v = p.getVenta();
+
+            return new PedidoDTO(
+                v.getIdVenta(),
+                p.getNumPedido(),
+                v.getUsuario().getIdUsuario(),
+                v.getUsuario().getNombres(),
+                p.getFecha(),
+                v.getTotal(),
+                p.getDireccionEntrega(),
+                p.getLatitud(),
+                p.getLongitud(),
+                v.getDetalles().stream()
+                    .map(d -> new DetalleVentaDTO(
+                        d.getIdDetalleVenta(),
+                        d.getProducto().getIdProducto(),
+                        d.getProducto().getNombre(),
+                        d.getProducto().getDescripcion(),
+                        d.getProducto().getBase64Img(),                        
+                        d.getProducto().getPrecio(),
+                        d.getCantidad(),
+                        d.getSubTotal()
+                    ))
+                    .toList(),
+                p.getRepartidor() != null ? p.getRepartidor().getIdUsuario() : null,
+                p.getRepartidor() != null ? p.getRepartidor().getNombres() : null,
+                v.getEspecificaciones(),
+                p.getEstado()
+            );
+        }).toList();
     }
-
 
 
     /*

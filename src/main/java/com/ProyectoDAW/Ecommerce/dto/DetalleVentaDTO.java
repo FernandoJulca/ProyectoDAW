@@ -15,7 +15,7 @@ public class DetalleVentaDTO {
     private String nombreProducto;
     private String descripcionProducto;
     private String imagen;
-    private Double precioUnitario;
+    private Double precio;
     private Integer cantidad;
     private Double subTotal;
 }

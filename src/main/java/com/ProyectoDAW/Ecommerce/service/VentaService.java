@@ -4,11 +4,13 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.ProyectoDAW.Ecommerce.model.*;
+import com.ProyectoDAW.Ecommerce.repository.IPedidoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,7 @@ import com.ProyectoDAW.Ecommerce.dto.VentaFiltroFechaTipoUsuario;
 import com.ProyectoDAW.Ecommerce.repository.IProductoRepository;
 import com.ProyectoDAW.Ecommerce.repository.IUsuarioRepository;
 import com.ProyectoDAW.Ecommerce.repository.IVentaRepository;
+import com.ProyectoDAW.Ecommerce.util.GeneradorUtil;
 
 import jakarta.transaction.Transactional;
 
@@ -34,6 +37,9 @@ public class VentaService {
 	
 	@Autowired
 	private IUsuarioRepository usuarioRepository;
+
+    @Autowired
+    private IPedidoRepository pedidoRepository;
 
 	public List<VentaDTO> getVentasPorUsuario(Integer idUsuario) {
 		List<Venta> ventas = ventaRepository.findByUsuarioId(idUsuario);
@@ -110,11 +116,9 @@ public class VentaService {
 		}
 	}
 
-    //Falta afinar lo de pedido y sus campos + implementar funcion pa su nro
     @Transactional
     public ResultadoResponse guardarVentaDelivery(Venta venta) {
         try {
-
             if (venta.getIdVenta() != null && venta.getIdVenta() <= 0) {
                 venta.setIdVenta(null);
             }
@@ -126,12 +130,9 @@ public class VentaService {
             venta.setUsuario(usuarioRepository.findById(venta.getUsuario().getIdUsuario())
                     .orElseThrow(() -> new RuntimeException("Usuario no encontrado")));
 
-
-            if (venta.getMetodoEntrega().equals("D")) {
-                Pedido pedido = new Pedido();
-                pedido.setDireccionEntrega(venta.getPedido().getDireccionEntrega());
-                pedido.setLatitud(venta.getPedido().getLatitud());
-                pedido.setLongitud(venta.getPedido().getLongitud());
+            // Inicializar lista de detalles
+            if (venta.getDetalles() == null) {
+                venta.setDetalles(new ArrayList<>());
             }
 
             double totalVenta = 0;
@@ -144,7 +145,7 @@ public class VentaService {
                     return new ResultadoResponse(false, "Stock insuficiente para: " + producto.getNombre());
                 }
 
-                // Reducir stock
+                // Actualizar stock
                 productoRepository.actualizarStock(producto.getIdProducto(), producto.getStock() - detDTO.getCantidad());
 
                 // Crear detalle
@@ -166,8 +167,28 @@ public class VentaService {
 
             ventaRepository.save(venta);
 
-            return new ResultadoResponse(true, "Venta registrada correctamente.");
+            if (venta.getMetodoEntrega().equals("D")) {
+                Pedido pedido = new Pedido();
+                pedido.setVenta(venta);
+
+                String codigoPedido = GeneradorUtil.generarCodigoPedido();
+                pedido.setNumPedido(codigoPedido);
+
+                // El QR se genera basado en el número de pedido
+                String qrBase64 = GeneradorUtil.generarQRBase64(codigoPedido);
+                pedido.setQrVerificacion(qrBase64);
+
+                pedido.setEstado("PE");
+                pedido.setDireccionEntrega(venta.getPedido().getDireccionEntrega());
+                pedido.setLatitud(venta.getPedido().getLatitud());
+                pedido.setLongitud(venta.getPedido().getLongitud());
+
+                pedidoRepository.save(pedido);
+            }
+
+            return new ResultadoResponse(true, "Venta delivery registrada correctamente.");
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResultadoResponse(false, "Error al registrar la venta delivery: " + e.getMessage());
         }
     }

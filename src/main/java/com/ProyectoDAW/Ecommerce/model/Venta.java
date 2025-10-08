@@ -32,7 +32,7 @@ public class Venta {
     @Column(name="FECHA")
 	private LocalDateTime fechaRegistro;
 
-    @Column(name="TOTAL", precision = 10, scale = 2)
+    @Column(name="TOTAL")
 	private Double total;
 	
 	@Column(name="ESTADO", length = 1)

@@ -50,6 +50,9 @@ public class Pedido {
     @JoinColumn(name="ID_REPARTIDOR")
     private Usuario repartidor;
 
+    @Column(name = "MOVILIDAD")
+    private String movilidad;
+
     @Column(name = "FECHA_ASIGNACION")
     private LocalDateTime fechaAsignacion;
 
