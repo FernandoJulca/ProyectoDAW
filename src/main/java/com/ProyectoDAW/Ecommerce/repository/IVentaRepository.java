@@ -13,6 +13,9 @@ import com.ProyectoDAW.Ecommerce.dto.VentaFiltroFechaTipoUsuario;
 import com.ProyectoDAW.Ecommerce.dto.VentaPorFechasDTO;
 
 public interface IVentaRepository extends JpaRepository<Venta, Integer> {
+
+
+
 	@Query("SELECT v FROM Venta v WHERE v.usuario.idUsuario = :idUsuario ORDER BY v.idVenta DESC")
 	List<Venta> findByUsuarioId(@Param("idUsuario") Integer idUsuario);
 

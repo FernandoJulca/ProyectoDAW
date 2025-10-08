@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.Map;
 
 import org.springframework.http.HttpHeaders;
 
@@ -16,7 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +27,7 @@ import com.ProyectoDAW.Ecommerce.dto.VentaPorDistrito;
 import com.ProyectoDAW.Ecommerce.dto.VentaPorFechasDTO;
 import com.ProyectoDAW.Ecommerce.dto.VentaPorTipoVentaMesDTO;
 
-import com.ProyectoDAW.Ecommerce.dto.VentaDeliveryDTO;
+import com.ProyectoDAW.Ecommerce.dto.PedidoDTO;
 
 import com.ProyectoDAW.Ecommerce.model.DetalleVenta;
 import com.ProyectoDAW.Ecommerce.model.Venta;
@@ -49,8 +47,6 @@ import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-
-
 @RestController
 @RequestMapping("/venta")
 public class VentaController {
@@ -68,18 +64,16 @@ public class VentaController {
 	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultado);
 	    }
 	}
-	
-	
-	/*
-	 * @PatchMapping("/estado/{idVenta}") public ResponseEntity<ResultadoResponse>
-	 * actualizarEstado(@PathVariable Integer idVenta, @RequestBody Map<String,
-	 * String> body) { String nuevoEstado = body.get("estado"); ResultadoResponse
-	 * response = ventaService.actualizarEstado(idVenta, nuevoEstado); if
-	 * (response.isValor()) { return ResponseEntity.ok(response); } return
-	 * ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response); }
-	 */
 
-	
+    @PostMapping("/delivery")
+    public ResponseEntity<ResultadoResponse> guardarVentaDelivery(@RequestBody Venta venta) {
+        ResultadoResponse response = ventaService.guardarVentaDelivery(venta);
+        if (response.isValor()) {
+            return ResponseEntity.ok(response);
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        }
+    }
 	
 	@GetMapping("/{idUsuario}/pdf/{idVenta}")
 	public ResponseEntity<byte[]> descargarVentaPdf(@PathVariable Integer idUsuario, @PathVariable Integer idVenta) {
@@ -192,31 +186,22 @@ public class VentaController {
 	    }
 	}
 
-	
-	@GetMapping({"/filtradoVentas", "/filtradoVentas/{fechaInicio}&{fechaFin}"})
-	public ResponseEntity<?> ListadoVentaFechaAndTipoVenta(
-			@PathVariable(required = false) LocalDate fechaInicio,
-			@PathVariable(required = false) LocalDate fechaFin,
-			@RequestParam(required = false) String tipoVenta
-			) {
-		
-		if(fechaInicio == null || fechaFin == null ) {
-			return  ResponseEntity.ok(ventaService.ListadoVentaFechaAndTipoVentaNull());
-		}
-		return ResponseEntity.ok(ventaService.ListadoVentaFechaAndTipoVenta(fechaInicio, fechaFin, tipoVenta));
-		
-	};
-	
-	 @PostMapping("/delivery")
-	    public ResponseEntity<ResultadoResponse> guardarVentaDelivery(@RequestBody VentaDeliveryDTO ventaDTO) {
-	        ResultadoResponse response = ventaService.guardarVentaDelivery(ventaDTO);
-	        if (response.isValor()) {
-	            return ResponseEntity.ok(response);
-	        } else {
-	            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-	        }
-	    }
-	
+    // Graficos de Admin
+
+    @GetMapping({"/filtradoVentas", "/filtradoVentas/{fechaInicio}&{fechaFin}"})
+    public ResponseEntity<?> ListadoVentaFechaAndTipoVenta(
+            @PathVariable(required = false) LocalDate fechaInicio,
+            @PathVariable(required = false) LocalDate fechaFin,
+            @RequestParam(required = false) String tipoVenta
+    ) {
+
+        if(fechaInicio == null || fechaFin == null ) {
+            return  ResponseEntity.ok(ventaService.ListadoVentaFechaAndTipoVentaNull());
+        }
+        return ResponseEntity.ok(ventaService.ListadoVentaFechaAndTipoVenta(fechaInicio, fechaFin, tipoVenta));
+
+    };
+
 	@GetMapping("/ListaMes")
 	 public ResponseEntity<List<VentaPorFechasDTO>> getVentasPorMes() {
         try {

@@ -53,23 +53,7 @@ public class ProductoController {
 			if(producto.getImagen()!= null && !producto.getImagen().isEmpty()) {
 				producto.setImagenBytes(producto.getImagen().getBytes());
 			}
-			
-			System.out.println("---INICIANDO EL METODO REGISTRAR------");
-			System.out.println("NOMBRE RECIBIDO: " + producto.getNombre());
-			System.out.println("descripcion RECIBIDO: " + producto.getDescripcion());
-			System.out.println("proveedor RECIBIDO: " + producto.getProveedor().getIdProveedor());
-			System.out.println("categoria RECIBIDO: " + producto.getCategoria().getIdCategoria());
-			System.out.println("precio RECIBIDO: " + producto.getPrecio());
-			System.out.println("stock RECIBIDO: " + producto.getStock());
-			
-			System.out.println("----LA IMAGEN LLEGA EN FORMATO--------");
-			System.out.println("IMAGEN BASE64: " + producto.getBase64Img());
-			System.out.println("IMAGEN MULTIPARTFILE: " + producto.getImagen() );
-			System.out.println("IMAGEN IMAGEN EN BYTES: " + producto.getImagenBytes());
-			
-			
-			
-			
+
 			producto.setFechaRegistro(LocalDateTime.now());
 			producto.setEstado(true);
 			return ResponseEntity.ok(prdService.RegistrarProducto(producto));
@@ -86,20 +70,6 @@ public class ProductoController {
 		if (id == null || id.longValue() < 0 || producto == null) {
 			return ResponseEntity.badRequest().body("No se pudo actualizar al Proveedor");
 		}
-		
-		System.out.println("---INICIANDO EL METODO actualizar------");
-		System.out.println("NOMBRE RECIBIDO: " + producto.getNombre());
-		System.out.println("descripcion RECIBIDO: " + producto.getDescripcion());
-		System.out.println("proveedor RECIBIDO: " + producto.getProveedor().getIdProveedor());
-		System.out.println("categoria RECIBIDO: " + producto.getCategoria().getIdCategoria());
-		System.out.println("precio RECIBIDO: " + producto.getPrecio());
-		System.out.println("stock RECIBIDO: " + producto.getStock());
-		
-		System.out.println("----LA IMAGEN LLEGA EN FORMATO--------");
-		System.out.println("IMAGEN BASE64: " + producto.getBase64Img());
-		System.out.println("IMAGEN MULTIPARTFILE: " + producto.getImagen() );
-		System.out.println("IMAGEN IMAGEN EN BYTES: " + producto.getImagenBytes());
-		
 
 		return ResponseEntity.ok(prdService.ActualizarProducto(id, producto));
 	}

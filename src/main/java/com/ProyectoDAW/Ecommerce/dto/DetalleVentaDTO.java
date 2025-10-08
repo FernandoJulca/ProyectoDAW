@@ -10,9 +10,12 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DetalleVentaDTO {
-	private Integer idDetalleVenta;
-	private Integer idProducto;
-    private String nombreProducto; 
+    private Integer idDetalleVenta;
+    private Integer idProducto;
+    private String nombreProducto;
+    private String descripcionProducto;
+    private String imagen;
+    private Double precioUnitario;
     private Integer cantidad;
     private Double subTotal;
 }
