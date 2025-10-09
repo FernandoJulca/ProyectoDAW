@@ -53,17 +53,6 @@ public class VentaController {
 	
 	@Autowired
 	private VentaService ventaService;
-	
-	
-	@PostMapping("/finalizar")
-	public ResponseEntity<ResultadoResponse> finalizarVenta(@RequestBody Venta venta) {
-	    ResultadoResponse resultado = ventaService.guardarVentaCompleta(venta);
-	    if (resultado.isValor()) {
-	        return ResponseEntity.ok(resultado);
-	    } else {
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(resultado);
-	    }
-	}
 
     @PostMapping("/delivery")
     public ResponseEntity<ResultadoResponse> guardarVentaDelivery(@RequestBody Venta venta) {
@@ -74,8 +63,6 @@ public class VentaController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
-    
-    
 	
 	@GetMapping("/{idUsuario}/pdf/{idVenta}")
 	public ResponseEntity<byte[]> descargarVentaPdf(@PathVariable Integer idUsuario, @PathVariable Integer idVenta) {

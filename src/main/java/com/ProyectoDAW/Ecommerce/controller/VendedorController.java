@@ -31,19 +31,6 @@ public class VendedorController {
 	private ProductoService productoService;
 	
 	
-	/*
-	@GetMapping("/productos")
-	public ResponseEntity<List<Producto>> obtenerProductosActivos() {
-	    List<Producto> productos = productoService.obtenerProductosActivos();
-	    
-	    if (productos.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
-	    }
-	    
-	    return ResponseEntity.ok(productos);
-	}
-	*/
-	
 	@GetMapping("/productos")
 	public ResponseEntity<List<Producto>> obtenerProductosActivosPorCategorias(
 	        @RequestParam(value = "idCategoria", required = false) Integer idCategoria) {

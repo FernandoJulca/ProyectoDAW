@@ -27,14 +27,8 @@ import com.ProyectoDAW.Ecommerce.util.GeneradorUtil;
 import jakarta.transaction.Transactional;
 
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 @Service
 public class VentaService {
-	
-	
-	private static final Logger log = LoggerFactory.getLogger(VentaService.class);
 
 	@Autowired
 	private IVentaRepository ventaRepository;
@@ -45,8 +39,6 @@ public class VentaService {
 	@Autowired
 	private IUsuarioRepository usuarioRepository;
 
-    @Autowired
-    private IPedidoRepository pedidoRepository;
 
 	public List<VentaDTO> getVentasPorUsuario(Integer idUsuario) {
 		List<Venta> ventas = ventaRepository.findByUsuarioId(idUsuario);
@@ -91,39 +83,6 @@ public class VentaService {
         return dto;
     }
 
-	@Transactional
-	public ResultadoResponse guardarVentaCompleta(Venta venta) {
-		try {
-			if (venta.getIdVenta() != null && venta.getIdVenta() == 0) {
-				venta.setIdVenta(null);
-			}
-
-			venta.setFechaRegistro(LocalDateTime.now());
-			venta.setEstado("P");
-
-			for (DetalleVenta detalle : venta.getDetalles()) {
-				Producto producto = detalle.getProducto();
-				int cantidadComprada = detalle.getCantidad();
-
-				if (producto.getStock() < cantidadComprada) {
-					return new ResultadoResponse(false, "Stock insuficiente para el producto: " + producto.getNombre());
-				}
-
-				productoRepository.actualizarStock(producto.getIdProducto(), producto.getStock() - cantidadComprada);
-
-				detalle.setVenta(venta);
-			}
-
-			ventaRepository.save(venta);
-
-			return new ResultadoResponse(true, "La venta se registró correctamente.");
-
-		} catch (Exception ex) {
-			return new ResultadoResponse(false, "Error al registrar la venta: " + ex.getMessage());
-		}
-	}
-	
-	
 
 	@Transactional
 	public ResultadoResponse guardarVentaDelivery(Venta venta) {
@@ -181,7 +140,6 @@ public class VentaService {
 
             return new ResultadoResponse(true, "Venta registrada con ID: " + ventaGuardada.getIdVenta());
         } catch (Exception e) {
-            log.error("Error al registrar la venta: {}", e.getMessage(), e);
             return new ResultadoResponse(false, "Error al registrar la venta: " + e.getMessage());
         }
 	}
@@ -190,53 +148,63 @@ public class VentaService {
 
     @Transactional
 	public ResultadoResponse guardarVenta(Venta venta) {
-		try {
-            if (venta.getIdVenta() != null && venta.getIdVenta() <= 0) {
-				venta.setIdVenta(null);
-			}
+        try {
 
+            if (venta.getIdVenta() != null) venta.setIdVenta(null);
             venta.setTipoVenta("P");
-			venta.setEstado("G");
+            venta.setEstado("G");
             venta.setMetodoEntrega("S");
 
-            double total = 0;
+            Usuario usuario = usuarioRepository.findById(venta.getUsuario().getIdUsuario())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado."));
+            venta.setUsuario(usuario);
 
-            for (DetalleVenta detalle : venta.getDetalles()) {
-				
-				Producto producto = productoRepository.findById(detalle.getProducto().getIdProducto())
-						.orElseThrow(() -> new RuntimeException(
-								"Producto no encontrado con ID: " + detalle.getProducto().getIdProducto()));
+            List<DetalleVenta> detallesProcesados = venta.getDetalles().stream()
+                    .map(detalle -> {
+                        Producto producto = productoRepository.findById(detalle.getProducto().getIdProducto())
+                                .orElseThrow(() -> new RuntimeException("Producto no encontrado."));
 
-				int cantidadComprada = detalle.getCantidad();
+                        if (producto.getStock() < detalle.getCantidad()) {
+                            throw new RuntimeException("Stock insuficiente para: " + producto.getNombre());
+                        }
 
-				if (producto.getStock() < cantidadComprada) {
-					return new ResultadoResponse(false, "Stock insuficiente para el producto: " + producto.getNombre());
-				}
+                        productoRepository.actualizarStock(producto.getIdProducto(), producto.getStock() - detalle.getCantidad());
 
-				productoRepository.actualizarStock(producto.getIdProducto(), producto.getStock() - cantidadComprada);
+                        detalle.setVenta(venta); // Establece la relación bidireccional crucial
+                        detalle.setProducto(producto);
+                        detalle.setSubTotal(producto.getPrecio() * detalle.getCantidad());
+                        return detalle;
+                    }).toList();
+            venta.getDetalles().clear();
+            venta.getDetalles().addAll(detallesProcesados);
+            venta.setTotal(detallesProcesados.stream().mapToDouble(DetalleVenta::getSubTotal).sum());
 
-				detalle.setProducto(producto);
-				detalle.setVenta(venta);
-
-                total += detalle.getCantidad() * producto.getPrecio();
-
-            }
-
-            venta.setTotal(total);
-            venta.setEspecificaciones(venta.getEspecificaciones());
-
-            //si no hay especificaciones, se pone una por default
+            // Asignación de especificaciones por defecto
             if (venta.getEspecificaciones() == null || venta.getEspecificaciones().isBlank()) {
-                venta.setEspecificaciones("Venta generada en sede");
+                venta.setEspecificaciones("Venta presencial");
             }
 
-			ventaRepository.save(venta);
+            // Gestión del pedido si es de delivery
+            if ("D".equals(venta.getMetodoEntrega()) && venta.getPedido() != null) {
 
-			return new ResultadoResponse(true, "La venta se registró correctamente.");
+                Pedido pedido = venta.getPedido();
+                pedido.setVenta(venta);
+                pedido.setNumPedido(GeneradorUtil.generarCodigoPedido());
+                pedido.setQrVerificacion(GeneradorUtil.generarCodigoPedido());
+                pedido.setEstado("PE");
 
-		} catch (Exception ex) {
-			return new ResultadoResponse(false, "Error al registrar la venta: " + ex.getMessage());
-		}
+                venta.setPedido(pedido);
+
+            } else {
+                venta.setPedido(null);
+            }
+
+            Venta ventaGuardada = ventaRepository.save(venta);
+
+            return new ResultadoResponse(true, "Venta registrada con ID: " + ventaGuardada.getIdVenta());
+        } catch (Exception e) {
+            return new ResultadoResponse(false, "Error al registrar la venta: " + e.getMessage());
+        }
 	}
 
 	// Vista-Inicio-Vendedor
